@@ -19,9 +19,14 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by lecoan on 17-3-8.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/8
+ 修改人:
+ 日　期:
+ 描　述: 对user的数据操作的封装
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public class CustomerServiceImpl implements CustomerService {
 
     private static final String USER_DATA_PATH = "./user.xml";

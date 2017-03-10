@@ -4,9 +4,14 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by lecoan on 2017/3/10.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/10
+ 修改人:
+ 日　期:
+ 描　述: 监听全局的鼠标和键盘事件来进行日期的模拟
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public class GlobalActionDetector {
 
     private static final long eventMask = AWTEvent.KEY_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK+AWTEvent.MOUSE_MOTION_EVENT_MASK;
@@ -16,12 +21,22 @@ public class GlobalActionDetector {
 
     private GlobalActionDetector(){}
 
+    /**
+     * 单例模式
+     * @return 对象实例
+     */
     public static GlobalActionDetector getInstance() {
-        if(instance == null) {
-            instance = new GlobalActionDetector();
+        synchronized (instance) {
+            if(instance == null) {
+                instance = new GlobalActionDetector();
+            }
+            return instance;
         }
-        return instance;
     }
+
+    /**
+     * 启动监听器
+     */
     public void startGlobalActionDetector() {
         myTimer = new MyTimer();
         myTimer.start();
@@ -31,10 +46,16 @@ public class GlobalActionDetector {
                 },eventMask);
     }
 
+    /**
+     * @return 模拟经过的天数
+     */
     public int getDays() {
         return myTimer.getDays();
     }
 
+    /**
+     * 对Timer封装进行计数
+     */
     private class MyTimer {
 
         private Timer dayTimer;
