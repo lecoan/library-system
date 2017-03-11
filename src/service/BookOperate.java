@@ -129,7 +129,7 @@ public class BookOperate {
             booklist.add(newbook);
         }
     }
-    
+
     public void deleteBook(String isbn) {
         for(int i = 0; i < booklist.size(); ++i) {
             if(booklist.get(i).getIsbn().equals(isbn)){
