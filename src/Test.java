@@ -1,10 +1,8 @@
 /**
  * Created by lecoan on 17-3-1.
  */
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
+import java.util.*;
 
 class BorrowMemory implements Serializable{
     private String borrowtime;
@@ -43,11 +41,12 @@ class Book implements Serializable{
     private String introduction;
     private String kind;//
     private String isbn;
-    private List<BorrowMemory> borrowlist;//
+    //private List<BorrowMemory> borrowlist;//
     private int numbers;
     private int restnumber;
 
-    public void add
+    //public void add
+    public void Book() {}
     public String getKind() {
         return kind;
     }
@@ -123,48 +122,49 @@ class BookOperate {
     private Map<String, List<Book>> writersbooklist;
     private Map<String, List<Book>> publishersbooklist;
     private Map<String, List<Book>> samenamebooklist;
+    public BookOperate() {
+        writersbooklist = new HashMap<>();
+        publishersbooklist = new HashMap<>();
+        samenamebooklist = new HashMap<>();
+        booklist = new ArrayList<>();
+    }
     public List<Book> getAllBook() {
-        if(this.booklist != null) {
+        if (this.booklist.size() != 0) {
             return this.booklist;
         }
         else {
             try {
-                File file = new File("data/book.txt");
+                booklist = new LinkedList<>();
+                File file = new File("book.txt");
                 FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                booklist = (List<Book>)ois.readObject();
+                booklist = (List<Book>) ois.readObject();
                 ois.close();
                 fis.close();
-            }
-            catch(ClassNotFoundException e)
-            {
+                return this.booklist;
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-
-
+        return null;
+    }
 
     public void saveAllBook() {
         if(this.booklist != null) {
             try{
-                File file = new File("data/book.txt");
+                File file = new File("book.txt");
+                if(!file.exists()) {
+                    file.createNewFile();
+                }
                 FileOutputStream fos = new FileOutputStream(file);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(booklist);
                 oos.flush();
                 oos.close();
                 fos.close();
-            }
-            catch(ClassNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IOException e)
+            } catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -175,67 +175,78 @@ class BookOperate {
     }
 
     public List<Book> getBookbyWriter(String writername) {
-        if(this.writersbooklist[writername] != null) {
-            return this.writersbooklist[writername];
+        if(writersbooklist.get(writername) != null) {
+            return writersbooklist.get(writername);
         }
         else {
+            List<Book> wsl = new ArrayList();
             for(Book temp : booklist) {
-                if(temp.getWritername() == writername) writersbooklist[writername].add(temp);
+                if(temp.getWritername().equals(writername)) wsl.add(temp);
             }
-            return writersbooklist[writername];
+            writersbooklist.put(writername, wsl);
+            return writersbooklist.get(writername);
         }
     }
     public List<Book> getBookbyPublisher(String publishername) {
-        if(this.publishersbooklist[publishername] != null) {
-            return this.publishersbooklist[publishername];
+        if(publishersbooklist.get(publishername) != null) {
+            return publishersbooklist.get(publishername);
         }
         else {
+            List<Book> psn = new ArrayList();
             for(Book temp : booklist) {
-                if(temp.getPublishername() == publishername) publishersbooklist[publishername].add(temp);
+                if(temp.getPublishername().equals(publishername)) psn.add(temp);
             }
-            return publishersbooklist[publishername];
+            publishersbooklist.put(publishername, psn);
+            return publishersbooklist.get(publishername);
         }
     }
     public Book getBookbyIsbn(String Isbn) {
         for(Book temp : booklist) {
-            if(temp.getIsbn() == Isbn) return temp;
+            if(temp.getIsbn().equals(Isbn)) return temp;
         }
-        Book notfound;
+        Book notfound = new Book();
         return notfound;
     }
     public List<Book> getBookbyName(String bookname) {
-        if(this.samenamebooklist[bookname] != null) {
-            return this.samenamebooklist[bookname];
+        if(samenamebooklist.get(bookname) != null) {
+            return samenamebooklist.get(bookname);
         }
         else {
+            List<Book> bl = new ArrayList();
             for(Book temp : booklist) {
-                if(temp.getName() == bookname) samenamebooklist[bookname].add(temp);
+                if(temp.getName().equals(bookname)) bl.add(temp);
             }
-            return samenamebooklist[bookname];
+            samenamebooklist.put(bookname, bl);
+            return samenamebooklist.get(bookname);
         }
     }
 
     public void addBook(Book newbook) {
-        for(Book temp : booklist) {
-            if(temp.getIsbn() == newbook.getIsbn()) {
-                int totalnum = temp.getNumbers();
-                int restnum = temp.getRestnumber();
-                temp.setNumbers(totalnum + 1);
-                temp.setRestnumber(restnum + 1);
-                return;
-            }
+        if(booklist.size() == 0) {
+            booklist.add(newbook);
         }
-        booklist.add(newbook);
+        else {
+            for(Book temp : booklist) {
+                if(temp.getIsbn().equals(newbook.getIsbn()) ) {
+                    int totalnum = temp.getNumbers();
+                    int restnum = temp.getRestnumber();
+                    temp.setNumbers(totalnum + 1);
+                    temp.setRestnumber(restnum + 1);
+                    return;
+                }
+            }
+            booklist.add(newbook);
+        }
     }
     public void deleteBook(String isbn) {
-        for(i = 0; i < booklist.size(); ++i) {
-            if(booklist.get(i).getIsbn() == isbn){
-                int totalnum = temp.getNumbers();
-                int restnum = temp.getRestnumber();
+        for(int i = 0; i < booklist.size(); ++i) {
+            if(booklist.get(i).getIsbn().equals(isbn)){
+                int totalnum = booklist.get(i).getNumbers();
+                int restnum = booklist.get(i).getRestnumber();
                 if(restnum == 0) System.out.println("book not return!");
                 else {
-                    temp.setNumbers(totalnum - 1);
-                    temp.setRestnumber(restnum - 1);
+                    booklist.get(i).setNumbers(totalnum - 1);
+                    booklist.get(i).setRestnumber(restnum - 1);
                 }
                 if(totalnum - 1 == 0) booklist.remove(i);
             }
@@ -245,6 +256,23 @@ class BookOperate {
 
 public class Test {
     public static void main(String args[]) {
+            Book test = new Book();
+            Book test1 = new Book();
+            test.setRestnumber(1);
+            test.setNumbers(1);
+            test.setBoughttime("11 11");
+            test.setIntroduction("try");
+            test.setName("hhhh");
+            test.setKind("lishi");
+            test.setPublishername("bupt");
+            test.setWritername("yy");
+            test.setIsbn();
+            BookOperate bo = new BookOperate();
 
+            bo.addBook(test);
+            bo.saveAllBook();
+            bo.getAllBook();
+            test1 = bo.getBookbyIsbn("bupt-yy-hhhh");
+            System.out.println(test1.getKind());
     }
 }
