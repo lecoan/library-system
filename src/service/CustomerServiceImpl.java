@@ -1,6 +1,7 @@
 package service;
 
 import bean.Customer;
+import constance.CustomerConstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,11 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
                         cus.setPassword(ele.getAttribute("password"));
                         cus.setDelayedTimes(new Integer(ele.getAttribute("delayed-times")));
                         cus.setFreezed(new Boolean(ele.getAttribute("is-freezed")));
-                        if("student".equals(ele.getAttribute("type"))) {
-                            cus.setType(CustomerType.students);
-                        } else {
-                            cus.setType(CustomerType.teacher);
-                        }
+                        cus.setType(ele.getAttribute("type"));
 
                         //获取书本列表
                         NodeList walist = ele.getElementsByTagName("wanted-list").item(0).getChildNodes();
@@ -138,11 +135,7 @@ public class CustomerServiceImpl implements CustomerService {
                 Element cus = doc.createElement("customer");
                 cus.setAttribute("username",customer.getUsername());
                 cus.setAttribute("password",customer.getPassword());
-                if(customer.getType() == CustomerType.students) {
-                    cus.setAttribute("type", "student");
-                } else {
-                    cus.setAttribute("type","teacher");
-                }
+                cus.setAttribute("type",customer.getType());
                 cus.setAttribute("delayed-times", customer.getDelayedTimes()+"");
                 cus.setAttribute("is-freezed",customer.isFreezed()+"");
 
@@ -195,6 +188,12 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void freezeCustomer(Customer customer) {
         customer.setFreezed(true);
+    }
+
+    @Override
+    public int rentBookByName() {
+
+        return CustomerConstance.RENT_SUCCESSFULL;
     }
 
     @Override

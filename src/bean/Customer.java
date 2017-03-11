@@ -1,5 +1,6 @@
 package bean;
 
+import constance.CustomerConstance;
 import service.CustomerService;
 
 import java.util.List;
@@ -8,10 +9,6 @@ import java.util.List;
  * Created by yangxiang on 17-3-8.
  */
 public class Customer {
-
-    private static final int MAX_NUM_FOR_STUDENT = 10;
-
-    private static final int MAX_NUM_FOR_TEACHER = 20;
 
     private String username;
 
@@ -25,13 +22,13 @@ public class Customer {
 
     private boolean isFreezed;
 
-    private CustomerService.CustomerType type;
+    private String type;
 
     public int getMaxNumForRent() {
-        if(type == CustomerService.CustomerType.students) {
-            return MAX_NUM_FOR_STUDENT;
+        if(CustomerConstance.TYPE_STUDENT.equals(type)) {
+            return CustomerConstance.MAX_NUM_FOR_STUDENT;
         } else {
-            return MAX_NUM_FOR_TEACHER;
+            return CustomerConstance.MAX_NUM_FOR_TEACHER;
         }
     }
 
@@ -83,11 +80,11 @@ public class Customer {
         isFreezed = freezed;
     }
 
-    public CustomerService.CustomerType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(CustomerService.CustomerType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

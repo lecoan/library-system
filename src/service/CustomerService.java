@@ -4,9 +4,14 @@ import bean.Customer;
 
 import java.util.List;
 
-/**
- * Created by yangxiang on 17-3-8.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/8
+ 修改人:
+ 日　期:
+ 描　述: 提供Customers的基本操作
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public interface CustomerService {
 
     List<Customer> getAllCustomers();
@@ -19,8 +24,9 @@ public interface CustomerService {
 
     void freezeCustomer(Customer customer);
 
-    enum CustomerType {
-        teacher,
-        students
-    }
+    /**
+     * @return 0 if  operation executed successfully
+     */
+    int rentBookByName();
+
 }

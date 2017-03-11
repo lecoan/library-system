@@ -16,7 +16,7 @@ public class GlobalActionDetector {
 
     private static final long eventMask = AWTEvent.KEY_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK+AWTEvent.MOUSE_MOTION_EVENT_MASK;
 
-    private static GlobalActionDetector instance;
+    private volatile static GlobalActionDetector instance;
     private MyTimer myTimer;
 
     private GlobalActionDetector(){}
@@ -26,7 +26,7 @@ public class GlobalActionDetector {
      * @return 对象实例
      */
     public static GlobalActionDetector getInstance() {
-        synchronized (instance) {
+        synchronized (GlobalActionDetector.class) {
             if(instance == null) {
                 instance = new GlobalActionDetector();
             }
@@ -47,7 +47,7 @@ public class GlobalActionDetector {
     }
 
     /**
-     * @return 模拟经过的天数
+     * @return 模拟中经过的天数
      */
     public int getDays() {
         return myTimer.getDays();
