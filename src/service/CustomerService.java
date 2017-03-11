@@ -27,6 +27,6 @@ public interface CustomerService {
     /**
      * @return 0 if  operation executed successfully
      */
-    int rentBookByName();
+    int rentBookByName(Customer customer, String name);
 
 }

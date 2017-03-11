@@ -1,5 +1,6 @@
 package service;
 
+import bean.Book;
 import bean.Customer;
 import constance.CustomerConstance;
 import org.w3c.dom.Document;
@@ -191,9 +192,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public int rentBookByName() {
-
-        return CustomerConstance.RENT_SUCCESSFULL;
+    public int rentBookByName(Customer customer, String name) {
+        List<Book> bookList = new BookOperate().getBookbyName(name);
+        if(bookList.size()!=0){
+            if(customer.getMaxNumForRent() > customer.getBookedList().size()) {
+                Book book = bookList.get(0);
+                customer.getBookedList().add(book.getIsbn());
+                return CustomerConstance.RENT_SUCCESSFULL;
+            }
+            return CustomerConstance.RENT_TO_MUCH;
+        }
+        customer.getWantedList().add(name);
+        return CustomerConstance.RENT_HAS_NO_BOOK;
     }
 
     @Override
