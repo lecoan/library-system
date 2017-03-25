@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by yangxiang on 17-3-8.
  */
-public class Customer {
+public abstract class Customer {
 
     private String username;
 
@@ -24,13 +24,17 @@ public class Customer {
 
     private String type;
 
-    public int getMaxNumForRent() {
-        if(CustomerConstance.TYPE_STUDENT.equals(type)) {
-            return CustomerConstance.MAX_NUM_FOR_STUDENT;
-        } else {
-            return CustomerConstance.MAX_NUM_FOR_TEACHER;
-        }
+    private String id;
+
+    public String getId() {
+        return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public abstract int getMaxNumForRent();
 
     public String getUsername() {
         return username;
