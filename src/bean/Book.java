@@ -1,8 +1,7 @@
+package bean;
+
 import java.io.Serializable;
 
-/**
- * Created by zyx on 2017/3/12.
- */
 public class Book implements Serializable {
     private String name;
     private String boughttime;
@@ -75,15 +74,15 @@ public class Book implements Serializable {
         return numbers;
     }
 
-    public void setName(String _name) {
-        this.name = _name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setBoughttime(String _boughttime) {
-        this.boughttime = _boughttime;
+    public void setBoughttime(String boughttime) {
+        this.boughttime = boughttime;
     }
 
-    public void setNumbers(int _numbers) {
-        this.numbers = _numbers;
+    public void setNumbers(int numbers) {
+        this.numbers = numbers;
     }
 }
