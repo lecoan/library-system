@@ -10,10 +10,6 @@ package constance;
  ******************************************************************/
 public class CustomerConstance {
 
-    public static final String TYPE_TEACHER = "teacher";
-
-    public static final String TYPE_STUDENT = "student";
-
     public static final int MAX_NUM_FOR_STUDENT = 10;
 
     public static final int MAX_NUM_FOR_TEACHER = 20;
