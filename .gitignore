@@ -3,3 +3,14 @@
 library-system.iml
 out/
 user.xml
+book.txt
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
