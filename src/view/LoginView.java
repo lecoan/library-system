@@ -5,9 +5,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Created by lecoan on 17-3-25.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/25
+ 修改人:
+ 日　期:
+ 描　述: 登陆界面
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public class LoginView {
     private final JButton button;
     private final JTextField username;

@@ -2,6 +2,7 @@ package service;
 
 import bean.Book;
 import bean.Customer;
+import bean.Student;
 import bean.Teacher;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
@@ -58,8 +59,46 @@ public class CustomerServiceImpl implements CustomerService {
                         .parse(data);
                 customerList.clear();
                 Element all = doc.getDocumentElement();
-                //获取所有的用户
-                saveTeacher(all);
+                NodeList cuslist = all.getElementsByTagName("customer");
+                for(int i = 0; i<cuslist.getLength(); ++ i) {
+                    Node customer = cuslist.item(i);
+                    if(customer.getNodeType() == Node.ELEMENT_NODE) {
+                        Element ele = (Element) customer;
+                        Customer cus;
+                        if(ele.getAttribute("type").equals("teacher"))
+                           cus = new Teacher();
+                        else
+                            cus = new Student();
+                        cus.setUsername(ele.getAttribute("username"));
+                        cus.setPassword(ele.getAttribute("password"));
+                        cus.setDelayedTimes(new Integer(ele.getAttribute("delayed-times")));
+                        cus.setFreezed(new Boolean(ele.getAttribute("is-freezed")));
+
+                        //获取书本列表
+                        NodeList walist = ele.getElementsByTagName("wanted-list").item(0).getChildNodes();
+                        List<String> wa = new LinkedList<>();
+                        for(int j = 0;j<walist.getLength();++j) {
+                            Node book = walist.item(j);
+                            if(book.getNodeType() == Node.ELEMENT_NODE) {
+                                String isbn= book.getChildNodes().item(0).getTextContent();
+                                wa.add(isbn);
+                            }
+                        }
+                        cus.setWantedList(wa);
+
+                        NodeList bolist = ele.getElementsByTagName("booked-list").item(0).getChildNodes();
+                        List<String> bo = new LinkedList<>();
+                        for(int j = 0;j<bolist.getLength();++j) {
+                            Node book = bolist.item(j);
+                            if(book.getNodeType() == Node.ELEMENT_NODE) {
+                                String isbn= book.getChildNodes().item(0).getTextContent();
+                                bo.add(isbn);
+                            }
+                        }
+                        cus.setBookedList(bo);
+                        customerList.add(cus);
+                    }
+                }
             } catch (SAXException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -124,6 +163,10 @@ public class CustomerServiceImpl implements CustomerService {
                     walist.appendChild(ISBN);
                 }
 
+                if(customer.getType().equals("student")) {
+                    Student student = (Student) customer;
+                    cus.setAttribute("colleage",student.getColleage());
+                }
                 cus.appendChild(bolist);
                 cus.appendChild(walist);
 
@@ -177,48 +220,4 @@ public class CustomerServiceImpl implements CustomerService {
     protected void finalize() throws Throwable {
         saveAllCustomers();
     }
-
-    private void saveTeacher(Element all) {
-        NodeList cuslist = all.getElementsByTagName("teacher");
-        for(int i = 0; i<cuslist.getLength(); ++ i) {
-            Node customer = cuslist.item(i);
-            if(customer.getNodeType() == Node.ELEMENT_NODE) {
-                Element ele = (Element) customer;
-                Customer cus = new Teacher();
-                cus.setUsername(ele.getAttribute("username"));
-                cus.setPassword(ele.getAttribute("password"));
-                cus.setDelayedTimes(new Integer(ele.getAttribute("delayed-times")));
-                cus.setFreezed(new Boolean(ele.getAttribute("is-freezed")));
-
-                //获取书本列表
-                NodeList walist = ele.getElementsByTagName("wanted-list").item(0).getChildNodes();
-                List<String> wa = new LinkedList<>();
-                for(int j = 0;j<walist.getLength();++j) {
-                    Node book = walist.item(j);
-                    if(book.getNodeType() == Node.ELEMENT_NODE) {
-                        String isbn= book.getChildNodes().item(0).getTextContent();
-                        wa.add(isbn);
-                    }
-                }
-                cus.setWantedList(wa);
-
-                NodeList bolist = ele.getElementsByTagName("booked-list").item(0).getChildNodes();
-                List<String> bo = new LinkedList<>();
-                for(int j = 0;j<bolist.getLength();++j) {
-                    Node book = bolist.item(j);
-                    if(book.getNodeType() == Node.ELEMENT_NODE) {
-                        String isbn= book.getChildNodes().item(0).getTextContent();
-                        bo.add(isbn);
-                    }
-                }
-                cus.setBookedList(bo);
-                customerList.add(cus);
-            }
-        }
-    }
-
-    private void saveStudent() {
-
-    }
-
 }

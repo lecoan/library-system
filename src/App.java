@@ -7,5 +7,11 @@ import view.LoginView;
 public class App {
     public static void main(String args[]) {
         LoginView view = new LoginView();
+        view.setLoginListener(new LoginView.LoginInfo() {
+            @Override
+            public void handleLoginInfo(String username, String password) {
+
+            }
+        });
     }
 }
