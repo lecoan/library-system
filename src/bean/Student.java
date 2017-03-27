@@ -1,7 +1,6 @@
 package bean;
 
 import constance.CustomerConstance;
-import sun.print.CUPSPrinter;
 
 /**
  * Created by lecoan on 17-3-25.
@@ -9,7 +8,6 @@ import sun.print.CUPSPrinter;
 public class Student extends Customer {
 
     private String colleage;
-    private String classNumber;
 
     public Student() {
         setType("student");
@@ -22,17 +20,6 @@ public class Student extends Customer {
     public void setColleage(String colleage) {
         this.colleage = colleage;
     }
-
-    public String getClassNumber() {
-        return classNumber;
-    }
-
-    public void setClassNumber(String classNumber) {
-        this.classNumber = classNumber;
-    }
-
-
-
 
     @Override
     public int getMaxNumForRent() {
