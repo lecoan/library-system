@@ -1,6 +1,8 @@
 package bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Book implements Serializable {
     private String name;
@@ -10,9 +12,26 @@ public class Book implements Serializable {
     private String introduction;
     private String kind;//
     private String isbn;
+    private List<BorrowMemory> borrowmemory;
     //private List<BorrowMemory> borrowlist;//
     private int numbers;
     private int restnumber;
+
+    public void addBorrowMemory(String borrowtime,String borrowman, String returntime) {
+        BorrowMemory b = new BorrowMemory();
+        b.setBorrowtime(borrowtime);
+        b.setBorrowman(borrowman);
+        b.setReturntime(returntime);
+        if(borrowmemory == null) {
+            borrowmemory = new ArrayList();
+            borrowmemory.add(b);
+        }
+        else borrowmemory.add(b);
+    }//如果借阅历史不为空，就不需要初始化list对象，否则要先初始化list再添加借阅历史。
+
+    public List<BorrowMemory> getBorrowmemory() {
+        return borrowmemory;
+    }
 
     //public void add
     public void Book() {}

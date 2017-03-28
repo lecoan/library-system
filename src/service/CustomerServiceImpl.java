@@ -203,6 +203,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public int rentBookByName(Customer customer, String name) {
+        return 0;
+    }
+
+    @Override
+    /*public int rentBookByName(Customer customer, String name) {//
         List<Book> bookList = new BookOperate().getBookbyName(name);
         if(bookList.size()!=0){
             if(customer.getMaxNumForRent() > customer.getBookedList().size()) {
@@ -214,9 +219,9 @@ public class CustomerServiceImpl implements CustomerService {
         }
         customer.getWantedList().add(name);
         return CustomerConstance.RENT_HAS_NO_BOOK;
-    }
+    }*/
 
-    @Override
+
     protected void finalize() throws Throwable {
         saveAllCustomers();
     }
