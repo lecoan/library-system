@@ -14,11 +14,13 @@ public class App {
         a.setNumbers(1);
         a.setRestnumber(1);
         a.setPublishername("22");
+        a.setKind("+");
         a.setName("33");
         a.setIsbn();
         oo.addBook(a);*/
         a = oo.getBookbyIsbn("22-11-33");
-        if(a != null) System.out.println(a.getName());
+        System.out.println(oo.GetTotalBooknum());
+        System.out.println(a.getName());
         oo.SaveData();
     }
 }

@@ -33,4 +33,4 @@ public class BorrowMemory implements Serializable {
     public String getReturntime() {
         return returntime;
     }
-}
+}//当图书归还的时候生成这本图书的借阅历史，并存入文件
