@@ -2,10 +2,8 @@ package service;
 /*创建bookoperate操作对象时，在结束使用后要调用一次savedata*/
 import bean.Book;
 import bean.BookPathTable;
-
 import java.io.*;
 import java.util.*;
-
 class OperateData implements Serializable{
     public List<BookPathTable> booklist;
     public Map<String, List<BookPathTable>> writersbooklist;
@@ -72,14 +70,13 @@ public class BookOperate {
         index.setIsbn(newbook.getIsbn());
         index.setBookpath(path);
         index.setBorrownum(borrownum);
-
         if(list.get(key) == null) {
-        List<BookPathTable> ll = new ArrayList<>();
-        ll.add(index);
-        list.put(key,ll);
+            List<BookPathTable> ll = new ArrayList<>();
+            ll.add(index);
+            list.put(key,ll);
         }
         else {
-        list.get(key).add(index);
+            list.get(key).add(index);
         }
     }
     private String SaveBook(Book newbook) {
@@ -112,29 +109,27 @@ public class BookOperate {
                 }
             }//如果文件存储容量已满，就要到下一个目标文件存储信息，如果都满了就无法存储。
         }
-
     }//将一本书保存到文件中，首先需要检查当前文件是否容量已满，如果已满
     //就需要将当前文件加一，如果超出最大容量限制，就提示无法存储，将图书保存后返回保存的路径
     //调用这个函数就会直接将图书存入文件，判断是否存在这本书是在booklist中判断
     private void UpdateBook(Book newbook){
-          String isbn = new String();
-          isbn = newbook.getIsbn();
-          for(int i = 0; i < booklist.size(); ++i) {
-              if(booklist.get(i).getIsbn().equals(isbn)) {
-                  List<Book> templist = new ArrayList<>();
-                  templist = (List<Book>)ReadObjectFromFile(booklist.get(i).getBookpath());
-                  for(int j = 0; j < templist.size(); ++j) {
-                      if(templist.get(j).getIsbn().equals(isbn)) {
-                          templist.set(j, newbook);
-                          break;
-                      }
-                  }
-                  WriteObjectToFile(templist, booklist.get(i).getBookpath());
-                  System.out.println("update success!");
-                  break;
-              }
-          }
-
+        String isbn = new String();
+        isbn = newbook.getIsbn();
+        for(int i = 0; i < booklist.size(); ++i) {
+            if(booklist.get(i).getIsbn().equals(isbn)) {
+                List<Book> templist = new ArrayList<>();
+                templist = (List<Book>)ReadObjectFromFile(booklist.get(i).getBookpath());
+                for(int j = 0; j < templist.size(); ++j) {
+                    if(templist.get(j).getIsbn().equals(isbn)) {
+                        templist.set(j, newbook);
+                        break;
+                    }
+                }
+                WriteObjectToFile(templist, booklist.get(i).getBookpath());
+                System.out.println("update success!");
+                break;
+            }
+        }
     }//更新一本图书的内容，实际更新的是剩余数量，与借阅历史
     private void DeleteFromTable(Map<String, List<BookPathTable>> list, String key, String isbn) {
         if(list.get(key).size() == 0) {
@@ -207,36 +202,35 @@ public class BookOperate {
     }
     public List<BookPathTable> getRanklist() { return ranklist;}
     public Book getBookbyIsbn(String Isbn) {
-             boolean flag = false;//判断这本书是否存在
-             String path = new String();
-             for(int i = 0; i < booklist.size(); ++i) {
-                 System.out.println(Isbn);
-                 System.out.println(booklist.get(i).getIsbn());
-                 if(booklist.get(i).getIsbn().equals(Isbn)) {
-                     path = booklist.get(i).getBookpath();
-                     System.out.println("find the book:" + booklist.get(i).getIsbn());
-                     flag = true;
-                     break;
-                 }//此处两个字符串相等却无法判断。
-             } //先从索引表中寻找图书所在文件
-            System.out.println(flag);
-            if(flag){
-                     List<Book> templist = new ArrayList<>();
-                     templist = (List<Book>)ReadObjectFromFile(path);
-                     System.out.println(templist.size());
-                     for(int j = 0; j < templist.size(); ++j) {
-                         if(templist.get(j).getIsbn().equals(Isbn)) {
-                             System.out.println("get the book by isbn!");
-                             return templist.get(j);
-                         }
-                     }
-             }//如果找到就从相应文件中读取图书并返回
-            else {
-                 System.out.println("not found the book!");
+        boolean flag = false;//判断这本书是否存在
+        String path = new String();
+        for(int i = 0; i < booklist.size(); ++i) {
+            System.out.println(Isbn);
+            System.out.println(booklist.get(i).getIsbn());
+            if(booklist.get(i).getIsbn().equals(Isbn)) {
+                path = booklist.get(i).getBookpath();
+                System.out.println("find the book:" + booklist.get(i).getIsbn());
+                flag = true;
+                break;
+            }//此处两个字符串相等却无法判断。
+        } //先从索引表中寻找图书所在文件
+        System.out.println(flag);
+        if(flag){
+            List<Book> templist = new ArrayList<>();
+            templist = (List<Book>)ReadObjectFromFile(path);
+            System.out.println(templist.size());
+            for(int j = 0; j < templist.size(); ++j) {
+                if(templist.get(j).getIsbn().equals(Isbn)) {
+                    System.out.println("get the book by isbn!");
+                    return templist.get(j);
+                }
             }
-            return null;
+        }//如果找到就从相应文件中读取图书并返回
+        else {
+            System.out.println("not found the book!");
+        }
+        return null;
     }
-
     public boolean addBook(Book newbook) {
         String isbn = new String();
         Book exist = new Book();
@@ -270,52 +264,50 @@ public class BookOperate {
     }//添加一本新书，保存到相应文件，并将这本书对应的索引保存到图书索引中，
     //并且按照种类，作者，出版社，书名将这本书保存到相应的索引中
     public boolean deleteBook(String isbn) {
-           Book temp = new Book();
-           temp = getBookbyIsbn(isbn);
-           if(temp == null) System.out.println("the book you want to delete not exist!");
-           if(temp.getRestnumber() >= 1) {
-               temp.setRestnumber(temp.getRestnumber() - 1);
-               if(temp.getNumbers() >= 2 ) {
-                   temp.setNumbers(temp.getNumbers() - 1);
-                   UpdateBook(temp);
-               }
-               else {
-                   for(int i = 0; i < booklist.size(); ++i) {
-                       if(booklist.get(i).getIsbn().equals(temp.getIsbn())) {
-                           List<Book> templist = new ArrayList<>();
-                           templist = (List<Book>)ReadObjectFromFile(booklist.get(i).getBookpath());
-                           for(int j = 0; j < templist.size(); ++j) {
-                               if(templist.get(j).getIsbn().equals(temp.getIsbn())) {
-                                   templist.remove(j);
-                                   break;
-                               }
-                           }//从文件删除
-                           WriteObjectToFile(templist, booklist.get(i).getBookpath());
-                           booklist.remove(i);
-                           break;//再从图书索引表中删除
-                       }
-                   }
-                   for(int i = 0; i < ranklist.size(); ++i) {
-
-                   }//如果图书位于排行榜中，就需要将图书从排行榜中删除，并重新添加一本图书到排行榜中
-                   DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
-                   DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
-                   DeleteFromTable(samekindbooklist, temp.getKind(), isbn);
-                   DeleteFromTable(samenamebooklist, temp.getName(), isbn);
-               }//需要将图书从五个索引表以及文件中分别删除
-               totalbooknum--;
-               return true;//代表删除成功
-           }
-           else {
-               System.out.println("cannot delete, not return!");
-               return false;
-           }
+        Book temp = new Book();
+        temp = getBookbyIsbn(isbn);
+        if(temp == null) System.out.println("the book you want to delete not exist!");
+        if(temp.getRestnumber() >= 1) {
+            temp.setRestnumber(temp.getRestnumber() - 1);
+            if(temp.getNumbers() >= 2 ) {
+                temp.setNumbers(temp.getNumbers() - 1);
+                UpdateBook(temp);
+            }
+            else {
+                for(int i = 0; i < booklist.size(); ++i) {
+                    if(booklist.get(i).getIsbn().equals(temp.getIsbn())) {
+                        List<Book> templist = new ArrayList<>();
+                        templist = (List<Book>)ReadObjectFromFile(booklist.get(i).getBookpath());
+                        for(int j = 0; j < templist.size(); ++j) {
+                            if(templist.get(j).getIsbn().equals(temp.getIsbn())) {
+                                templist.remove(j);
+                                break;
+                            }
+                        }//从文件删除
+                        WriteObjectToFile(templist, booklist.get(i).getBookpath());
+                        booklist.remove(i);
+                        break;//再从图书索引表中删除
+                    }
+                }
+                for(int i = 0; i < ranklist.size(); ++i) {
+                }//如果图书位于排行榜中，就需要将图书从排行榜中删除，并重新添加一本图书到排行榜中
+                DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
+                DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
+                DeleteFromTable(samekindbooklist, temp.getKind(), isbn);
+                DeleteFromTable(samenamebooklist, temp.getName(), isbn);
+            }//需要将图书从五个索引表以及文件中分别删除
+            totalbooknum--;
+            return true;//代表删除成功
+        }
+        else {
+            System.out.println("cannot delete, not return!");
+            return false;
+        }
     }//首先找到这本书，然后检查图书的剩余数量与总数量，从而判断这本书是否可以删除
     public int GetTotalBooknum() {return totalbooknum;}
     public int GetTotalRestbooknum() {return restbooknum;}
     public List<BookPathTable> GetBorrowRanklist() {return ranklist;}
     //public boolean UpdateBookrank(String isbn) {}
-
     /*public void addBorrowMemory(BorrowList memory, String ibsn) {
     }//为一本书添加借阅历史，并更新图书*/
 }
