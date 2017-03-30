@@ -1,3 +1,4 @@
+
 package service;
 /*创建bookoperate操作对象时，在结束使用后要调用一次savedata*/
 import bean.Book;
@@ -210,8 +211,8 @@ public class BookOperate {
              boolean flag = false;//判断这本书是否存在
              String path = new String();
              for(int i = 0; i < booklist.size(); ++i) {
-                 System.out.println(Isbn);
-                 System.out.println(booklist.get(i).getIsbn());
+                 //System.out.println(Isbn);
+                 //System.out.println(booklist.get(i).getIsbn());
                  if(booklist.get(i).getIsbn().equals(Isbn)) {
                      path = booklist.get(i).getBookpath();
                      System.out.println("find the book:" + booklist.get(i).getIsbn());
@@ -314,9 +315,9 @@ public class BookOperate {
     public int GetTotalBooknum() {return totalbooknum;}
     public int GetTotalRestbooknum() {return restbooknum;}
     public List<BookPathTable> GetBorrowRanklist() {return ranklist;}
-    //public boolean UpdateBookrank(String isbn) {}
+    //public boolean UpdateBookrank(String isbn) {}//此时剩余图书数量减1
 
     /*public void addBorrowMemory(BorrowList memory, String ibsn) {
-    }//为一本书添加借阅历史，并更新图书*/
+    }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
 }
 //程序结束时要调用savedata将bookoperate数据保存
