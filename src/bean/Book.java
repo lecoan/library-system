@@ -13,9 +13,6 @@ public class Book implements Serializable {
     private String kind;//
     private String isbn;
     private List<BorrowMemory> borrowmemory;
-    //private List<BorrowMemory> borrowlist;//
-    private int numbers;
-    private int restnumber;
 
     public void addBorrowMemory(String borrowtime,String borrowman, String returntime) {
         BorrowMemory b = new BorrowMemory();
@@ -33,7 +30,6 @@ public class Book implements Serializable {
         return borrowmemory;
     }
 
-    //public void add
     public void Book() {}
     public String getKind() {
         return kind;
@@ -69,14 +65,6 @@ public class Book implements Serializable {
         return publishername;
     }
 
-    public void setRestnumber(int restnumber) {
-        this.restnumber = restnumber;
-    }
-
-    public int getRestnumber() {
-        return restnumber;
-    }
-
     public String getIsbn() {
         return isbn;
     }
@@ -89,9 +77,6 @@ public class Book implements Serializable {
         return boughttime;
     }
 
-    public int getNumbers() {
-        return numbers;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -101,7 +86,4 @@ public class Book implements Serializable {
         this.boughttime = boughttime;
     }
 
-    public void setNumbers(int numbers) {
-        this.numbers = numbers;
-    }
 }
