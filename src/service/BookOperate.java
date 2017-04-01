@@ -4,6 +4,9 @@ package service;
 
 import bean.Book;
 import bean.BookPathTable;
+import bean.BorrowMemory;
+import listener.GlobalActionDetector;
+import view.GetDate;
 
 import java.io.*;
 import java.util.*;
@@ -19,7 +22,6 @@ class OperateData implements Serializable {
     public int totalbooknum;//增加一本书就加一，删除一本书就减一
     public int restbooknum;//借阅一本书就加一，归还一本书就减一
 }
-
 public class BookOperate {
     private List<BookPathTable> booklist;
     private List<BookPathTable> ranklist;
@@ -34,7 +36,15 @@ public class BookOperate {
     private final String[] bookpath = {"book1.xml", "book2.xml", "book3.xml", "book4.xml", "book5.xml"};
     //图书可以保存的所有文件，每个文件最多保存2000本图书
     private volatile static BookOperate instance;
-
+    private BookPathTable getBookpathtable(String isbn) {
+        for(int i = 0; i < booklist.size(); ++i)
+        {
+            if(booklist.get(i).getIsbn().equals(isbn)) {
+                return booklist.get(i);
+            }
+        }
+        return null;
+    }
     public static BookOperate getInstance() {
         if (instance == null) {
             instance = new BookOperate();
@@ -127,22 +137,20 @@ public class BookOperate {
     private void UpdateBook(Book newbook) {
         String isbn = new String();
         isbn = newbook.getIsbn();
-        for (int i = 0; i < booklist.size(); ++i) {
-            if (booklist.get(i).getIsbn().equals(isbn)) {
-                List<Book> templist = new ArrayList<>();
-                templist = (List<Book>) ReadObjectFromFile(booklist.get(i).getBookpath());
-                for (int j = 0; j < templist.size(); ++j) {
-                    if (templist.get(j).getIsbn().equals(isbn)) {
-                        templist.set(j, newbook);
-                        break;
-                    }
+        BookPathTable temp = getBookpathtable(isbn);
+        if(temp != null) {
+            List<Book> templist = new ArrayList<>();
+            templist = (List<Book>) ReadObjectFromFile(temp.getBookpath());
+            for (int j = 0; j < templist.size(); ++j) {
+                if (templist.get(j).getIsbn().equals(isbn)) {
+                    templist.set(j, newbook);
+                    break;
                 }
-                WriteObjectToFile(templist, booklist.get(i).getBookpath());
-                System.out.println("update success!");
-                break;
             }
+            WriteObjectToFile(templist, temp.getBookpath());
+            System.out.println("update success!");
         }
-
+        System.out.println("update fail!");
     }//更新一本图书的内容，实际更新的是借阅历史
 
     private void DeleteFromTable(Map<String, List<BookPathTable>> list, String key, String isbn) {
@@ -161,6 +169,7 @@ public class BookOperate {
     private BookOperate() {
         File file = new File("book.xml");
         if (!file.exists()) {
+            ranklist = new ArrayList<>();
             writersbooklist = new HashMap<>();
             publishersbooklist = new HashMap<>();
             samenamebooklist = new HashMap<>();
@@ -226,16 +235,13 @@ public class BookOperate {
     public Book getBookbyIsbn(String Isbn) {
         boolean flag = false;//判断这本书是否存在
         String path = new String();
-        for (int i = 0; i < booklist.size(); ++i) {
-            //System.out.println(Isbn);
-            //System.out.println(booklist.get(i).getIsbn());
-            if (booklist.get(i).getIsbn().equals(Isbn)) {
-                path = booklist.get(i).getBookpath();
-                System.out.println("find the book:" + booklist.get(i).getIsbn());
-                flag = true;
-                break;
-            }//此处两个字符串相等却无法判断。
-        } //先从索引表中寻找图书所在文件
+        BookPathTable temp = getBookpathtable(Isbn);
+        if(temp != null) {
+            path = temp.getBookpath();
+            System.out.println("find the book:" + temp.getIsbn());
+            flag = true;
+        }
+        //先从索引表中寻找图书所在文件
         if (flag) {
             List<Book> templist = new ArrayList<>();
             templist = (List<Book>) ReadObjectFromFile(path);
@@ -348,9 +354,51 @@ public class BookOperate {
     public List<BookPathTable> GetBorrowRanklist() {
         return ranklist;
     }
-    //public boolean UpdateBookrank(String isbn) {}//此时剩余图书数量减1
+    private void Sort(List<BookPathTable> list) {
+        for(int i = 0; i < list.size(); ++i) {
+            for(int j = list.size() - 1; j > i; --j) {
+                if(list.get(j).getBorrownum() > list.get(j - 1).getBorrownum()) {
+                    BookPathTable temp = list.get(j - 1);
+                    list.set(j - 1, list.get(j));
+                    list.set(j, temp);
+                }
+            }
+        }
+    }
 
-    /*public void addBorrowMemory(BorrowList memory, String ibsn) {
+    public boolean UpdateBookrank(String isbn) {
+        for(int i = 0; i < booklist.size(); ++i) {
+            if(booklist.get(i).getIsbn().equals(isbn)) {
+                booklist.get(i).setBorrownum(booklist.get(i).getBorrownum() + 1);
+            }
+        }//更新借阅次数
+        BookPathTable temp = getBookpathtable(isbn);
+        if(ranklist.size() == 0) {
+            ranklist.add(temp);
+        }
+        else {
+           ranklist.add(temp);
+           Sort(ranklist);
+           ranklist.remove(ranklist.size() - 1);
+        }
+        restbooknum--;
+        return true;
+    }//此时剩余图书数量减1,总数量不变
+
+    public void addBorrowMemory(String borrowman, String isbn, String borrowtime) {
+        Book book = new Book();
+        book = getBookbyIsbn(isbn);
+        BorrowMemory bm = new BorrowMemory();
+        bm.setBorrowman(borrowman);
+        bm.setBorrowtime(borrowtime);
+        GlobalActionDetector gg = GlobalActionDetector.getInstance();
+        int pastday = gg.getDays();
+        GetDate date = new GetDate();
+        bm.setReturntime(date.getDate(pastday));
+        book.addBorrowMemory(bm);
+        UpdateBook(book);
+        restbooknum++;
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
 }
-//程序结束时要调用savedata将bookoperate数据保存
+//程序结束时要调用savedata将bookoperate数据保存，通过图书编号找到特定图书后，显示剩余数量的问题。
+//两个list求交集，并集，多重条件查找。

@@ -14,13 +14,9 @@ public class Book implements Serializable {
     private String isbn;
     private List<BorrowMemory> borrowmemory;
 
-    public void addBorrowMemory(String borrowtime,String borrowman, String returntime) {
-        BorrowMemory b = new BorrowMemory();
-        b.setBorrowtime(borrowtime);
-        b.setBorrowman(borrowman);
-        b.setReturntime(returntime);
+    public void addBorrowMemory(BorrowMemory b) {
         if(borrowmemory == null) {
-            borrowmemory = new ArrayList();
+            borrowmemory = new ArrayList<>();
             borrowmemory.add(b);
         }
         else borrowmemory.add(b);
@@ -30,7 +26,7 @@ public class Book implements Serializable {
         return borrowmemory;
     }
 
-    public void Book() {}
+    public Book() {}
     public String getKind() {
         return kind;
     }

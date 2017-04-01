@@ -1,5 +1,6 @@
 import bean.Book;
 import service.BookOperate;
+import view.GetDate;
 import view.LoginView;
 
 import java.io.BufferedReader;
@@ -47,23 +48,15 @@ public class App {
         }
         catch(IOException e) {
         }*/
-       /* Book a = new Book();
+        Book a = new Book();
         a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝");
         System.out.println(a.getIntroduction());
         System.out.println(a.getKind());
         System.out.println(oo.GetTotalBooknum());
         System.out.println(oo.GetTotalRestbooknum());
-
-        oo.deleteBook("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝");
-        Book b = new Book();
-        b = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝");
-        if(b != null) {
-            System.out.println(b.getIntroduction());
-            System.out.println(b.getKind());
-
-        }
-        System.out.println(oo.GetTotalBooknum());
-        System.out.println(oo.GetTotalRestbooknum());
-        oo.SaveData();*/
+        oo.UpdateBookrank(a.getIsbn());
+        //oo.addBorrowMemory("11","百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝",
+        // "1112165");
+        oo.SaveData();
     }
 }
