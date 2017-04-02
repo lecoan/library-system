@@ -6,6 +6,7 @@ import service.BookOperate;
 import sun.swing.BakedArrayList;
 import view.AdminView;
 import service.BookOperate.*;
+import view.FindBookFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +22,7 @@ import java.util.Objects;
 public class AdminControler {
     private List<BookPathTable> bookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
+    FindBookFrame findBookFrame = FindBookFrame.getInstance();
     AdminView adminPanel = null;
 
     public AdminControler() {
@@ -35,15 +37,15 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //查找图书按钮点击
-                adminPanel.showFindBookField();
+                findBookFrame.showFindBookField();
                 findBook();
             }
         });
-        adminPanel.bookListTable.addMouseListener(new MouseAdapter() {
+        findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){
-                    showBookItem(adminPanel.bookListTable.getSelectedRow());
+                    showBookItem(findBookFrame.bookListTable.getSelectedRow());
                 }
             }
         });
@@ -77,11 +79,11 @@ public class AdminControler {
             Object[] bookInfo = {bookIsbn[2],bookIsbn[0],bookIsbn[1],bookIsbn[3],bookList.get(i).getRestnum()};
             books[i] = bookInfo;
         }
-        DefaultTableModel tableModel =  (DefaultTableModel)adminPanel.bookListTable.getModel();
+        DefaultTableModel tableModel =  (DefaultTableModel)findBookFrame.bookListTable.getModel();
         tableModel.setDataVector(books,bookTableHead);
-        adminPanel.bookListTable.setCellEditable(bookList.size(),5);
-        adminPanel.bookListTable.setVisible(true);
-        adminPanel.findBookFrame.getContentPane().validate();
+        findBookFrame.bookListTable.setCellEditable(bookList.size(),5);
+        findBookFrame.bookListTable.setVisible(true);
+        findBookFrame.findBookFrame.getContentPane().validate();
         return bookList;
     }
     private void showBookItem(Book bookItem){
@@ -107,56 +109,56 @@ public class AdminControler {
     }
     private void findBook(){
         //处理查找书的按钮点击事件
-        adminPanel.findBookByAuthor.addMouseListener(new MouseAdapter() {
+        findBookFrame.findBookByAuthor.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyWriter(adminPanel.searchBook.getText());
+                bookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
                 if (bookList != null)
                     showBookList(bookList);
                 else
-                    adminPanel.findErrAlert("【作者：" + adminPanel.searchBook.getText() + "】");
+                    findBookFrame.findErrAlert("【作者：" + findBookFrame.searchBook.getText() + "】");
             }
         });
-        adminPanel.findBookByName.addMouseListener(new MouseAdapter() {
+        findBookFrame.findBookByName.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyName(adminPanel.searchBook.getText());
+                bookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
                 if (bookList != null)
                     showBookList(bookList);
                 else
-                    adminPanel.findErrAlert("【书名：" + adminPanel.searchBook.getText() + "】");
+                    findBookFrame.findErrAlert("【书名：" + findBookFrame.searchBook.getText() + "】");
             }
         });
-        adminPanel.findBookByKind.addMouseListener(new MouseAdapter() {
+        findBookFrame.findBookByKind.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyKind(adminPanel.searchBook.getText());
+                bookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
                 if (bookList != null)
                     showBookList(bookList);
                 else
-                    adminPanel.findErrAlert("【种类：" + adminPanel.searchBook.getText() + "】");
+                    findBookFrame.findErrAlert("【种类：" + findBookFrame.searchBook.getText() + "】");
             }
         });
-        adminPanel.findBookByPublisher.addMouseListener(new MouseAdapter() {
+        findBookFrame.findBookByPublisher.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyPublisher(adminPanel.searchBook.getText());
+                bookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
                 if (bookList != null)
                     showBookList(bookList);
                 else
-                    adminPanel.findErrAlert("【出版社：" + adminPanel.searchBook.getText() + "】");
+                    findBookFrame.findErrAlert("【出版社：" + findBookFrame.searchBook.getText() + "】");
             }
         });
-        adminPanel.findBookByIsbn.addMouseListener(new MouseAdapter() {
+        findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Book bookItem = bookOperate.getBookbyIsbn(adminPanel.searchBook.getText());
+                Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
                 if (bookItem != null) {
 //                    System.out.print(bookItem);
                     showBookItem(bookItem);
                 }
                 else
-                    adminPanel.findErrAlert("【ISBN ： " + adminPanel.searchBook.getText() + "】");
+                    findBookFrame.findErrAlert("【ISBN ： " + findBookFrame.searchBook.getText() + "】");
             }
         });
     }

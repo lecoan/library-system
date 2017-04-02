@@ -12,20 +12,21 @@ import java.awt.event.*;
  */
 public class AdminView {    //展示admin主面板
     AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
+    FindBookFrame findBookFrame = FindBookFrame.getInstance();
     public JFrame adminFrame = new JFrame("Admin Panel");
 
     public JButton addBookButton = new JButton("添加新书");
     public JButton findBookButton = new JButton("查找图书");
 
-    public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
-    //查找图书面板组件
-    public JButton findBookByIsbn = new JButton("按书号搜索");
-    public JButton findBookByAuthor= new JButton("按作者搜索");
-    public JButton findBookByPublisher = new JButton("按出版社搜索");
-    public JButton findBookByName = new JButton("按书名搜索");
-    public JButton findBookByKind = new JButton("按类别搜索");
-    public JTextField searchBook = new JTextField();    //输入搜索框
-    public BookJTable bookListTable = new BookJTable(0,0);
+//    public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
+//    //查找图书面板组件
+//    public JButton findBookByIsbn = new JButton("按书号搜索");
+//    public JButton findBookByAuthor= new JButton("按作者搜索");
+//    public JButton findBookByPublisher = new JButton("按出版社搜索");
+//    public JButton findBookByName = new JButton("按书名搜索");
+//    public JButton findBookByKind = new JButton("按类别搜索");
+//    public JTextField searchBook = new JTextField();    //输入搜索框
+//    public BookJTable bookListTable = new BookJTable(0,0);
 
     public JFrame bookInfoFrame = new JFrame("图书信息");
 
@@ -42,8 +43,8 @@ public class AdminView {    //展示admin主面板
     public JTextField searchUserField = new JTextField();
     public JButton searchUserBtn = new JButton("搜索");
 
-    private JFrame errFrame = new JFrame("Err!");
-    private JLabel errMsg = new JLabel();
+//    private JFrame errFrame = new JFrame("Err!");
+//    private JLabel errMsg = new JLabel();
 
 
     public AdminView(){
@@ -66,55 +67,55 @@ public class AdminView {    //展示admin主面板
         adminFrame.setVisible(true);
 
     }
-    public void showFindBookField(){
-        String placeholderText = "请输入书名/书号/作者/出版社/类别进行搜索";
-
-        findBookFrame.setSize(700,400);
-        findBookFrame.setResizable(false);
-        findBookFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        findBookFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                searchBook.setText(placeholderText);
-            }
-        });
-
-        Box findBookBox = Box.createVerticalBox();
-        Box findBookBoxB = Box.createHorizontalBox();
-        Box findBookBoxT = Box.createHorizontalBox();
-
-
-        findBookBoxB.add(findBookByName);
-        findBookBoxB.add(Box.createHorizontalStrut(5));
-        findBookBoxB.add(findBookByIsbn);
-        findBookBoxB.add(Box.createHorizontalStrut(5));
-        findBookBoxB.add(findBookByAuthor);
-        findBookBoxB.add(Box.createHorizontalStrut(5));
-        findBookBoxB.add(findBookByPublisher);
-        findBookBoxB.add(Box.createHorizontalStrut(5));
-        findBookBoxB.add(findBookByKind);
-
-        placeholderHandle.addingPlaceholder(searchBook,placeholderText);
-        findBookBoxT.add(searchBook);
-        findBookBoxT.setSize(100,30);
-
-        findBookBox.add(Box.createVerticalStrut(40));
-        findBookBox.add(findBookBoxT);
-        findBookBox.add(Box.createVerticalStrut(20));
-        findBookBox.add(findBookBoxB);
-
-        Box bookListBox = Box.createHorizontalBox();
-        bookListTable.setPreferredScrollableViewportSize(new Dimension(580,200));
-//        bookListTable.
-        JScrollPane scrollPane = new JScrollPane(bookListTable);
-        bookListBox.add(scrollPane);
-        JPanel container = new JPanel();
-        container.add(findBookBox,BorderLayout.NORTH);
-        container.add(bookListBox);
-        findBookFrame.setContentPane(container);
-        findBookFrame.setLocation(300,100);
-        findBookFrame.setVisible(true);
-    }
+//    public void showFindBookField(){
+//        String placeholderText = "请输入书名/书号/作者/出版社/类别进行搜索";
+//
+//        findBookFrame.setSize(700,400);
+//        findBookFrame.setResizable(false);
+//        findBookFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//        findBookFrame.addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosed(WindowEvent e) {
+//                searchBook.setText(placeholderText);
+//            }
+//        });
+//
+//        Box findBookBox = Box.createVerticalBox();
+//        Box findBookBoxB = Box.createHorizontalBox();
+//        Box findBookBoxT = Box.createHorizontalBox();
+//
+//
+//        findBookBoxB.add(findBookByName);
+//        findBookBoxB.add(Box.createHorizontalStrut(5));
+//        findBookBoxB.add(findBookByIsbn);
+//        findBookBoxB.add(Box.createHorizontalStrut(5));
+//        findBookBoxB.add(findBookByAuthor);
+//        findBookBoxB.add(Box.createHorizontalStrut(5));
+//        findBookBoxB.add(findBookByPublisher);
+//        findBookBoxB.add(Box.createHorizontalStrut(5));
+//        findBookBoxB.add(findBookByKind);
+//
+//        placeholderHandle.addingPlaceholder(searchBook,placeholderText);
+//        findBookBoxT.add(searchBook);
+//        findBookBoxT.setSize(100,30);
+//
+//        findBookBox.add(Box.createVerticalStrut(40));
+//        findBookBox.add(findBookBoxT);
+//        findBookBox.add(Box.createVerticalStrut(20));
+//        findBookBox.add(findBookBoxB);
+//
+//        Box bookListBox = Box.createHorizontalBox();
+//        bookListTable.setPreferredScrollableViewportSize(new Dimension(580,200));
+////        bookListTable.
+//        JScrollPane scrollPane = new JScrollPane(bookListTable);
+//        bookListBox.add(scrollPane);
+//        JPanel container = new JPanel();
+//        container.add(findBookBox,BorderLayout.NORTH);
+//        container.add(bookListBox);
+//        findBookFrame.setContentPane(container);
+//        findBookFrame.setLocation(300,100);
+//        findBookFrame.setVisible(true);
+//    }
     public void showAddBookField(){
         //展示添加书本区域
         addBookFrame.setSize(500,450);
@@ -222,24 +223,24 @@ public class AdminView {    //展示admin主面板
         bookInfoFrame.setVisible(true);
     }
     private void initErrAlert(){
-        errFrame.setSize(300,80);
-        errFrame.setResizable(false);
-        errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        errMsg.setSize(200,80);
+        findBookFrame.errFrame.setSize(300,80);
+        findBookFrame.errFrame.setResizable(false);
+        findBookFrame.errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        findBookFrame.errMsg.setSize(200,80);
         //修改字体颜色
         Box errBox = Box.createHorizontalBox();
         errBox.add(Box.createHorizontalGlue());
-        errBox.add(errMsg);
+        errBox.add(findBookFrame.errMsg);
         errBox.add(Box.createHorizontalGlue());
-        errFrame.getContentPane().add(errBox);
-        errFrame.setVisible(false);
+        findBookFrame.errFrame.getContentPane().add(errBox);
+        findBookFrame.errFrame.setVisible(false);
 
     }
-    public void findErrAlert(String err){
-        errMsg.setText("错误：找不到" + err);
-        errFrame.setLocation((int)(findBookFrame.getLocation().getX()+200),(int)(findBookFrame.getLocation().getY()+100));
-        errFrame.setVisible(true);
-    }
+//    public void findErrAlert(String err){
+//        errMsg.setText("错误：找不到" + err);
+//        errFrame.setLocation((int)(findBookFrame.getLocation().getX()+200),(int)(findBookFrame.getLocation().getY()+100));
+//        errFrame.setVisible(true);
+//    }
     public String[] submitBook(){
         String[] bookInfo = {bookNameInput.getText(),bookPublisherInput.getText(),bookAuthorInput.getText(),bookKindInput.getText(),bookNumInput.getText(),bookDesInput.getText()};
         return bookInfo;
