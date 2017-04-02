@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by ghoskno on 3/30/17.
@@ -21,22 +23,26 @@ public class AddPlaceHolder {
         }
     }
 
-    public void addingPlaceholder(JTextField textFiekd,String text){
-        textFiekd.setForeground(Color.GRAY);
-        textFiekd.addFocusListener(new FocusAdapter() {
-            //控制placeholder
+    public void addingPlaceholder(JTextField textField,String text){
+//        if(!flag)
+        textField.setText(text);
+        textField.setForeground(Color.GRAY);
+        textField.addMouseListener(new MouseAdapter() {
             @Override
-            public void focusGained(FocusEvent e) {
-                if (textFiekd.getText().equals(text)) {
-                    textFiekd.setText("");
-                    textFiekd.setForeground(Color.BLACK);
+            public void mouseClicked(MouseEvent e) {
+                if (textField.getText().equals(text)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
                 }
             }
+        });
+        textField.addFocusListener(new FocusAdapter() {
+            //控制placeholder
             @Override
             public void focusLost(FocusEvent e) {
-                if (textFiekd.getText().isEmpty()) {
-                    textFiekd.setForeground(Color.GRAY);
-                    textFiekd.setText(text);
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(text);
                 }
             }
         });
