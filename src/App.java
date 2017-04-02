@@ -52,17 +52,17 @@ public class App {
         }
         catch(IOException e) {
         }*/
-        Book a = new Book();
+        /*Book a = new Book();
         List<BookPathTable> m = oo.getBookbyName("我可以咬一口吗");
         System.out.println(m.size());
-        a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝");
+        a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-漫画");
         System.out.println(a.getIntroduction());
         System.out.println(a.getKind());
         System.out.println(oo.GetTotalBooknum());
         System.out.println(oo.GetTotalRestbooknum());
         oo.UpdateBookrank(a.getIsbn());
-        oo.addBorrowMemory("11","百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝",
+        oo.addBorrowMemory("11","百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-漫画",
          "1112165");
-        oo.SaveData();
+        oo.SaveData();*/
     }
 }

@@ -10,9 +10,10 @@ import view.GetDate;
 
 import java.io.*;
 import java.util.*;
-
+//只有booklist中是实时的图书数量信息。
+//将booklist按照hashmap存储
 class OperateData implements Serializable {
-    public List<BookPathTable> booklist;
+    public Map<String, BookPathTable> booklist;
     public Map<String, List<BookPathTable>> writersbooklist;
     public Map<String, List<BookPathTable>> publishersbooklist;
     public Map<String, List<BookPathTable>> samenamebooklist;
@@ -23,7 +24,7 @@ class OperateData implements Serializable {
     public int restbooknum;//借阅一本书就加一，归还一本书就减一
 }
 public class BookOperate {
-    private List<BookPathTable> booklist;
+    private Map<String, BookPathTable> booklist;
     private List<BookPathTable> ranklist;
     private Map<String, List<BookPathTable>> writersbooklist;
     private Map<String, List<BookPathTable>> publishersbooklist;
@@ -36,14 +37,8 @@ public class BookOperate {
     private final String[] bookpath = {"book1.xml", "book2.xml", "book3.xml", "book4.xml", "book5.xml"};
     //图书可以保存的所有文件，每个文件最多保存2000本图书
     private volatile static BookOperate instance;
-    private BookPathTable getBookpathtable(String isbn) {
-        for(int i = 0; i < booklist.size(); ++i)
-        {
-            if(booklist.get(i).getIsbn().equals(isbn)) {
-                return booklist.get(i);
-            }
-        }
-        return null;
+    public BookPathTable getBookpathtable(String isbn) {
+        return booklist.get(isbn);
     }
     public static BookOperate getInstance() {
         if (instance == null) {
@@ -174,7 +169,7 @@ public class BookOperate {
             publishersbooklist = new HashMap<>();
             samenamebooklist = new HashMap<>();
             samekindbooklist = new HashMap<>();
-            booklist = new ArrayList<>();
+            booklist = new HashMap<>();
             pathnum = 0;
             totalbooknum = 0;
             restbooknum = 0;
@@ -264,34 +259,29 @@ public class BookOperate {
         Book exist = new Book();
         isbn = newbook.getIsbn();
         boolean flag = false;
-        int poisition = 0;
-        for (int i = 0; i < booklist.size(); ++i) {
-            if (booklist.get(i).getIsbn().equals(isbn)) {
-                poisition = i;
-                flag = true;
-                break;
-            }
-        }//首先会在booklist里面找这本书
-        if (flag) {
-            BookPathTable index = booklist.get(poisition);
+        BookPathTable index = getBookpathtable(isbn);
+        if(index != null) {
             index.setTotalnum(index.getTotalnum() + 1);
             index.setRestnum(index.getRestnum() + 1);
-            booklist.set(poisition, index);
-        }//如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
+            booklist.remove(isbn);
+            booklist.put(isbn, index);
+        }
+        //首先会在booklist里面找这本书
+        // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
         else {
             String path = new String();
             path = SaveBook(newbook);
-            BookPathTable index = new BookPathTable();
-            index.setBookpath(path);
-            index.setIsbn(isbn);
-            index.setBorrownum(0);
-            index.setTotalnum(1);
-            index.setRestnum(1);
-            booklist.add(index);
-            AddNewIndextoTable(writersbooklist, newbook.getWritername(), index);
-            AddNewIndextoTable(publishersbooklist, newbook.getPublishername(), index);
-            AddNewIndextoTable(samenamebooklist, newbook.getName(), index);
-            AddNewIndextoTable(samekindbooklist, newbook.getKind(), index);
+            BookPathTable index1 = new BookPathTable();
+            index1.setBookpath(path);
+            index1.setIsbn(isbn);
+            index1.setBorrownum(0);
+            index1.setTotalnum(1);
+            index1.setRestnum(1);
+            booklist.put(isbn, index1);//将新的图书索引加入booklist
+            AddNewIndextoTable(writersbooklist, newbook.getWritername(), index1);
+            AddNewIndextoTable(publishersbooklist, newbook.getPublishername(), index1);
+            AddNewIndextoTable(samenamebooklist, newbook.getName(), index1);
+            AddNewIndextoTable(samekindbooklist, newbook.getKind(), index1);
         }//否则就要重新保存这本书
         totalbooknum++;
         restbooknum++;
@@ -301,32 +291,25 @@ public class BookOperate {
     //并且按照种类，作者，出版社，书名将这本书保存到相应的索引中
     public boolean deleteBook(String isbn) {
         boolean flag = false;
-        int poisition = 0;
-        for (int i = 0; i < booklist.size(); ++i) {
-            if (booklist.get(i).getIsbn().equals(isbn)) {
-                poisition = i;
-                flag = true;
-                break;
-            }
-        }//首先会在booklist里面找这本书
-        if (flag) {
+        BookPathTable index = getBookpathtable(isbn);
+        if(index != null) {
             Book temp = getBookbyIsbn(isbn);
-            if (booklist.get(poisition).getRestnum() >= 1) {//
-                booklist.get(poisition).setRestnum(booklist.get(poisition).getRestnum() - 1);
-                if (booklist.get(poisition).getTotalnum() >= 2) {
-                    booklist.get(poisition).setTotalnum(booklist.get(poisition).getTotalnum() - 1);
+            if (index.getRestnum() >= 1) {//
+                index.setRestnum(index.getRestnum() - 1);
+                if (index.getTotalnum() >= 2) {
+                    index.setTotalnum(index.getTotalnum() - 1);
                     System.out.println("only delete from num!");
                 } else {
                     List<Book> templist = new ArrayList<>();
-                    templist = (List<Book>) ReadObjectFromFile(booklist.get(poisition).getBookpath());
+                    templist = (List<Book>) ReadObjectFromFile(index.getBookpath());
                     for (int j = 0; j < templist.size(); ++j) {
                         if (templist.get(j).getIsbn().equals(isbn)) {
                             templist.remove(j);
                             break;
                         }
                     }//从文件删除
-                    WriteObjectToFile(templist, booklist.get(poisition).getBookpath());
-                    booklist.remove(poisition);
+                    WriteObjectToFile(templist, index.getBookpath());
+                    booklist.remove(isbn);
                     //还需要从排行榜删除
                     DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
                     DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
@@ -354,6 +337,7 @@ public class BookOperate {
     public List<BookPathTable> GetBorrowRanklist() {
         return ranklist;
     }
+
     private void Sort(List<BookPathTable> list) {
         for(int i = 0; i < list.size(); ++i) {
             for(int j = list.size() - 1; j > i; --j) {
@@ -365,13 +349,9 @@ public class BookOperate {
             }
         }
     }
-
     public boolean UpdateBookrank(String isbn) {
-        for(int i = 0; i < booklist.size(); ++i) {
-            if(booklist.get(i).getIsbn().equals(isbn)) {
-                booklist.get(i).setBorrownum(booklist.get(i).getBorrownum() + 1);
-            }
-        }//更新借阅次数
+        booklist.get(isbn).setBorrownum(booklist.get(isbn).getBorrownum() + 1);
+        //更新借阅次数
         BookPathTable temp = getBookpathtable(isbn);
         if(ranklist.size() == 0) {
             ranklist.add(temp);
@@ -400,11 +380,9 @@ public class BookOperate {
         restbooknum++;
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
     public boolean SetBooknum(String isbn, int num) {
-        for(int i = 0; i < booklist.size(); ++i) {
-            if(booklist.get(i).getIsbn().equals(isbn)) {
-                booklist.get(i).setTotalnum(num);
-                return true;
-            }
+        if(booklist.get(isbn).getIsbn().equals(isbn)) {
+            booklist.get(isbn).setTotalnum(num);
+            return true;
         }
         return false;
     }
