@@ -150,7 +150,7 @@ public class BookOperate {
             WriteObjectToFile(templist, temp.getBookpath());
             System.out.println("update success!");
         }
-        System.out.println("update fail!");
+        else System.out.println("update fail!");
     }//更新一本图书的内容，实际更新的是借阅历史
 
     private void DeleteFromTable(Map<String, List<BookPathTable>> list, String key, String isbn) {
@@ -399,6 +399,15 @@ public class BookOperate {
         UpdateBook(book);
         restbooknum++;
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
+    public boolean SetBooknum(String isbn, int num) {
+        for(int i = 0; i < booklist.size(); ++i) {
+            if(booklist.get(i).getIsbn().equals(isbn)) {
+                booklist.get(i).setTotalnum(num);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 //程序结束时要调用savedata将bookoperate数据保存，通过图书编号找到特定图书后，显示剩余数量的问题。
 //两个list求交集，并集，多重条件查找。
