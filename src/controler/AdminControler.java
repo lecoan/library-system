@@ -70,22 +70,6 @@ public class AdminControler {
             }
         });
     }
-    public List<BookPathTable> showBookList(List<BookPathTable> bookList){
-        //显示书的列表
-        String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
-        Object[][] books = new Object[bookList.size()][5];
-        for(int i=0;i<bookList.size();i++){
-            String[] bookIsbn = bookList.get(i).getIsbn().split("-");
-            Object[] bookInfo = {bookIsbn[2],bookIsbn[0],bookIsbn[1],bookIsbn[3],bookList.get(i).getRestnum()};
-            books[i] = bookInfo;
-        }
-        DefaultTableModel tableModel =  (DefaultTableModel)findBookFrame.bookListTable.getModel();
-        tableModel.setDataVector(books,bookTableHead);
-        findBookFrame.bookListTable.setCellEditable(bookList.size(),5);
-        findBookFrame.bookListTable.setVisible(true);
-        findBookFrame.findBookFrame.getContentPane().validate();
-        return bookList;
-    }
     private void showBookItem(Book bookItem){
         //显示搜索到的单本书
         adminPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
@@ -114,7 +98,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 bookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
                 if (bookList != null)
-                    showBookList(bookList);
+                    findBookFrame.showBookList(bookList);
                 else
                     findBookFrame.findErrAlert("【作者：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -124,7 +108,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 bookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
                 if (bookList != null)
-                    showBookList(bookList);
+                    findBookFrame.showBookList(bookList);
                 else
                     findBookFrame.findErrAlert("【书名：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -134,7 +118,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 bookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
                 if (bookList != null)
-                    showBookList(bookList);
+                    findBookFrame.showBookList(bookList);
                 else
                     findBookFrame.findErrAlert("【种类：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -144,7 +128,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 bookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
                 if (bookList != null)
-                    showBookList(bookList);
+                    findBookFrame.showBookList(bookList);
                 else
                     findBookFrame.findErrAlert("【出版社：" + findBookFrame.searchBook.getText() + "】");
             }

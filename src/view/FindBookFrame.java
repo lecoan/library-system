@@ -1,17 +1,21 @@
 package view;
 
+import bean.BookPathTable;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
 
 /**
  * Created by ghoskno on 4/2/17.
  */
 public class FindBookFrame {
+    private AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
     private volatile static FindBookFrame instance;
-    private void FindBookFrame(){}
-    AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
     public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
     //查找图书面板组件
     public JButton findBookByIsbn = new JButton("按书号搜索");
@@ -24,6 +28,7 @@ public class FindBookFrame {
     public JFrame errFrame = new JFrame("Err!");
     public JLabel errMsg = new JLabel();
 
+    private void FindBookFrame(){}
     public static FindBookFrame getInstance(){
         synchronized (FindBookFrame.class) {
             if(instance == null) {
@@ -80,6 +85,22 @@ public class FindBookFrame {
         findBookFrame.setContentPane(container);
         findBookFrame.setLocation(300,100);
         findBookFrame.setVisible(true);
+    }
+    public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList){
+        //显示书的列表
+        String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
+        Object[][] books = new Object[bookList.size()][5];
+        for(int i=0;i<bookList.size();i++){
+            String[] bookIsbn = bookList.get(i).getIsbn().split("-");
+            Object[] bookInfo = {bookIsbn[2],bookIsbn[0],bookIsbn[1],bookIsbn[3],bookList.get(i).getRestnum()};
+            books[i] = bookInfo;
+        }
+        DefaultTableModel tableModel =  (DefaultTableModel)bookListTable.getModel();
+        tableModel.setDataVector(books,bookTableHead);
+        bookListTable.setCellEditable(bookList.size(),5);
+        bookListTable.setVisible(true);
+        findBookFrame.getContentPane().validate();
+        return bookList;
     }
     public void findErrAlert(String err){
         errMsg.setText("错误：找不到" + err);
