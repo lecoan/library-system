@@ -43,7 +43,8 @@ public class LoginView {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                info.handleLoginInfo(username.getText(),new String(password.getPassword()));
+                if(info!=null)
+                    info.handleLoginInfo(username.getText(),new String(password.getPassword()));
             }
         });
     }

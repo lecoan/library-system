@@ -1,4 +1,5 @@
 import view.LoginView;
+import view.StartUpView;
 
 /**
  * Created by lecoan on 17-3-1.
@@ -6,12 +7,6 @@ import view.LoginView;
 
 public class App {
     public static void main(String args[]) {
-        LoginView view = new LoginView();
-        view.setLoginListener(new LoginView.LoginInfo() {
-            @Override
-            public void handleLoginInfo(String username, String password) {
-
-            }
-        });
+        StartUpView view = new StartUpView();
     }
 }

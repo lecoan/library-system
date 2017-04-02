@@ -1,6 +1,9 @@
 package listener;
 
 import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,7 +22,8 @@ public class GlobalActionDetector {
     private volatile static GlobalActionDetector instance;
     private MyTimer myTimer;
 
-    private GlobalActionDetector(){}
+    private GlobalActionDetector(){
+    }
 
     /**
      * 单例模式
@@ -41,9 +45,12 @@ public class GlobalActionDetector {
         myTimer = new MyTimer();
         myTimer.start();
         Toolkit.getDefaultToolkit()
-                .addAWTEventListener(event -> {
-                    myTimer.pause();
-                },eventMask);
+                .addAWTEventListener(new AWTEventListener() {
+                    @Override
+                    public void eventDispatched(AWTEvent event) {
+                        myTimer.pause();
+                    }
+                }, eventMask);
     }
 
     /**
@@ -58,20 +65,20 @@ public class GlobalActionDetector {
      */
     private class MyTimer {
 
+        private final File file;
         private Timer dayTimer;
-
         private Timer tempTimer;
-
         private int count = 0;
-
         private boolean isStart;
-
         private int days;
 
         public MyTimer() {
             tempTimer = new Timer();
             count = 0;
-            days = 0;
+
+
+            file = new File("./config");
+            readfile();
             tempTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -110,6 +117,52 @@ public class GlobalActionDetector {
 
         int getDays() {
             return days;
+        }
+
+        private void readfile() {
+            if(!file.exists()){
+                days = 0;
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    System.out.println("can not create file");
+                }
+            }
+            else {
+                FileReader reader = null;
+                try {
+                    reader = new FileReader(file);
+                    char [] t = new char[8];
+                    if(reader.read(t)!=-1) {
+                        String s =new String(t);
+                        days = new Integer(s);
+                    } else {
+                        days = 0;
+                    }
+
+
+                } catch (FileNotFoundException e) {
+                    System.out.println("can not find file");
+                    days = 0;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if(reader!=null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            FileWriter writer = new FileWriter(file);
+            writer.write(days);
+            writer.close();
         }
     }
 }

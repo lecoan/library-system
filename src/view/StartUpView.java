@@ -18,24 +18,29 @@ public class StartUpView {
     private StartUpInfo info;
 
     public StartUpView() {
-        JFrame frame = new JFrame("register");
+        JFrame frame = new JFrame("main");
         frame.setSize(500,500);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
         JButton login = new JButton("login");
         JButton register = new JButton("register");
+        panel.add(login);
+        panel.add(register);
+        frame.setContentPane(panel);
 
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                info.handleLogin();
+                if(info!=null)
+                    info.handleLogin();
             }
         });
 
         register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                info.handleRegister();
+                if(info!=null)
+                    info.handleRegister();
             }
         });
 
