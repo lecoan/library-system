@@ -264,6 +264,7 @@ public class BookOperate {
             index.setRestnum(index.getRestnum() + 1);
             booklist.remove(isbn);
             booklist.put(isbn, index);
+
         }
         //首先会在booklist里面找这本书
         // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
@@ -300,6 +301,8 @@ public class BookOperate {
                     System.out.println("only delete from num!");
                     booklist.remove(isbn);
                     booklist.put(isbn, index);
+                    Book book = getBookbyIsbn(isbn);
+                    UpdateTable(book);
                 }
                 else {
                     List<Book> templist = new ArrayList<>();
@@ -381,9 +384,29 @@ public class BookOperate {
         UpdateBook(book);
         restbooknum++;
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
+    private void UpdateTable(Book book)//修改各个不同索引表中的图书数量
+    {
+        _UpdateTable(writersbooklist, book.getWritername(),book.getIsbn());
+        _UpdateTable(publishersbooklist, book.getPublishername(), book.getIsbn());
+        _UpdateTable(samekindbooklist, book.getKind(), book.getIsbn());
+        _UpdateTable(samenamebooklist, book.getName(),  book.getIsbn());
+    }
+
+    private void _UpdateTable(Map<String, List<BookPathTable>> table, String key, String isbn) {
+        for(int i = 0 ; i < table.get(key).size(); ++i) {
+            if(table.get(key).get(i).getIsbn().equals(isbn)) {
+                table.get(key).get(i).setRestnum(booklist.get(isbn).getRestnum());
+                table.get(key).get(i).setTotalnum(booklist.get(isbn).getTotalnum());
+            }
+        }
+    }
+
     public boolean SetBooknum(String isbn, int num) {
         if(booklist.get(isbn).getIsbn().equals(isbn)) {
+            Book book = getBookbyIsbn(isbn);
             booklist.get(isbn).setTotalnum(num);
+            booklist.get(isbn).setRestnum(num);
+            UpdateTable(book);
             return true;
         }
         return false;
