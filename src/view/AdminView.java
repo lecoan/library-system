@@ -1,6 +1,7 @@
 package view;
 
 import bean.Book;
+import bean.BookPathTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -176,7 +177,7 @@ public class AdminView {    //展示admin主面板
         addBookFrame.setVisible(true);
 
     }
-    public void showBookInfoFrame(Book bookItem){
+    public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
         bookInfoFrame.setSize(500,450);
         bookInfoFrame.setResizable(false);
         bookInfoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -185,14 +186,17 @@ public class AdminView {    //展示admin主面板
         bookNameLabel.setBounds(100,20,300,20);
 
         JLabel bookPublisherLabel = new JLabel("出版社名 ：  " + bookItem.getPublishername());
-        bookPublisherLabel.setBounds(100,60,300,20);
+        bookPublisherLabel.setBounds(100,50,300,20);
 
 
         JLabel bookAuthorLabel = new JLabel("作者 ：  " + bookItem.getWritername());
-        bookAuthorLabel.setBounds(100,100,300,20);
+        bookAuthorLabel.setBounds(100,80,300,20);
 
-        JLabel bookNumLabel = new JLabel("数量 ：  " + bookItem.getWritername());
-        bookNumLabel.setBounds(100,140,300,20);
+        JLabel bookNumLabel = new JLabel("总数量 ：  " + bookItemPath.getTotalnum());
+        bookNumLabel.setBounds(100,110,300,20);
+
+        JLabel bookRestNumLabel = new JLabel("剩余数量 ：  " + bookItemPath.getRestnum());
+        bookRestNumLabel.setBounds(100,140,300,20);
 
 
         JLabel bookKindLabel = new JLabel("种类 ：  " + bookItem.getKind());
@@ -209,6 +213,7 @@ public class AdminView {    //展示admin主面板
         container.add(bookNameLabel);
         container.add(bookPublisherLabel);
         container.add(bookNumLabel);
+        container.add(bookRestNumLabel);
         container.add(bookAuthorLabel);
         container.add(bookKindLabel);
         container.add(bookDesLabel);

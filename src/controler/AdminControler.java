@@ -86,7 +86,7 @@ public class AdminControler {
     }
     private void showBookItem(Book bookItem){
         //显示搜索到的单本书
-        adminPanel.showBookInfoFrame(bookItem);
+        adminPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
     }
     private void showBookItem(int row){
         showBookItem(bookOperate.getBookbyIsbn(bookList.get(row).getIsbn()));

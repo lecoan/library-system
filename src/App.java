@@ -1,4 +1,6 @@
 import bean.Book;
+import bean.BookPathTable;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import view.GetDate;
 import view.LoginView;
@@ -6,6 +8,7 @@ import view.LoginView;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by lecoan on 17-3-1.
@@ -13,8 +16,9 @@ import java.io.IOException;
 
 public class App {
     public static void main(String args[]) {
+        GlobalActionDetector.getInstance().startGlobalActionDetector();
         BookOperate oo = BookOperate.getInstance();
-        /*
+        
         try {
             FileReader fr = new FileReader("popular.txt");
             //可以换成工程目录下的其他文本文件
@@ -48,7 +52,7 @@ public class App {
             System.out.println("ok!!!");
         }
         catch(IOException e) {
-        }*/
+        }
 //        Book a = new Book();
 //        a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-");
 //        System.out.println(a.getIntroduction());
