@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.*;
 //只有booklist中是实时的图书数量信息。
 //将booklist按照hashmap存储
+//其实在不同图书分类索引表中，只需要存储图书的编号的list
 class OperateData implements Serializable {
     public Map<String, BookPathTable> booklist;
     public Map<String, List<BookPathTable>> writersbooklist;
@@ -256,9 +257,7 @@ public class BookOperate {
 
     public boolean addBook(Book newbook) {
         String isbn = new String();
-        Book exist = new Book();
         isbn = newbook.getIsbn();
-        boolean flag = false;
         BookPathTable index = getBookpathtable(isbn);
         if(index != null) {
             index.setTotalnum(index.getTotalnum() + 1);
@@ -299,7 +298,10 @@ public class BookOperate {
                 if (index.getTotalnum() >= 2) {
                     index.setTotalnum(index.getTotalnum() - 1);
                     System.out.println("only delete from num!");
-                } else {
+                    booklist.remove(isbn);
+                    booklist.put(isbn, index);
+                }
+                else {
                     List<Book> templist = new ArrayList<>();
                     templist = (List<Book>) ReadObjectFromFile(index.getBookpath());
                     for (int j = 0; j < templist.size(); ++j) {
