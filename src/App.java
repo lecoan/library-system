@@ -1,7 +1,11 @@
 import bean.Book;
 import bean.BookPathTable;
+import bean.Customer;
+import bean.Student;
 import listener.GlobalActionDetector;
 import service.BookOperate;
+import service.CustomerService;
+import service.CustomerServiceImpl;
 import view.GetDate;
 import view.LoginView;
 import view.StartUpView;
@@ -17,6 +21,9 @@ import java.util.List;
 
 public class App {
     public static void main(String args[]) {
-
+        CustomerService customerService = CustomerServiceImpl.getInstance();
+        Customer customer = new Student();
+        customerService.saveCustomer(customer);
+        customerService.saveAllCustomers();
     }
 }

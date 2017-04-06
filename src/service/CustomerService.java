@@ -2,7 +2,7 @@ package service;
 
 import bean.Customer;
 
-import java.util.List;
+import java.util.Set;
 
 /******************************************************************
  创建人: 杨翔
@@ -14,9 +14,7 @@ import java.util.List;
  ******************************************************************/
 public interface CustomerService {
 
-    CustomerService getInstance();
-
-    List<Customer> getAllCustomers();
+    Set<Customer> getAllCustomers();
 
     Customer getCustomerByUsername(String username);
 
