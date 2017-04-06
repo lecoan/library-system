@@ -245,6 +245,15 @@ public class BookOperate {
         return null;
     }
 
+    public List<String> ArrivedBook(Set<String> set) {
+        List<String> ans = new ArrayList<>();
+        for(String isbn:set) {
+            BookPathTable index = getBookpathtable(isbn);
+            if(index.getRestnum() > 0) ans.add(isbn);
+        }
+        if(ans.size() == 0) return null;
+        return ans;
+    }
     public List<BookPathTable> getBookbyWriter(String writername) {
         if(writersbooklist.get(writername) != null) {
             List<BookPathTable> copylist = new ArrayList<>();
@@ -414,14 +423,11 @@ public class BookOperate {
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
 
     public boolean SetBooknum(String isbn, int num) {
-        if (booklist.get(isbn).getIsbn().equals(isbn)) {
             Book book = getBookbyIsbn(isbn);
             booklist.get(isbn).setTotalnum(num);
             booklist.get(isbn).setRestnum(num);
             UpdateTable(book);
             return true;
-        }
-        return false;
     }
 }
 //程序结束时要调用savedata将bookoperate数据保存，通过图书编号找到特定图书后，显示剩余数量的问题。

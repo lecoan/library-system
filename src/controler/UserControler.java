@@ -16,7 +16,7 @@ import java.util.List;
  * Created by ghoskno on 3/29/17.
  */
 public class UserControler {
-//    private List<BookPathTable> curBookList = null;
+    //    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
@@ -85,10 +85,10 @@ public class UserControler {
             }
         });
     }
-    
+
 
     private void showBookItem(Book bookItem){
-    //    显示搜索到的单本书
+        //    显示搜索到的单本书
         UserPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
         System.out.print(bookItem.getIsbn());
     }
