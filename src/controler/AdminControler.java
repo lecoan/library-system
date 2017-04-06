@@ -2,6 +2,7 @@ package controler;
 
 import bean.Book;
 import service.BookOperate;
+import service.CustomerService;
 import view.AdminView;
 import view.ErrAlert;
 import view.FindBookFrame;
@@ -14,6 +15,7 @@ import java.awt.event.*;
 public class AdminControler {
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
+    CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
     CommonControler commonControler = new CommonControler();
     AdminView adminPanel = null;
@@ -133,7 +135,9 @@ public class AdminControler {
     }
     private void findUser(){
         System.out.print(adminPanel.searchUserField.getText());
-
+        if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
+            errAlert.findErrAlert(300,500,"找不到用户" + adminPanel.searchUserField.getText());
+        }
     }
     public static void main(String[] args){
         AdminControler test = new AdminControler();

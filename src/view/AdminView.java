@@ -3,6 +3,7 @@ package view;
 import bean.Book;
 import bean.BookPathTable;
 import service.BookOperate;
+import service.CustomerService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -267,14 +268,14 @@ public class AdminView {    //展示admin主面板
 
         Box stuUserNumBox = Box.createHorizontalBox();
         JLabel stuUserNumLabel = new JLabel("当前学生用户总数：");
-        JLabel stuUserNum = new JLabel("3500");
+        JLabel stuUserNum = new JLabel("" + CustomerService.getInstance().getStudentNum());
         stuUserNumBox.add(stuUserNumLabel);
         stuUserNumBox.add(Box.createGlue());
         stuUserNumBox.add(stuUserNum);
 
         Box teacherUserNumBox = Box.createHorizontalBox();
         JLabel teacherUserNumLabel = new JLabel("当前教师用户总数：");
-        JLabel teacherUserNum = new JLabel("3500");
+        JLabel teacherUserNum = new JLabel("" + CustomerService.getInstance().getTeacherNum());
         teacherUserNumBox.add(teacherUserNumLabel);
         teacherUserNumBox.add(Box.createGlue());
         teacherUserNumBox.add(teacherUserNum);

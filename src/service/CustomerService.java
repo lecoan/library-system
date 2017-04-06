@@ -29,7 +29,12 @@ public class CustomerService {
     private GlobalActionDetector detector;
     private StorageHelper helper;
 
-
+    public int getStudentNum(){
+        return studentNum;
+    }
+    public int getTeacherNum(){
+        return teacherNum;
+    }
     private CustomerService() {
         helper = StorageHelper.getInstance();
         Integer temp = helper.getConfig("studentNum");
