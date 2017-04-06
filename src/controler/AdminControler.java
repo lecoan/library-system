@@ -16,10 +16,10 @@ import java.util.ListIterator;
  * Created by ghoskno on 3/29/17.
  */
 public class AdminControler {
-    private List<BookPathTable> curBookList = null;
+//    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
-    CommonControler commonControler = new CommonControler(curBookList);
+    CommonControler commonControler = new CommonControler();
     AdminView adminPanel = null;
 
     public AdminControler() {
@@ -30,7 +30,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
                 if (bookItem != null) {
-                    curBookList = null;
+                    commonControler.curBookList = null;
 //                    System.out.print(bookItem);
                     showBookItem(bookItem);
                 }
@@ -85,7 +85,7 @@ public class AdminControler {
         adminPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
     }
     private void showBookItem(int row){
-        showBookItem(bookOperate.getBookbyIsbn(curBookList.get(row).getIsbn()));
+        showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(row).getIsbn()));
     }
     private void addBook(){
         //监听确认添加按钮事件

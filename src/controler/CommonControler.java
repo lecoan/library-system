@@ -15,9 +15,9 @@ import java.util.List;
 public class CommonControler {
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
     BookOperate bookOperate = BookOperate.getInstance();
-    private List<BookPathTable> curBookList = null;
-    public CommonControler(List<BookPathTable> bookList) {
-            curBookList = bookList;
+    public List<BookPathTable> curBookList = null;
+    public CommonControler() {
+
     }
     private void checkList(List<BookPathTable> extraBookList){
         if(curBookList != null) {

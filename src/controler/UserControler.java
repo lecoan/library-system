@@ -15,10 +15,10 @@ import java.util.List;
  * Created by ghoskno on 3/29/17.
  */
 public class UserControler {
-    private List<BookPathTable> curBookList = null;
+//    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
-    CommonControler commonControler = new CommonControler(curBookList);
+    CommonControler commonControler = new CommonControler();
     UserView UserPanel = null;
 
     public UserControler() {
@@ -74,7 +74,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
                 if (bookItem != null) {
-                    curBookList = null;
+                    commonControler.curBookList = null;
 //                    System.out.print(bookItem);
                     showBookItem(bookItem);
                 }
@@ -93,7 +93,7 @@ public class UserControler {
     }
 
     private void showBookItem(int row){
-        showBookItem(bookOperate.getBookbyIsbn(curBookList.get(row).getIsbn()));
+        showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(row).getIsbn()));
     }
 
     public void jieyueRetrun(){}
