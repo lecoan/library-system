@@ -7,6 +7,8 @@ import view.FindBookFrame;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 /**
@@ -87,6 +89,14 @@ public class CommonControler {
         findBookFrame.clearBookBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                curBookList = null;
+                findBookFrame.showBookList(curBookList);
+                clearConditionLabel();
+            }
+        });
+        findBookFrame.findBookFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
                 curBookList = null;
                 findBookFrame.showBookList(curBookList);
                 clearConditionLabel();

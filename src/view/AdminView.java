@@ -110,6 +110,7 @@ public class AdminView {    //展示admin主面板
             placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
             placeholderHandle.addingPlaceholder(bookNumInput,"请输入数量");
             placeholderHandle.addingPlaceholder(bookKindInput,"请输入种类");
+            bookDesInput.setText("");
             modifyBookBtn.setText("添加");
         }
 

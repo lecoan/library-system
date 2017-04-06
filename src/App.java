@@ -44,7 +44,7 @@ public class App {
                     a.setName(property[0]);
                     a.setIntroduction(property[3]);
                     a.setIsbn();
-                    oo.addBook(a,);
+                    oo.addBook(a,(int)(Math.random()*100));
                     System.out.println("add book success!!");
                 }
             }
