@@ -24,26 +24,25 @@ public class AddPlaceHolder {
     }
 
     public void addingPlaceholder(JTextField textField,String text){
-//        if(!flag)
         textField.setText(text);
         textField.setForeground(Color.GRAY);
         textField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (textField.getText().equals(text)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);
-                }
+            if (textField.getText().equals(text)) {
+                textField.setText("");
+                textField.setForeground(Color.BLACK);
+            }
             }
         });
         textField.addFocusListener(new FocusAdapter() {
             //控制placeholder
             @Override
             public void focusLost(FocusEvent e) {
-                if (textField.getText().isEmpty()) {
-                    textField.setForeground(Color.GRAY);
-                    textField.setText(text);
-                }
+            if (textField.getText().isEmpty()) {
+                textField.setForeground(Color.GRAY);
+                textField.setText(text);
+            }
             }
         });
     }

@@ -10,7 +10,7 @@ public class BookJTable extends JTable {
        super();
     }
 
-    public void setCellEditable(int row,int col){
+    public void setCellEditable(int row,int col){   //重写JTable选中属性
         for(int r=0;r<=row;r++)
             for (int c=0;c<col;c++){
                 this.isCellEditable(r,c);

@@ -4,6 +4,7 @@ import bean.Book;
 import bean.BookPathTable;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import service.BookOperate;
+import view.ErrAlert;
 import view.FindBookFrame;
 import view.UserView;
 
@@ -18,6 +19,7 @@ public class UserControler {
 //    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
+    ErrAlert errAlert = ErrAlert.getInstance();
     CommonControler commonControler = new CommonControler();
     UserView UserPanel = null;
 
@@ -79,10 +81,9 @@ public class UserControler {
                     showBookItem(bookItem);
                 }
                 else
-                    findBookFrame.findErrAlert("【ISBN ： " + findBookFrame.searchBook.getText() + "】");
+                    errAlert.findErrAlert((int)(findBookFrame.findBookFrame.getLocation().getX()+200),(int)(findBookFrame.findBookFrame.getLocation().getY()+100),"找不到：【ISBN ： " + findBookFrame.searchBook.getText() + "】");
             }
         });
-        findBookFrame.initErrAlert();
     }
     
 

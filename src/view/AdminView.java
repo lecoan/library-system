@@ -2,6 +2,7 @@ package view;
 
 import bean.Book;
 import bean.BookPathTable;
+import service.BookOperate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,9 @@ public class AdminView {    //展示admin主面板
     public JButton bookDeleBtn = new JButton("删除图书");
 
     public JFrame addBookFrame = new JFrame("添加图书");
-    public JButton modifyBookBtn = new JButton();
+    public JButton modifyBookBtn = new JButton();   //添加/更新按钮
+
+    //添加图书面板中输入框
     private JTextField bookNameInput = new JTextField(15);
     private JTextField bookPublisherInput = new JTextField(15);
     private JTextField bookAuthorInput = new JTextField(15);
@@ -31,16 +34,16 @@ public class AdminView {    //展示admin主面板
     private JTextField bookKindInput= new JTextField(15);
     private JTextArea bookDesInput = new JTextArea(10,30);
 
+    //查找用户界面
     public JPanel userPanel = new JPanel();
     public JTextField searchUserField = new JTextField();
     public JButton searchUserBtn = new JButton("搜索");
 
     public AdminView(){
+        //初始化界面
         adminFrame.setSize(600,400);
         adminFrame.setResizable(false);
         adminFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        BorderLayout layout = new BorderLayout();
 
         Container mainCon = adminFrame.getContentPane();
         Box bodyBox = Box.createHorizontalBox();
@@ -49,15 +52,13 @@ public class AdminView {    //展示admin主面板
         mainCon.add(initLabelPanel(),BorderLayout.NORTH);
         bodyBox.add(initBookPanel());
         bodyBox.add(initUserPanel());
-        findBookFrame.initErrAlert();
-//        bodyBox.add(initLogPanel());
+//        findBookFrame.initErrAlert();
         adminFrame.setLocation(300,200);
         adminFrame.setVisible(true);
-
     }
 
-    public void showAddBookField(Book bookItem,BookPathTable bookPath){
-        //展示添加书本区域
+    public void showModifyBookField(Book bookItem, BookPathTable bookPath){
+        //展示添加//修改书本区域
         addBookFrame.setSize(500,450);
         addBookFrame.setResizable(false);
         addBookFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -95,7 +96,7 @@ public class AdminView {    //展示admin主面板
         JPanel container = new JPanel();
         container.setSize(600,400);
 
-        if(bookItem != null){
+        if(bookItem != null){   //当前查看图书不为空，则为修改图书
             bookNameInput.setText(bookItem.getName());
             bookKindInput.setText(bookItem.getKind());
             bookAuthorInput.setText(bookItem.getWritername());
@@ -104,7 +105,7 @@ public class AdminView {    //展示admin主面板
             bookPublisherInput.setText(bookItem.getPublishername());
             modifyBookBtn.setText("更新");
         }
-        else{
+        else{   //当前查看图书为空，则为添加图书
             placeholderHandle.addingPlaceholder(bookNameInput,"请输入书名");
             placeholderHandle.addingPlaceholder(bookPublisherInput,"请输入出版社名");
             placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
@@ -134,6 +135,7 @@ public class AdminView {    //展示admin主面板
 
     }
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
+        //显示图书详细信息界面
         bookInfoFrame.setSize(500,450);
         bookInfoFrame.setResizable(false);
         bookInfoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -192,7 +194,8 @@ public class AdminView {    //展示admin主面板
         Box labelBox = Box.createHorizontalBox();
         JLabel adminLabel = new JLabel("Admin");
         JButton signOutBtn = new JButton("退出");
-        JLabel timeLabel = new JLabel("2017年4月1日");
+        JLabel timeLabel = new JLabel();
+        //修改当前时间
         labelBox.add(adminLabel);
         labelBox.add(Box.createHorizontalStrut(300));
         labelBox.add(timeLabel);
@@ -203,27 +206,30 @@ public class AdminView {    //展示admin主面板
         return panel;
     }
     private JPanel initBookPanel(){
+        int bookTotalNum = BookOperate.getInstance().GetTotalBooknum();
+        int bookRestNum = BookOperate.getInstance().GetTotalRestbooknum();
         JPanel panel = new JPanel();
         panel.setBackground(new Color(51,255,255));
         Box containBox = Box.createVerticalBox();   //主容器盒子
 
         Box bookNumBox =  Box.createHorizontalBox();//书本总数盒子
         JLabel bookNumLabel = new JLabel("当前书本总数：");
-        JLabel bookNum = new JLabel("360020");
+
+        JLabel bookNum = new JLabel("" + bookTotalNum);
         bookNumBox.add(bookNumLabel);
         bookNumBox.add(Box.createGlue());
         bookNumBox.add(bookNum);
 
         Box borrowedBookNumBox =  Box.createHorizontalBox();//借出数量盒子
         JLabel borrowedBookNumLabel = new JLabel("未归还书本数：");
-        JLabel borrowedBookNum = new JLabel("3200");
+        JLabel borrowedBookNum = new JLabel("" + (bookTotalNum - bookRestNum));
         borrowedBookNumBox.add(borrowedBookNumLabel);
         borrowedBookNumBox.add(Box.createGlue());
         borrowedBookNumBox.add(borrowedBookNum);
 
         Box borrowRateBox =  Box.createHorizontalBox();//借出率盒子
         JLabel borrowRateLabel = new JLabel("图书借出率：");
-        JLabel borrowRate = new JLabel("30%");
+        JLabel borrowRate = new JLabel(((bookTotalNum - bookRestNum)/bookTotalNum * 100) + "%");
         borrowRateBox.add(borrowRateLabel);
         borrowRateBox.add(Box.createGlue());
         borrowRateBox.add(borrowRate);

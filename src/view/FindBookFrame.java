@@ -14,8 +14,9 @@ import java.util.*;
  * Created by ghoskno on 4/2/17.
  */
 public class FindBookFrame {
-    private AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
     private volatile static FindBookFrame instance;
+
+    private AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
     public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
     //查找图书面板组件
     public JLabel ConditionsLabel = new JLabel();
@@ -27,11 +28,9 @@ public class FindBookFrame {
     public JButton clearBookBtn = new JButton("清除搜索");
     public JTextField searchBook = new JTextField();    //输入搜索框
     public BookJTable bookListTable = new BookJTable(0,0);
-    public JFrame errFrame = new JFrame("Err!");
-    public JLabel errMsg = new JLabel();
+
 
     private void FindBookFrame(){
-//        initFindBookField();
     }
     public static FindBookFrame getInstance(){
         synchronized (FindBookFrame.class) {
@@ -41,7 +40,7 @@ public class FindBookFrame {
             return instance;
         }
     }
-    public void showFindBookField(){
+    public void showFindBookField(){    //初始查找图书面板
         String placeholderText = "请输入书名/书号/作者/出版社/类别进行搜索";
 
         findBookFrame.setSize(700,400);
@@ -96,27 +95,17 @@ public class FindBookFrame {
         container.add(bookListBox,BorderLayout.SOUTH);
         findBookFrame.setContentPane(container);
         findBookFrame.setLocation(300,100);
+        showBookList(null);
         findBookFrame.setVisible(true);
-    }
-    public void initErrAlert(){
-        errFrame.setSize(300,80);
-        errFrame.setResizable(false);
-        errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        errMsg.setSize(200,80);
-        //修改字体颜色
-        Box errBox = Box.createHorizontalBox();
-        errBox.add(Box.createHorizontalGlue());
-        errBox.add(errMsg);
-        errBox.add(Box.createHorizontalGlue());
-        errFrame.getContentPane().add(errBox);
-        errFrame.setVisible(false);
-
     }
     public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList){
         //显示书的列表
         String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
-        if(bookList == null) {
+        if(bookList == null) {  //传入图书列表为null，清空当前列表
+            DefaultTableModel tableModel =  (DefaultTableModel)bookListTable.getModel();
+            tableModel.setDataVector((Object[][]) null,bookTableHead);
             bookListTable.setVisible(false);
+            findBookFrame.getContentPane().validate();
             return null;
         }
         Object[][] books = new Object[bookList.size()][5];
@@ -131,10 +120,5 @@ public class FindBookFrame {
         bookListTable.setVisible(true);
         findBookFrame.getContentPane().validate();
         return bookList;
-    }
-    public void findErrAlert(String err){
-        errMsg.setText("错误：找不到" + err);
-        errFrame.setLocation((int)(findBookFrame.getLocation().getX()+200),(int)(findBookFrame.getLocation().getY()+100));
-        errFrame.setVisible(true);
     }
 }
