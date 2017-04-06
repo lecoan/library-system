@@ -1,8 +1,13 @@
 import bean.Book;
 import bean.Customer;
+import controler.AdminControler;
+import controler.SignInAndUpController;
 import service.BookOperate;
 import service.CustomerService;
+import service.Log;
+import view.LoginView;
 import view.RegisterView;
+import view.StartUpView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,6 +18,6 @@ import java.io.FileReader;
 
 public class App {
     public static void main(String args[]) {
-        RegisterView test = new RegisterView();
+        StartUpView view = new StartUpView();
     }
 }

@@ -44,7 +44,7 @@ public class AdminView {    //展示admin主面板
         //初始化界面
         adminFrame.setSize(600,400);
         adminFrame.setResizable(false);
-        adminFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        adminFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         Container mainCon = adminFrame.getContentPane();
         Box bodyBox = Box.createHorizontalBox();

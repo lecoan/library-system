@@ -1,5 +1,7 @@
 package view;
 
+import controler.SignInAndUpController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -15,11 +17,13 @@ import java.awt.event.MouseEvent;
  ******************************************************************/
 public class StartUpView extends JFrame{
 
-    private StartUpInfo info;
+    private SignInAndUpController controller;
 
     public StartUpView() {
+        controller = SignInAndUpController.getInstance();
+
         setTitle("main");
-        setSize(500,500);
+        setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
         JButton login = new JButton("login");
@@ -31,28 +35,17 @@ public class StartUpView extends JFrame{
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(info!=null)
-                    info.handleLogin();
+                LoginView loginView = new LoginView();
             }
         });
 
         register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(info!=null)
-                    info.handleRegister();
+                RegisterView view = new RegisterView();
             }
         });
 
         setVisible(true);
-    }
-
-    public void setStartUpInfo(StartUpInfo info) {
-        this.info = info;
-    }
-
-    public interface StartUpInfo{
-        public void handleLogin();
-        public void handleRegister();
     }
 }
