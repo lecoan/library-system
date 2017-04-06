@@ -18,7 +18,8 @@ public class App {
     public static void main(String args[]) {
         //GlobalActionDetector.getInstance().startGlobalActionDetector();
         BookOperate oo = BookOperate.getInstance();
-        /*try {
+        
+        try {
             FileReader fr = new FileReader("popular.txt");
             //可以换成工程目录下的其他文本文件
             BufferedReader br = new BufferedReader(fr);
@@ -43,7 +44,7 @@ public class App {
                     a.setName(property[0]);
                     a.setIntroduction(property[3]);
                     a.setIsbn();
-                    oo.addBook(a);
+                    oo.addBook(a,(int)(Math.random()*100));
                     System.out.println("add book success!!");
                 }
             }
@@ -51,18 +52,16 @@ public class App {
             System.out.println("ok!!!");
         }
         catch(IOException e) {
-        }*/
-        /*Book a = new Book();
-        List<BookPathTable> m = oo.getBookbyName("我可以咬一口吗");
-        System.out.println(m.size());
-        a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-漫画");
-        System.out.println(a.getIntroduction());
-        System.out.println(a.getKind());
-        System.out.println(oo.GetTotalBooknum());
-        System.out.println(oo.GetTotalRestbooknum());
-        oo.UpdateBookrank(a.getIsbn());
-        oo.addBorrowMemory("11","百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-漫画",
-         "1112165");
-        oo.SaveData();*/
+        }
+//        Book a = new Book();
+//        a = oo.getBookbyIsbn("百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝-");
+//        System.out.println(a.getIntroduction());
+//        System.out.println(a.getKind());
+//        System.out.println(oo.GetTotalBooknum());
+//        System.out.println(oo.GetTotalRestbooknum());
+//        oo.UpdateBookrank(a.getIsbn());
+//        //oo.addBorrowMemory("11","百花洲文艺出版社-笛子Ocarina-今天也想表白你：小绿和小蓝",
+//        // "1112165");
+//        oo.SaveData();
     }
 }

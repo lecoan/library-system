@@ -121,7 +121,7 @@ public class FindBookFrame {
         }
         Object[][] books = new Object[bookList.size()][5];
         for (int i = 0; i < bookList.size(); i++) {
-            String[] bookIsbn = bookList.get(i).getIsbn().split("-");
+            String[] bookIsbn = bookList.get(i).getIsbn().split("\\&\\&");
             Object[] bookInfo = {bookIsbn[2], bookIsbn[0], bookIsbn[1], bookIsbn[3], bookList.get(i).getRestnum()};
             books[i] = bookInfo;
         }
