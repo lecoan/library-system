@@ -4,3 +4,15 @@ library-system.iml
 out/
 user.xml
 book.txt
+user
+bookSpider/node_modules/
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar

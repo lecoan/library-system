@@ -10,19 +10,14 @@ package constance;
  ******************************************************************/
 public class CustomerConstance {
 
-    public static final String TYPE_TEACHER = "teacher";
-
-    public static final String TYPE_STUDENT = "student";
-
     public static final int MAX_NUM_FOR_STUDENT = 10;
 
     public static final int MAX_NUM_FOR_TEACHER = 20;
 
     public static final int RENT_SUCCESSFULL = 0;
 
-    public static final int RENT_HAS_NO_BOOK = 1;
-
     public static final int RENT_TO_MUCH = 2;
 
+    public static final float MAX_DEBT = -20;
 
 }
