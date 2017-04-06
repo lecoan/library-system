@@ -318,6 +318,8 @@ public class BookOperate {
             index.setRestnum(index.getRestnum() + addnum);
             //booklist.remove(isbn);
             //booklist.put(isbn, index);
+            totalbooknum = totalbooknum + addnum;
+            restbooknum = restbooknum + addnum;
         }
         //首先会在booklist里面找这本书,因为传递的是引用，所以修改会影响原位置的数据
         // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
@@ -335,9 +337,9 @@ public class BookOperate {
             AddNewIndextoTable(publishersbooklist, newbook.getPublishername(), index1);
             AddNewIndextoTable(samenamebooklist, newbook.getName(), index1);
             AddNewIndextoTable(samekindbooklist, newbook.getKind(), index1);
+            totalbooknum = totalbooknum + num;
+            restbooknum = restbooknum + num;
         }//否则就要重新保存这本书
-        totalbooknum++;
-        restbooknum++;
         return true;//代表添加成功
     }//添加一本新书，保存到相应文件，并将这本书对应的索引保存到图书索引中，//并且按照种类，作者，出版社，书名将这本书保存到相应的索引中
 
@@ -355,14 +357,14 @@ public class BookOperate {
                 }
             }//从文件删除
             WriteObjectToFile(templist, index.getBookpath());
+            totalbooknum = totalbooknum - index.getTotalnum();
+            restbooknum = restbooknum - index.getTotalnum();
             booklist.remove(isbn);
             //还需要从排行榜删除
             DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
             DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
             DeleteFromTable(samekindbooklist, temp.getKind(), isbn);
             DeleteFromTable(samenamebooklist, temp.getName(), isbn);
-            totalbooknum--;
-            restbooknum--;
         }
         else {
                 System.out.println("cannot delete, not return!");
