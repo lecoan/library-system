@@ -11,6 +11,7 @@ public class Student extends Customer {
 
     public Student() {
         setType("student");
+        setMaxNumForRent(CustomerConstance.MAX_NUM_FOR_STUDENT);
     }
 
     public String getColleage() {
@@ -19,10 +20,5 @@ public class Student extends Customer {
 
     public void setColleage(String colleage) {
         this.colleage = colleage;
-    }
-
-    @Override
-    public int getMaxNumForRent() {
-        return CustomerConstance.MAX_NUM_FOR_STUDENT;
     }
 }
