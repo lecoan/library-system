@@ -5,7 +5,6 @@ import bean.BookPathTable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 /**
  * Created by ghoskno on 3/25/17.
@@ -20,9 +19,11 @@ public class AdminView {    //展示admin主面板
     public JButton findBookButton = new JButton("查找图书");
 
     public JFrame bookInfoFrame = new JFrame("图书信息");
+    public JButton bookUpdateBtn = new JButton("更新图书");
+    public JButton bookDeleBtn = new JButton("删除图书");
 
     public JFrame addBookFrame = new JFrame("添加图书");
-    public JButton submitAddBook = new JButton("添加");
+    public JButton modifyBookBtn = new JButton();
     private JTextField bookNameInput = new JTextField(15);
     private JTextField bookPublisherInput = new JTextField(15);
     private JTextField bookAuthorInput = new JTextField(15);
@@ -55,7 +56,7 @@ public class AdminView {    //展示admin主面板
 
     }
 
-    public void showAddBookField(){
+    public void showAddBookField(Book bookItem,BookPathTable bookPath){
         //展示添加书本区域
         addBookFrame.setSize(500,450);
         addBookFrame.setResizable(false);
@@ -65,38 +66,52 @@ public class AdminView {    //展示admin主面板
 
         bookNameLabel.setBounds(100,20,60,20);
         bookNameInput.setBounds(200,20,140,20);
-        placeholderHandle.addingPlaceholder(bookNameInput,"请输入书名");
 
         JLabel bookPublisherLabel = new JLabel("出版社名");
 
         bookPublisherLabel.setBounds(100,60,60,20);
         bookPublisherInput.setBounds(200,60,140,20);
-        placeholderHandle.addingPlaceholder(bookPublisherInput,"请输入出版社名");
 
         JLabel bookAuthorLabel = new JLabel("作者");
 
         bookAuthorLabel.setBounds(100,100,60,20);
         bookAuthorInput.setBounds(200,100,140,20);
-        placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
 
         JLabel bookNumLabel = new JLabel("数量");
         bookNumLabel.setBounds(100,140,60,20);
         bookNumInput.setBounds(200,140,140,20);
-        placeholderHandle.addingPlaceholder(bookNumInput,"请输入数量");
 
         JLabel bookKindLabel = new JLabel("种类");
         bookKindLabel.setBounds(100,180,60,20);
         bookKindInput.setBounds(200,180,140,20);
-        placeholderHandle.addingPlaceholder(bookKindInput,"请输入种类");
 
         JLabel bookDesLabel = new JLabel("简介");
         bookDesLabel.setBounds(100,220,60,20);
         bookDesInput.setBounds(100,250,300,100);
+        bookDesInput.setLineWrap(true);
 
-        submitAddBook.setBounds(220,360,80,20);
+        modifyBookBtn.setBounds(220,360,80,20);
 
         JPanel container = new JPanel();
         container.setSize(600,400);
+
+        if(bookItem != null){
+            bookNameInput.setText(bookItem.getName());
+            bookKindInput.setText(bookItem.getKind());
+            bookAuthorInput.setText(bookItem.getWritername());
+            bookDesInput.setText(bookItem.getIntroduction());
+            bookNumInput.setText("" + bookPath.getTotalnum());
+            bookPublisherInput.setText(bookItem.getPublishername());
+            modifyBookBtn.setText("更新");
+        }
+        else{
+            placeholderHandle.addingPlaceholder(bookNameInput,"请输入书名");
+            placeholderHandle.addingPlaceholder(bookPublisherInput,"请输入出版社名");
+            placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
+            placeholderHandle.addingPlaceholder(bookNumInput,"请输入数量");
+            placeholderHandle.addingPlaceholder(bookKindInput,"请输入种类");
+            modifyBookBtn.setText("添加");
+        }
 
         container.setLayout(null);
         container.add(bookNameInput);
@@ -111,7 +126,7 @@ public class AdminView {    //展示admin主面板
         container.add(bookKindInput);
         container.add(bookDesInput);
         container.add(bookDesLabel);
-        container.add(submitAddBook);
+        container.add(modifyBookBtn);
         addBookFrame.setContentPane(container);
         addBookFrame.setLocation(300,100);
         addBookFrame.setVisible(true);
@@ -146,6 +161,9 @@ public class AdminView {    //展示admin主面板
         System.out.print(bookItem.getIntroduction());
         bookDesLabel.setBounds(100,220,300,80);
 
+        bookUpdateBtn.setBounds(100,320,100,30);
+        bookDeleBtn.setBounds(300,320,100,30);
+
         JPanel container = new JPanel();
         container.setSize(600,400);
 
@@ -157,11 +175,12 @@ public class AdminView {    //展示admin主面板
         container.add(bookAuthorLabel);
         container.add(bookKindLabel);
         container.add(bookDesLabel);
+        container.add(bookUpdateBtn);
+        container.add(bookDeleBtn);
         bookInfoFrame.setContentPane(container);
         bookInfoFrame.setLocation(300,100);
         bookInfoFrame.setVisible(true);
     }
-
 
     public String[] submitBook(){
         String[] bookInfo = {bookNameInput.getText(),bookPublisherInput.getText(),bookAuthorInput.getText(),bookKindInput.getText(),bookNumInput.getText(),bookDesInput.getText()};
