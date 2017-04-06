@@ -9,11 +9,11 @@ import java.util.TreeSet;
 /**
  * Created by yangxiang on 17-3-8.
  */
-public abstract class Customer implements Serializable{
+public abstract class Customer implements Serializable {
 
     private String username;
     private String password;
-    private Map<String,Integer> bookedMap;
+    private Map<String, Integer> bookedMap;
     private Set<String> wantedSet;
     private int delayedTimes;
     private boolean isFreezed;
@@ -22,7 +22,7 @@ public abstract class Customer implements Serializable{
     private int maxNumForRent;
     private float money;
 
-    Customer(){
+    Customer() {
         bookedMap = new TreeMap<>();
         wantedSet = new TreeSet<>();
     }

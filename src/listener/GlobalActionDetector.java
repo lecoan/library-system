@@ -19,27 +19,31 @@ import java.util.function.Consumer;
  ******************************************************************/
 public class GlobalActionDetector {
 
-    private static final long eventMask = AWTEvent.KEY_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK+AWTEvent.MOUSE_MOTION_EVENT_MASK;
+    private static final long eventMask = AWTEvent.KEY_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK + AWTEvent.MOUSE_MOTION_EVENT_MASK;
 
     private volatile static GlobalActionDetector instance;
     private MyTimer myTimer;
     private List<Event> eventList;
 
-    private GlobalActionDetector(){
+    private GlobalActionDetector() {
         eventList = new ArrayList<>();
     }
 
+    /**
+     * @param event 当系统时间改变时希望发生的动作
+     */
     public void addEvent(Event event) {
         eventList.add(event);
     }
 
     /**
      * 单例模式
+     *
      * @return 对象实例
      */
     public static GlobalActionDetector getInstance() {
         synchronized (GlobalActionDetector.class) {
-            if(instance == null) {
+            if (instance == null) {
                 instance = new GlobalActionDetector();
             }
             return instance;
@@ -48,6 +52,7 @@ public class GlobalActionDetector {
 
     /**
      * 启动监听器
+     * 请务必在调用其它方法前调用本方法
      */
     public void startGlobalActionDetector() {
         myTimer = new MyTimer();
@@ -56,7 +61,10 @@ public class GlobalActionDetector {
                 .addAWTEventListener(event -> myTimer.pause(), eventMask);
     }
 
-    public interface Event{
+    /**
+     * 当时间改变时发生的事件
+     */
+    public interface Event {
         void handle(int days);
     }
 
@@ -82,18 +90,18 @@ public class GlobalActionDetector {
             count = 0;
 
             Integer temp = StorageHelper.getInstance().getConfig("days");
-            days = temp == null? 0:temp;
+            days = temp == null ? 0 : temp;
             tempTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     count++;
-                    if(count >= 5 && !isStart) {
+                    if (count >= 5 && !isStart) {
                         MyTimer.this.restart();
                         count = 0;
                         isStart = true;
                     }
                 }
-            },0, 100);
+            }, 0, 100);
         }
 
         void start() {
@@ -103,11 +111,11 @@ public class GlobalActionDetector {
                 @Override
                 public void run() {
                     days++;
-                    eventList.forEach(event -> {
+                    eventList.forEach(event -> {        //处理时间改变的事件
                         event.handle(days);
                     });
                 }
-            },10*1000,10*1000);
+            }, 10 * 1000, 10 * 1000);
         }
 
         void pause() {

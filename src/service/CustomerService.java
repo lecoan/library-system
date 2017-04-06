@@ -24,7 +24,7 @@ public class CustomerService {
     private static CustomerService instance;
     private int studentNum;
     private int teacherNum;
-    private Map<String,Customer> customerMap;
+    private Map<String, Customer> customerMap;
     private Set<Customer> customers;
     private GlobalActionDetector detector;
     private StorageHelper helper;
@@ -33,21 +33,21 @@ public class CustomerService {
     private CustomerService() {
         helper = StorageHelper.getInstance();
         Integer temp = helper.getConfig("studentNum");
-        studentNum = temp == null?0:temp;
+        studentNum = temp == null ? 0 : temp;
         temp = helper.getConfig("teacherNum");
-        teacherNum = temp == null?0:temp;
+        teacherNum = temp == null ? 0 : temp;
         customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
-        if(customers == null) customers = new HashSet<>();
+        if (customers == null) customers = new HashSet<>();
         customerMap = new HashMap<>();
-        for(Customer customer:customers) {
-            customerMap.put(customer.getId(),customer);
+        for (Customer customer : customers) {
+            customerMap.put(customer.getId(), customer);
         }
 
         detector = GlobalActionDetector.getInstance();
     }
 
     public static CustomerService getInstance() {
-        if(instance != null) {
+        if (instance != null) {
             return instance;
         }
         return instance = new CustomerService();
@@ -62,17 +62,17 @@ public class CustomerService {
     }
 
     private void saveAllCustomers() {
-        StorageHelper.WriteObjectToFile(customers,USER_DATA_PATH);
+        StorageHelper.WriteObjectToFile(customers, USER_DATA_PATH);
     }
 
     public void saveCustomer(Customer customer) {
-        if(customer instanceof Student) {
+        if (customer instanceof Student) {
             studentNum++;
         } else {
             teacherNum++;
         }
         customers.add(customer);
-        customerMap.put(customer.getId(),customer);
+        customerMap.put(customer.getId(), customer);
     }
 
     public void freezeCustomer(Customer customer) {
@@ -80,16 +80,15 @@ public class CustomerService {
     }
 
     /**
-     *
      * @param customer
      * @param isbn
-     * @return  CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
+     * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
-        if(customer.isFreezed() || customer.getMaxNumForRent()<=customer.getBookedMap().size()) {
+        if (customer.isFreezed() || customer.getMaxNumForRent() <= customer.getBookedMap().size()) {
             return CustomerConstance.RENT_TO_MUCH;
         }
-        customer.getBookedMap().put(isbn,GlobalActionDetector.getInstance().getDays());
+        customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }
 
@@ -99,28 +98,27 @@ public class CustomerService {
      * @return 借阅时间
      */
     public int returnBook(Customer customer, String isbn) {
-        if(customer.getWantedSet().contains(isbn)) {
+        if (customer.getWantedSet().contains(isbn)) {
             customer.getWantedSet().remove(isbn);
         }
         int rentTime = customer.getBookedMap().remove(isbn);
-        if(detector.getDays()-rentTime>30){
+        if (detector.getDays() - rentTime > 30) {
 
-            customer.setDelayedTimes(customer.getDelayedTimes()+1);
+            customer.setDelayedTimes(customer.getDelayedTimes() + 1);
         }
         return rentTime;
     }
 
     /**
-     *
      * @param customer
      * @return 当用户被冻结时返回true
      */
-    public boolean caculateMoney(Customer customer){
+    public boolean caculateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            customer.setMoney(customer.getMoney()-(detector.getDays()-rentTime));
+            customer.setMoney(customer.getMoney() - (detector.getDays() - rentTime));
         });
-        if(customer.getMoney()<CustomerConstance.MAX_DEBT){
+        if (customer.getMoney() < CustomerConstance.MAX_DEBT) {
             customer.setFreezed(true);
             return true;
         }
@@ -129,7 +127,7 @@ public class CustomerService {
 
     protected void finalize() throws Throwable {
         saveAllCustomers();
-        helper.saveConfig("teacherNum",teacherNum);
-        helper.saveConfig("studentNum",studentNum);
+        helper.saveConfig("teacherNum", teacherNum);
+        helper.saveConfig("studentNum", studentNum);
     }
 }

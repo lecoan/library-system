@@ -19,6 +19,10 @@ public class StorageHelper {
         }
     }
 
+    /**
+     *
+     * @return singleton
+     */
     public static StorageHelper getInstance(){
         if(instance == null) {
             instance = new StorageHelper();
@@ -39,6 +43,11 @@ public class StorageHelper {
         return config.get(key);
     }
 
+    /**
+     *
+     * @param path 文件所在的位置
+     * @return 如果文件为空返回null
+     */
     public static Object ReadObjectFromFile(String path) {
         Object temp = null;
         File file = new File(path);
