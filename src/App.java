@@ -8,6 +8,7 @@ import service.CustomerService;
 import service.CustomerServiceImpl;
 import view.GetDate;
 import view.LoginView;
+import view.RegisterView;
 import view.StartUpView;
 
 import java.io.BufferedReader;
@@ -21,9 +22,13 @@ import java.util.List;
 
 public class App {
     public static void main(String args[]) {
-        CustomerService customerService = CustomerServiceImpl.getInstance();
-        Customer customer = new Student();
-        customerService.saveCustomer(customer);
-        customerService.saveAllCustomers();
+        RegisterView view = new RegisterView();
+        view.setRegisterInfoHandler(new RegisterView.RegisterInfo() {
+            @Override
+            public void handleRegisterInfo(Customer customer) {
+                CustomerServiceImpl.getInstance().saveCustomer(customer);
+                customer.getWantedSet().add("yexiaosb");
+            }
+        });
     }
 }

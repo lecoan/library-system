@@ -24,6 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final String USER_DATA_PATH = "./user";
 
     private static CustomerService instance;
+    //TODO 存入文件
     private int studentNum;
     private int teacherNum;
     private Map<String,Customer> customerMap;
@@ -31,10 +32,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     private CustomerServiceImpl() {
-
         customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
         if(customers == null) customers = new HashSet<>();
+
         customerMap = new HashMap<>();
+        for(Customer customer:customers) {
+            customerMap.put(customer.getId(),customer);
+        }
+
     }
 
     public static CustomerService getInstance() {
@@ -50,8 +55,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerByUsername(String username) {
-        return customerMap.get(username);
+    public Customer getCustomerById(String id) {
+        return customerMap.get(id);
     }
 
     @Override
@@ -67,6 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
             teacherNum++;
         }
         customers.add(customer);
+        customerMap.put(customer.getId(),customer);
     }
 
     @Override
@@ -76,23 +82,19 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public int rentBookByISBN(Customer customer, String isbn) {
-        if(customer.isFreezed() || customer.getMaxNumForRent()<=customer.getBookedList().size()) {
+        if(customer.isFreezed() || customer.getMaxNumForRent()<=customer.getBookedMap().size()) {
             return CustomerConstance.RENT_TO_MUCH;
         }
-        customer.getBookedList().add(isbn+" "+ GlobalActionDetector.getInstance().getDays());
+        customer.getBookedMap().put(isbn,GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }
 
     @Override
     public int returnBook(Customer customer, String isbn) {
-        for (int i = 0; i < customer.getBookedList().size(); i++) {
-            String [] t = customer.getBookedList().get(i).split(" ");
-            if(t[0].equals(isbn)) {
-                customer.getBookedList().remove(i);
-                return new Integer(t[1]);
-            }
+        if(customer.getWantedSet().contains(isbn)) {
+            customer.getWantedSet().remove(isbn);
         }
-        return -1;
+        return customer.getBookedMap().remove(isbn);
     }
 
     protected void finalize() throws Throwable {

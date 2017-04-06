@@ -16,7 +16,7 @@ public interface CustomerService {
 
     Set<Customer> getAllCustomers();
 
-    Customer getCustomerByUsername(String username);
+    Customer getCustomerById(String username);
 
     void saveAllCustomers();
 

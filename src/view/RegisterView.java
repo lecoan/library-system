@@ -3,6 +3,7 @@ package view;
 import bean.Customer;
 import bean.Student;
 import bean.Teacher;
+import service.CustomerServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ import java.awt.event.MouseEvent;
  描　述: 注册界面
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public class RegisterView {
+public class RegisterView extends JFrame{
 
     private JButton submit;
     private JRadioButton teacher;
@@ -32,12 +33,12 @@ public class RegisterView {
     private RegisterInfo info;
 
     private boolean isTeacher;
-    private boolean isOK;
+    private JLabel idLabel;
+    private Box idBox;
+    private Box colleageBox;
 
     public RegisterView() {
-
         initView();
-
         addListener();
 
     }
@@ -46,16 +47,18 @@ public class RegisterView {
         teacher.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                hideCompent();
                 isTeacher = true;
+                changeCompent();
+                idBox.setVisible(true);
             }
         });
 
-        teacher.addActionListener(new ActionListener() {
+        student.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showCompent();
                 isTeacher = false;
+                changeCompent();
+                idBox.setVisible(true);
             }
         });
 
@@ -63,6 +66,9 @@ public class RegisterView {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(!judge()) {
+                    return;
+                }
+                if(CustomerServiceImpl.getInstance().getCustomerById(userID.getText())!=null){
                     return;
                 }
                 Customer customer = null;
@@ -83,43 +89,87 @@ public class RegisterView {
         });
     }
 
+    private void changeCompent() {
+        if(isTeacher){
+            idLabel.setText("gong hao");
+            colleageBox.setVisible(false);
+        } else {
+            idLabel.setText("xue hao");
+            colleageBox.setVisible(true);
+        }
+    }
+
     private boolean judge() {
-        return false;
+        boolean isOk = true;
+        if(username.getText().isEmpty() || !username.getText().matches("^[A-Za-z0-9]{4,40}$")) {
+            isOk = false;
+        }
+        String pw = new String(password.getPassword());
+        if(pw.isEmpty() || !pw.matches("^[A-Za-z0-9]{4,40}$")) {
+            isOk = false;
+        }
+        if(!userID.getText().matches("^\\d{10}$")){
+            isOk = false;
+        }
+        return isOk;
     }
 
     private void initView() {
 
-        JFrame frame = new JFrame("register");
-        frame.setSize(500,500);
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        JPanel panel = new JPanel(new FlowLayout());
-        username = new JTextField(40);
-        password = new JPasswordField(40);
-        userID = new JTextField(40);
+        setTitle("register");
+        setSize(500,500);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        JPanel panel = new JPanel();
 
+        Box mainBox = Box.createVerticalBox();
+        Box nameBox = Box.createHorizontalBox();
+        Box passwordBox = Box.createHorizontalBox();
+        Box typeBox = Box.createHorizontalBox();
+        idBox = Box.createHorizontalBox();
+        colleageBox = Box.createHorizontalBox();
+        mainBox.add(nameBox);
+        mainBox.add(passwordBox);
+        mainBox.add(typeBox);
+        mainBox.add(idBox);
+        mainBox.add(colleageBox);
+
+        idLabel = new JLabel();
+
+        username = new JTextField(30);
+        nameBox.add(new JLabel("username:"));
+        nameBox.add(Box.createHorizontalStrut(20));
+        nameBox.add(username);
+        password = new JPasswordField(30);
+        passwordBox.add(new JLabel("password:"));
+        nameBox.add(Box.createHorizontalStrut(20));
+        passwordBox.add(password);
+        userID = new JTextField(30);
+        idBox.add(idLabel);
+        idBox.add(userID);
         teacher = new JRadioButton("teacher");
         student = new JRadioButton("student");
-
+        ButtonGroup group = new ButtonGroup();
+        group.add(teacher);
+        group.add(student);
+        typeBox.add(new JLabel("type"));
+        typeBox.add(teacher);
+        typeBox.add(student);
         clleages = new JComboBox<>();
         clleages.addItem("计算机学院");
         clleages.addItem("信息与通讯学院");
         clleages.addItem("电子学院");
         clleages.addItem("经济管理学院");
         clleages.addItem("艺术与传媒学院");
+        colleageBox.add(new JLabel("college"));
+        colleageBox.add(clleages);
 
-        ButtonGroup group = new ButtonGroup();
-        group.add(teacher);
-        group.add(student);
         submit = new JButton("register");
-
-        panel.add(username);
-        panel.add(password);
-        panel.add(userID);
-        panel.add(teacher);
-        panel.add(student);
-        panel.add(clleages);
-        panel.add(submit);
-        frame.setVisible(true);
+        mainBox.add(submit);
+        idBox.setVisible(false);
+        colleageBox.setVisible(false);
+        panel.add(mainBox);
+        setContentPane(panel);
+        setVisible(true);
     }
 
     public void setRegisterInfoHandler(RegisterInfo infoHandler) {
@@ -137,11 +187,4 @@ public class RegisterView {
 
     }
 
-    private void showCompent() {
-        clleages.setVisible(true);
-    }
-
-    private void hideCompent() {
-        clleages.setVisible(false);
-    }
 }
