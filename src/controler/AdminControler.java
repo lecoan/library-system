@@ -3,30 +3,27 @@ package controler;
 import bean.Book;
 import bean.BookPathTable;
 import service.BookOperate;
-import sun.swing.BakedArrayList;
 import view.AdminView;
-import service.BookOperate.*;
 import view.FindBookFrame;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
+import java.util.ListIterator;
 
 /**
  * Created by ghoskno on 3/29/17.
  */
 public class AdminControler {
-    private List<BookPathTable> bookList = null;
+    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
     FindBookFrame findBookFrame = FindBookFrame.getInstance();
     AdminView adminPanel = null;
 
     public AdminControler() {
         adminPanel = new AdminView();
+        findBook();
         adminPanel.addBookFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -38,7 +35,6 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 //查找图书按钮点击
                 findBookFrame.showFindBookField();
-                findBook();
             }
         });
         findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
@@ -75,7 +71,7 @@ public class AdminControler {
         adminPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
     }
     private void showBookItem(int row){
-        showBookItem(bookOperate.getBookbyIsbn(bookList.get(row).getIsbn()));
+        showBookItem(bookOperate.getBookbyIsbn(curBookList.get(row).getIsbn()));
     }
     private void addBook(){
         //监听确认添加按钮事件
@@ -91,14 +87,37 @@ public class AdminControler {
         newBook.setIsbn();
         bookOperate.addBook(newBook);
     }
+    private void checkList(List<BookPathTable> extraBookList){
+        if(curBookList != null) {
+            curBookList.retainAll(extraBookList);
+            if(curBookList != null) {
+                findBookFrame.showBookList(curBookList);
+                addConditionLabel(findBookFrame.searchBook.getText());
+            }
+            else
+                findBookFrame.findErrAlert("没有找到符合条件图书！");
+        }
+        else{
+            findBookFrame.showBookList(extraBookList);
+            curBookList = extraBookList;
+            addConditionLabel(findBookFrame.searchBook.getText());
+        }
+    }
+    private void addConditionLabel(String con){
+        findBookFrame.ConditionsLabel.setText(findBookFrame.ConditionsLabel.getText() +"  \"  "+ con + "  \"  ");
+        findBookFrame.ConditionsLabel.invalidate();
+    }
+    private void clearConditionLabel(){
+        findBookFrame.ConditionsLabel.setText("");
+    }
     private void findBook(){
         //处理查找书的按钮点击事件
         findBookFrame.findBookByAuthor.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
-                if (bookList != null)
-                    findBookFrame.showBookList(bookList);
+                List<BookPathTable> extraBookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
+                if (extraBookList != null )
+                    checkList(extraBookList);
                 else
                     findBookFrame.findErrAlert("【作者：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -106,9 +125,9 @@ public class AdminControler {
         findBookFrame.findBookByName.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
-                if (bookList != null)
-                    findBookFrame.showBookList(bookList);
+                List<BookPathTable> extraBookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
+                if (extraBookList != null)
+                    checkList(extraBookList);
                 else
                     findBookFrame.findErrAlert("【书名：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -116,9 +135,9 @@ public class AdminControler {
         findBookFrame.findBookByKind.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
-                if (bookList != null)
-                    findBookFrame.showBookList(bookList);
+                List<BookPathTable> extraBookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
+                if (extraBookList != null)
+                    checkList(extraBookList);
                 else
                     findBookFrame.findErrAlert("【种类：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -126,9 +145,9 @@ public class AdminControler {
         findBookFrame.findBookByPublisher.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                bookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
-                if (bookList != null)
-                    findBookFrame.showBookList(bookList);
+                List<BookPathTable> extraBookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
+                if (extraBookList != null)
+                    checkList(extraBookList);
                 else
                     findBookFrame.findErrAlert("【出版社：" + findBookFrame.searchBook.getText() + "】");
             }
@@ -138,11 +157,20 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
                 if (bookItem != null) {
+                    curBookList = null;
 //                    System.out.print(bookItem);
                     showBookItem(bookItem);
                 }
                 else
                     findBookFrame.findErrAlert("【ISBN ： " + findBookFrame.searchBook.getText() + "】");
+            }
+        });
+        findBookFrame.clearBookBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                curBookList = null;
+                findBookFrame.showBookList(curBookList);
+                clearConditionLabel();
             }
         });
     }
