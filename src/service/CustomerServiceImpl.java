@@ -7,6 +7,7 @@ import bean.Teacher;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import constance.CustomerConstance;
+import listener.GlobalActionDetector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,11 +38,24 @@ public class CustomerServiceImpl implements CustomerService {
     //TODO 更该代码
     private static final String USER_DATA_PATH = "./user.xml";
 
+    private static CustomerService instance;
+
     private List<Customer> customerList = new LinkedList<>();
 
     private boolean hasInit = false;
 
     private static  final String [] indexes = {"username","password","booked-list","wanted-list","is-freezed","type","delayed-times"};
+
+    private CustomerServiceImpl() {
+    }
+
+    @Override
+    public CustomerService getInstance() {
+        if(instance != null) {
+            return instance;
+        }
+        return instance = new CustomerServiceImpl();
+    }
 
     @Override
     public List<Customer> getAllCustomers() {
@@ -202,18 +216,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public int rentBookByName(Customer customer, String name) {
-        List<Book> bookList = new BookOperate().getBookbyName(name);
-        if(bookList.size()!=0){
-            if(customer.getMaxNumForRent() > customer.getBookedList().size()) {
-                Book book = bookList.get(0);
-                customer.getBookedList().add(book.getIsbn());
-                return CustomerConstance.RENT_SUCCESSFULL;
-            }
+    public int rentBookByISBN(Customer customer, String isbn) {
+        if(customer.isFreezed() || customer.getMaxNumForRent()<=customer.getBookedList().size()) {
             return CustomerConstance.RENT_TO_MUCH;
         }
-        customer.getWantedList().add(name);
-        return CustomerConstance.RENT_HAS_NO_BOOK;
+        customer.getBookedList().add(isbn+" "+ GlobalActionDetector.getInstance().getDays());
+        return CustomerConstance.RENT_SUCCESSFULL;
+    }
+
+    @Override
+    public int returnBook(Customer customer, String isbn) {
+        for (int i = 0; i < customer.getBookedList().size(); i++) {
+            String [] t = customer.getBookedList().get(i).split(" ");
+            if(t[0].equals(isbn)) {
+                customer.getBookedList().remove(i);
+                return new Integer(t[1]);
+            }
+        }
+        return -1;
     }
 
     @Override

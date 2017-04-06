@@ -14,6 +14,8 @@ import java.util.List;
  ******************************************************************/
 public interface CustomerService {
 
+    CustomerService getInstance();
+
     List<Customer> getAllCustomers();
 
     Customer getCustomerByUsername(String username);
@@ -27,6 +29,14 @@ public interface CustomerService {
     /**
      * @return 0 if  operation executed successfully
      */
-    int rentBookByName(Customer customer, String name);
+    int rentBookByISBN(Customer customer, String isbn);
+
+    /**
+     *
+     * @param customer
+     * @param isbn
+     * @return 借阅时间
+     */
+    int returnBook(Customer customer, String isbn);
 
 }

@@ -16,8 +16,6 @@ public class CustomerConstance {
 
     public static final int RENT_SUCCESSFULL = 0;
 
-    public static final int RENT_HAS_NO_BOOK = 1;
-
     public static final int RENT_TO_MUCH = 2;
 
 
