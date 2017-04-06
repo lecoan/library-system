@@ -105,7 +105,7 @@ public class AdminControler {
         newBook.setIsbn();
         if(curBookItem != null)
             bookOperate.deleteBook(curBookItem.getIsbn());
-        bookOperate.addBook(newBook);
+        bookOperate.addBook(newBook,new Integer(bookInfo[4]));
         bookOperate.SetBooknum(newBook.getIsbn(),new Integer(bookInfo[4]));
 //        bookOperate.
         curBookItem = null;
