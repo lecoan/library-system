@@ -273,7 +273,12 @@ public class BookOperate {
     }
 
     public List<BookPathTable> getRanklist() {
-        return ranklist;
+        if(ranklist != null) {
+            List<BookPathTable> copylist = new ArrayList<>();
+            copylist.addAll(ranklist);
+            return copylist;
+        }
+        return null;
     }
 
     public Book getBookbyIsbn(String Isbn) {
@@ -296,25 +301,25 @@ public class BookOperate {
                     return templist.get(j);
                 }
             }
-        }//如果找到就从相应文件中读取图书并返回
+        }//如果找到就从相应文件中读取图书并返回,但是修改这本图书并不会影响文件中的图书
         else {
             System.out.println("not found the book!");
         }
         return null;
     }
 
-    public boolean addBook(Book newbook) {
+    public boolean addBook(Book newbook, int num) {
         String isbn = new String();
         isbn = newbook.getIsbn();
         BookPathTable index = getBookpathtable(isbn);
         if (index != null) {
-            index.setTotalnum(index.getTotalnum() + 1);
-            index.setRestnum(index.getRestnum() + 1);
-            booklist.remove(isbn);
-            booklist.put(isbn, index);
-
+            int addnum = num - index.getTotalnum();
+            index.setTotalnum(index.getTotalnum() + addnum);
+            index.setRestnum(index.getRestnum() + addnum);
+            //booklist.remove(isbn);
+            //booklist.put(isbn, index);
         }
-        //首先会在booklist里面找这本书
+        //首先会在booklist里面找这本书,因为传递的是引用，所以修改会影响原位置的数据
         // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
         else {
             String path = new String();
@@ -323,8 +328,8 @@ public class BookOperate {
             index1.setBookpath(path);
             index1.setIsbn(isbn);
             index1.setBorrownum(0);
-            index1.setTotalnum(1);
-            index1.setRestnum(1);
+            index1.setTotalnum(num);
+            index1.setRestnum(num);
             booklist.put(isbn, index1);//将新的图书索引加入booklist
             AddNewIndextoTable(writersbooklist, newbook.getWritername(), index1);
             AddNewIndextoTable(publishersbooklist, newbook.getPublishername(), index1);
@@ -341,41 +346,30 @@ public class BookOperate {
         BookPathTable index = getBookpathtable(isbn);
         if (index != null) {
             Book temp = getBookbyIsbn(isbn);
-            if (index.getRestnum() >= 1) {//
-                index.setRestnum(index.getRestnum() - 1);
-                if (index.getTotalnum() >= 2) {
-                    index.setTotalnum(index.getTotalnum() - 1);
-                    System.out.println("only delete from num!");
-                    booklist.remove(isbn);
-                    booklist.put(isbn, index);
-                    Book book = getBookbyIsbn(isbn);
-                    UpdateTable(book);
-                } else {
-                    List<Book> templist = new ArrayList<>();
-                    templist = (List<Book>) ReadObjectFromFile(index.getBookpath());
-                    for (int j = 0; j < templist.size(); ++j) {
-                        if (templist.get(j).getIsbn().equals(isbn)) {
-                            templist.remove(j);
-                            break;
-                        }
-                    }//从文件删除
-                    WriteObjectToFile(templist, index.getBookpath());
-                    booklist.remove(isbn);
-                    //还需要从排行榜删除
-                    DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
-                    DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
-                    DeleteFromTable(samekindbooklist, temp.getKind(), isbn);
-                    DeleteFromTable(samenamebooklist, temp.getName(), isbn);
+            List<Book> templist = new ArrayList<>();
+            templist = (List<Book>) ReadObjectFromFile(index.getBookpath());
+            for (int j = 0; j < templist.size(); ++j) {
+                if (templist.get(j).getIsbn().equals(isbn)) {
+                    templist.remove(j);
+                    break;
                 }
-                totalbooknum--;
-                restbooknum--;
-            } else {
+            }//从文件删除
+            WriteObjectToFile(templist, index.getBookpath());
+            booklist.remove(isbn);
+            //还需要从排行榜删除
+            DeleteFromTable(writersbooklist, temp.getWritername(), isbn);
+            DeleteFromTable(publishersbooklist, temp.getPublishername(), isbn);
+            DeleteFromTable(samekindbooklist, temp.getKind(), isbn);
+            DeleteFromTable(samenamebooklist, temp.getName(), isbn);
+            totalbooknum--;
+            restbooknum--;
+        }
+        else {
                 System.out.println("cannot delete, not return!");
                 return false;
-            }
         }
         return false;//图书不存在无法删除。
-    }//首先找到这本书，然后检查图书的剩余数量与总数量，从而判断这本书是否可以删除
+    }                 //首先找到这本书，然后检查图书的剩余数量与总数量，从而判断这本书是否可以删除
 
     public int GetTotalBooknum() {
         return totalbooknum;
