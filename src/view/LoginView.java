@@ -31,7 +31,6 @@ public class LoginView extends JFrame{
         Box idBox = Box.createHorizontalBox();
         Box pwBox = Box.createHorizontalBox();
 
-        //TODO 添加提示
         JLabel idLabel = new JLabel("id: ");
         JLabel pwLabel = new JLabel("password: ");
         id = new JTextField(30);

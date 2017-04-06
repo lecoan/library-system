@@ -3,10 +3,9 @@ package view;
 import bean.Customer;
 import bean.Student;
 import bean.Teacher;
-import service.CustomerServiceImpl;
+import service.CustomerService;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -68,7 +67,7 @@ public class RegisterView extends JFrame{
                 if(!judge()) {
                     return;
                 }
-                if(CustomerServiceImpl.getInstance().getCustomerById(userID.getText())!=null){
+                if(CustomerService.getInstance().getCustomerById(userID.getText())!=null){
                     return;
                 }
                 Customer customer = null;

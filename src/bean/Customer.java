@@ -20,6 +20,7 @@ public abstract class Customer implements Serializable{
     private String type;
     private String id;
     private int maxNumForRent;
+    private float money;
 
     Customer(){
         bookedMap = new TreeMap<>();
@@ -96,5 +97,13 @@ public abstract class Customer implements Serializable{
 
     public void setMaxNumForRent(int maxNumForRent) {
         this.maxNumForRent = maxNumForRent;
+    }
+
+    public float getMoney() {
+        return money;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
     }
 }

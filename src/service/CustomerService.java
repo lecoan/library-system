@@ -1,40 +1,135 @@
 package service;
 
 import bean.Customer;
+import bean.Student;
+import constance.CustomerConstance;
+import listener.GlobalActionDetector;
+import util.StorageHelper;
 
-import java.util.Set;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 /******************************************************************
  创建人: 杨翔
  日　期: 2017/3/8
  修改人:
  日　期:
- 描　述: 提供Customers的基本操作
+ 描　述: 对user的数据操作的封装
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public interface CustomerService {
+public class CustomerService {
 
-    Set<Customer> getAllCustomers();
+    private static final String USER_DATA_PATH = "./user";
 
-    Customer getCustomerById(String username);
+    private static CustomerService instance;
+    private int studentNum;
+    private int teacherNum;
+    private Map<String,Customer> customerMap;
+    private Set<Customer> customers;
+    private GlobalActionDetector detector;
+    private StorageHelper helper;
 
-    void saveAllCustomers();
 
-    void saveCustomer(Customer customer);
+    private CustomerService() {
+        helper = StorageHelper.getInstance();
+        Integer temp = helper.getConfig("studentNum");
+        studentNum = temp == null?0:temp;
+        temp = helper.getConfig("teacherNum");
+        teacherNum = temp == null?0:temp;
+        customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
+        if(customers == null) customers = new HashSet<>();
+        customerMap = new HashMap<>();
+        for(Customer customer:customers) {
+            customerMap.put(customer.getId(),customer);
+        }
 
-    void freezeCustomer(Customer customer);
+        detector = GlobalActionDetector.getInstance();
+    }
 
-    /**
-     * @return 0 if  operation executed successfully
-     */
-    int rentBookByISBN(Customer customer, String isbn);
+    public static CustomerService getInstance() {
+        if(instance != null) {
+            return instance;
+        }
+        return instance = new CustomerService();
+    }
+
+    public Set<Customer> getAllCustomers() {
+        return customers;
+    }
+
+    public Customer getCustomerById(String id) {
+        return customerMap.get(id);
+    }
+
+    private void saveAllCustomers() {
+        StorageHelper.WriteObjectToFile(customers,USER_DATA_PATH);
+    }
+
+    public void saveCustomer(Customer customer) {
+        if(customer instanceof Student) {
+            studentNum++;
+        } else {
+            teacherNum++;
+        }
+        customers.add(customer);
+        customerMap.put(customer.getId(),customer);
+    }
+
+    public void freezeCustomer(Customer customer) {
+        customer.setFreezed(true);
+    }
 
     /**
      *
      * @param customer
      * @param isbn
+     * @return  CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
+     */
+    public int rentBookByISBN(Customer customer, String isbn) {
+        if(customer.isFreezed() || customer.getMaxNumForRent()<=customer.getBookedMap().size()) {
+            return CustomerConstance.RENT_TO_MUCH;
+        }
+        customer.getBookedMap().put(isbn,GlobalActionDetector.getInstance().getDays());
+        return CustomerConstance.RENT_SUCCESSFULL;
+    }
+
+    /**
+     * @param customer
+     * @param isbn
      * @return 借阅时间
      */
-    int returnBook(Customer customer, String isbn);
+    public int returnBook(Customer customer, String isbn) {
+        if(customer.getWantedSet().contains(isbn)) {
+            customer.getWantedSet().remove(isbn);
+        }
+        int rentTime = customer.getBookedMap().remove(isbn);
+        if(detector.getDays()-rentTime>30){
 
+            customer.setDelayedTimes(customer.getDelayedTimes()+1);
+        }
+        return rentTime;
+    }
+
+    /**
+     *
+     * @param customer
+     * @return 当用户被冻结时返回true
+     */
+    public boolean caculateMoney(Customer customer){
+        customer.getBookedMap().forEach((s, integer) -> {
+            int rentTime = customer.getBookedMap().get(s);
+            customer.setMoney(customer.getMoney()-(detector.getDays()-rentTime));
+        });
+        if(customer.getMoney()<CustomerConstance.MAX_DEBT){
+            customer.setFreezed(true);
+            return true;
+        }
+        return false;
+    }
+
+    protected void finalize() throws Throwable {
+        saveAllCustomers();
+        helper.saveConfig("teacherNum",teacherNum);
+        helper.saveConfig("studentNum",studentNum);
+    }
 }

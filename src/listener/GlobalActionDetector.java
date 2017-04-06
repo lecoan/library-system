@@ -1,11 +1,13 @@
 package listener;
 
+import util.StorageHelper;
+
 import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.io.*;
-import java.util.InputMismatchException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -21,8 +23,14 @@ public class GlobalActionDetector {
 
     private volatile static GlobalActionDetector instance;
     private MyTimer myTimer;
+    private List<Event> eventList;
 
     private GlobalActionDetector(){
+        eventList = new ArrayList<>();
+    }
+
+    public void addEvent(Event event) {
+        eventList.add(event);
     }
 
     /**
@@ -45,12 +53,11 @@ public class GlobalActionDetector {
         myTimer = new MyTimer();
         myTimer.start();
         Toolkit.getDefaultToolkit()
-                .addAWTEventListener(new AWTEventListener() {
-                    @Override
-                    public void eventDispatched(AWTEvent event) {
-                        myTimer.pause();
-                    }
-                }, eventMask);
+                .addAWTEventListener(event -> myTimer.pause(), eventMask);
+    }
+
+    public interface Event{
+        void handle(int days);
     }
 
     /**
@@ -64,8 +71,6 @@ public class GlobalActionDetector {
      * 对Timer封装进行计数
      */
     private class MyTimer {
-
-        private final File file;
         private Timer dayTimer;
         private Timer tempTimer;
         private int count = 0;
@@ -76,9 +81,8 @@ public class GlobalActionDetector {
             tempTimer = new Timer();
             count = 0;
 
-
-            file = new File("./config");
-            readfile();
+            Integer temp = StorageHelper.getInstance().getConfig("days");
+            days = temp == null? 0:temp;
             tempTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -99,7 +103,9 @@ public class GlobalActionDetector {
                 @Override
                 public void run() {
                     days++;
-                    //System.out.println(days);
+                    eventList.forEach(event -> {
+                        event.handle(days);
+                    });
                 }
             },10*1000,10*1000);
         }
@@ -117,52 +123,6 @@ public class GlobalActionDetector {
 
         int getDays() {
             return days;
-        }
-
-        private void readfile() {
-            if(!file.exists()){
-                days = 0;
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    System.out.println("can not create file");
-                }
-            }
-            else {
-                FileReader reader = null;
-                try {
-                    reader = new FileReader(file);
-                    char [] t = new char[8];
-                    if(reader.read(t)!=-1) {
-                        String s =new String(t);
-                        days = new Integer(s);
-                    } else {
-                        days = 0;
-                    }
-
-
-                } catch (FileNotFoundException e) {
-                    System.out.println("can not find file");
-                    days = 0;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if(reader!=null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            FileWriter writer = new FileWriter(file);
-            writer.write(days);
-            writer.close();
         }
     }
 }

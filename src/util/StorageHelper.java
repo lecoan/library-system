@@ -1,11 +1,43 @@
 package util;
 
 import java.io.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by lecoan on 2017/4/6.
  */
 public class StorageHelper {
+
+    private Map<String, Integer> config;
+
+    private static StorageHelper instance;
+    private StorageHelper(){
+        config = (Map<String, Integer>) StorageHelper.ReadObjectFromFile("./config");
+        if(config == null) {
+            config = new TreeMap<>();
+        }
+    }
+
+    public static StorageHelper getInstance(){
+        if(instance == null) {
+            instance = new StorageHelper();
+        }
+        return instance;
+    }
+
+    public void saveConfig(String key, int value){
+        config.put(key,value);
+    }
+
+    /**
+     *
+     * @param key
+     * @return 如果不存在返回null
+     */
+    public Integer getConfig(String key){
+        return config.get(key);
+    }
 
     public static Object ReadObjectFromFile(String path) {
         Object temp = null;
@@ -51,4 +83,9 @@ public class StorageHelper {
             e.printStackTrace();
         }
     }//只能写入一个对象，之后写入的会把之前写入的对象覆盖
+
+    @Override
+    protected void finalize() throws Throwable {
+        StorageHelper.WriteObjectToFile(config,"./config");
+    }
 }

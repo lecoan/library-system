@@ -18,5 +18,6 @@ public class CustomerConstance {
 
     public static final int RENT_TO_MUCH = 2;
 
+    public static final float MAX_DEBT = -20;
 
 }
