@@ -48,7 +48,7 @@ public class AdminView {    //展示admin主面板
         mainCon.add(initLabelPanel(),BorderLayout.NORTH);
         bodyBox.add(initBookPanel());
         bodyBox.add(initUserPanel());
-        initErrAlert();
+        findBookFrame.initErrAlert();
 //        bodyBox.add(initLogPanel());
         adminFrame.setLocation(300,200);
         adminFrame.setVisible(true);
@@ -161,20 +161,7 @@ public class AdminView {    //展示admin主面板
         bookInfoFrame.setLocation(300,100);
         bookInfoFrame.setVisible(true);
     }
-    private void initErrAlert(){
-        findBookFrame.errFrame.setSize(300,80);
-        findBookFrame.errFrame.setResizable(false);
-        findBookFrame.errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        findBookFrame.errMsg.setSize(200,80);
-        //修改字体颜色
-        Box errBox = Box.createHorizontalBox();
-        errBox.add(Box.createHorizontalGlue());
-        errBox.add(findBookFrame.errMsg);
-        errBox.add(Box.createHorizontalGlue());
-        findBookFrame.errFrame.getContentPane().add(errBox);
-        findBookFrame.errFrame.setVisible(false);
 
-    }
 
     public String[] submitBook(){
         String[] bookInfo = {bookNameInput.getText(),bookPublisherInput.getText(),bookAuthorInput.getText(),bookKindInput.getText(),bookNumInput.getText(),bookDesInput.getText()};

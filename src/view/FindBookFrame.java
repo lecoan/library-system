@@ -98,7 +98,20 @@ public class FindBookFrame {
         findBookFrame.setLocation(300,100);
         findBookFrame.setVisible(true);
     }
+    public void initErrAlert(){
+        errFrame.setSize(300,80);
+        errFrame.setResizable(false);
+        errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        errMsg.setSize(200,80);
+        //修改字体颜色
+        Box errBox = Box.createHorizontalBox();
+        errBox.add(Box.createHorizontalGlue());
+        errBox.add(errMsg);
+        errBox.add(Box.createHorizontalGlue());
+        errFrame.getContentPane().add(errBox);
+        errFrame.setVisible(false);
 
+    }
     public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList){
         //显示书的列表
         String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
