@@ -16,7 +16,7 @@ import java.util.List;
 
 public class App {
     public static void main(String args[]) {
-        GlobalActionDetector.getInstance().startGlobalActionDetector();
+        //GlobalActionDetector.getInstance().startGlobalActionDetector();
         BookOperate oo = BookOperate.getInstance();
         
         try {
