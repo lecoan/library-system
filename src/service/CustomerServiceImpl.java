@@ -236,7 +236,6 @@ public class CustomerServiceImpl implements CustomerService {
         return -1;
     }
 
-    @Override
     protected void finalize() throws Throwable {
         saveAllCustomers();
     }

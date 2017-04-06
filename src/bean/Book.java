@@ -1,6 +1,8 @@
 package bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Book implements Serializable {
     private String name;
@@ -10,12 +12,21 @@ public class Book implements Serializable {
     private String introduction;
     private String kind;//
     private String isbn;
-    //private List<BorrowMemory> borrowlist;//
-    private int numbers;
-    private int restnumber;
+    private List<BorrowMemory> borrowmemory;
 
-    //public void add
-    public void Book() {}
+    public void addBorrowMemory(BorrowMemory b) {
+        if(borrowmemory == null) {
+            borrowmemory = new ArrayList<>();
+            borrowmemory.add(b);
+        }
+        else borrowmemory.add(b);
+    }//如果借阅历史不为空，就不需要初始化list对象，否则要先初始化list再添加借阅历史。
+
+    public List<BorrowMemory> getBorrowmemory() {
+        return borrowmemory;
+    }
+
+    public Book() {}
     public String getKind() {
         return kind;
     }
@@ -32,8 +43,9 @@ public class Book implements Serializable {
         this.introduction = introduction;
     }
 
-    public void setIsbn() {
-        this.isbn = this.publishername + "-" + this.writername + "-" + this.name;
+    public String setIsbn() {
+        this.isbn = this.publishername + "-" + this.writername + "-" + this.name + "-" + this.kind;
+        return isbn;
     }
     public void setWritername(String writername) {
         this.writername = writername;
@@ -50,14 +62,6 @@ public class Book implements Serializable {
         return publishername;
     }
 
-    public void setRestnumber(int restnumber) {
-        this.restnumber = restnumber;
-    }
-
-    public int getRestnumber() {
-        return restnumber;
-    }
-
     public String getIsbn() {
         return isbn;
     }
@@ -70,9 +74,6 @@ public class Book implements Serializable {
         return boughttime;
     }
 
-    public int getNumbers() {
-        return numbers;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -82,7 +83,4 @@ public class Book implements Serializable {
         this.boughttime = boughttime;
     }
 
-    public void setNumbers(int numbers) {
-        this.numbers = numbers;
-    }
 }

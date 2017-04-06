@@ -3,12 +3,13 @@ package bean;
 import constance.CustomerConstance;
 import service.CustomerService;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by yangxiang on 17-3-8.
  */
-public abstract class Customer {
+public abstract class Customer implements Serializable{
 
     private String username;
 

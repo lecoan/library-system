@@ -99,7 +99,7 @@ public class GlobalActionDetector {
                 @Override
                 public void run() {
                     days++;
-                    System.out.println(days);
+                    //System.out.println(days);
                 }
             },10*1000,10*1000);
         }
