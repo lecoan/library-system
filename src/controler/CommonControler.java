@@ -2,10 +2,12 @@ package controler;
 
 import bean.Book;
 import bean.BookPathTable;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import view.AddPlaceHolder;
 import view.ErrAlert;
 import view.FindBookFrame;
+import view.GetDate;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,6 +23,8 @@ public class CommonControler {  //通用控制器
     FindBookFrame findBookFrame = FindBookFrame.getInstance();  //获取搜索图书面板单例
     BookOperate bookOperate = BookOperate.getInstance();        //获取图书操作器单例
     ErrAlert errAlert = ErrAlert.getInstance();
+    GlobalActionDetector globalActionDetector = GlobalActionDetector.getInstance();
+    private GetDate getDate = new GetDate();
     public List<BookPathTable> curBookList = null;              //设置当前查看图书列表为空
     public CommonControler() {
 
@@ -49,7 +53,8 @@ public class CommonControler {  //通用控制器
     private void clearConditionLabel(){     //清空当前所有查找条件
         findBookFrame.ConditionsLabel.setText("");
     }
-    public void findBook(){     //查找图书面板各项按钮点击事件监听
+    public void findBook(){
+        //查找图书面板各项按钮点击事件监听
         //处理通过作者查找书的按钮点击事件
         findBookFrame.findBookByAuthor.addMouseListener(new MouseAdapter() {
             @Override
@@ -115,5 +120,10 @@ public class CommonControler {  //通用控制器
                 clearConditionLabel();
             }
         });
+    }
+
+    public void setDate(){
+        System.out.print(getDate.getDate(globalActionDetector.getDays()));
+
     }
 }

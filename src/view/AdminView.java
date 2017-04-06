@@ -39,6 +39,16 @@ public class AdminView {    //展示admin主面板
     public JPanel userPanel = new JPanel();
     public JTextField searchUserField = new JTextField();
     public JButton searchUserBtn = new JButton("搜索");
+    public JLabel userName = new JLabel("");
+    public JLabel userStuNum = new JLabel("");
+    public JLabel userCollege = new JLabel("");
+    public JLabel userStatus = new JLabel("");
+    public JTextField userLimit= new JTextField(1);
+    public JButton changeLimitBtn = new JButton("修改权限");
+    public JButton lookBookListBtn= new JButton("查看借书情况");
+    public JButton unfreezeBtn = new JButton("解冻");
+
+    public JLabel timeLabel = new JLabel();
 
     public AdminView(){
         //初始化界面
@@ -195,8 +205,7 @@ public class AdminView {    //展示admin主面板
         Box labelBox = Box.createHorizontalBox();
         JLabel adminLabel = new JLabel("Admin");
         JButton signOutBtn = new JButton("退出");
-        JLabel timeLabel = new JLabel();
-        //修改当前时间
+
         labelBox.add(adminLabel);
         labelBox.add(Box.createHorizontalStrut(300));
         labelBox.add(timeLabel);
@@ -210,7 +219,7 @@ public class AdminView {    //展示admin主面板
         int bookTotalNum = BookOperate.getInstance().GetTotalBooknum();
         int bookRestNum = BookOperate.getInstance().GetTotalRestbooknum();
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(51,255,255));
+//        panel.setBackground(new Color(51,255,255));
         Box containBox = Box.createVerticalBox();   //主容器盒子
 
         Box bookNumBox =  Box.createHorizontalBox();//书本总数盒子
@@ -263,7 +272,7 @@ public class AdminView {    //展示admin主面板
         return panel;
     }
     private JPanel initUserPanel(){
-        userPanel.setBackground(new Color(51,255,204));
+//        userPanel.setBackground(new Color(51,255,204));
         Box UserBox = Box.createVerticalBox();
 
         Box stuUserNumBox = Box.createHorizontalBox();
@@ -293,6 +302,52 @@ public class AdminView {    //展示admin主面板
         placeholderHandle.addingPlaceholder(searchUserField,placeholderText);
         searchUserField.setSize(100,20);
 
+        Box UserInfoBox = Box.createVerticalBox();
+        Box userNameBox = Box.createHorizontalBox();
+        Box userStuNumBox = Box.createHorizontalBox();
+        Box userCollegeBox = Box.createHorizontalBox();
+        Box userStatusBox = Box.createHorizontalBox();
+        Box userLimitBox = Box.createHorizontalBox();
+
+        JLabel userNameLabel = new JLabel("姓名：");
+        JLabel userStuNumLabel = new JLabel("学号：");
+        JLabel userCollegeLabel = new JLabel("学院：");
+        JLabel userStatusLabel = new JLabel("状态：");
+        JLabel userLimitLabel = new JLabel("权限：");
+
+        userNameBox.add(userNameLabel);
+        userNameBox.add(Box.createGlue());
+        userNameBox.add(userName);
+
+        userStuNumBox.add(userStuNumLabel);
+        userStuNumBox.add(Box.createGlue());
+        userStuNumBox.add(userStuNum);
+
+        userCollegeBox.add(userCollegeLabel);
+        userCollegeBox.add(Box.createGlue());
+        userCollegeBox.add(userCollege);
+
+        userStatusBox.add(userStatusLabel);
+        userStatusBox.add(Box.createGlue());
+        userStatusBox.add(userStatus);
+
+        userLimitBox.add(userLimitLabel);
+        userLimitBox.add(Box.createHorizontalStrut(150));
+        userLimitBox.add(userLimit);
+
+        UserInfoBox.add(userNameBox);
+        UserInfoBox.add(userStuNumBox);
+        UserInfoBox.add(userCollegeBox);
+        UserInfoBox.add(userStatusBox);
+        UserInfoBox.add(userLimitBox);
+
+        Box UserBtnBox = Box.createHorizontalBox();
+        UserBtnBox.add(changeLimitBtn);
+        UserBtnBox.add(Box.createGlue());
+        UserBtnBox.add(lookBookListBtn);
+        UserBtnBox.add(Box.createGlue());
+        UserBtnBox.add(unfreezeBtn);
+
         findUserBox.add(searchUserField);
         findUserBox.add(Box.createHorizontalStrut(30));
         findUserBox.add(searchUserBtn);
@@ -305,9 +360,12 @@ public class AdminView {    //展示admin主面板
         UserBox.add(borrowUserNumBox);
         UserBox.add(Box.createVerticalStrut(20));
         UserBox.add(findUserBox);
+        UserBox.add(Box.createVerticalStrut(20));
+        UserBox.add(UserInfoBox);
+        UserBox.add(Box.createVerticalStrut(20));
+        UserBox.add(UserBtnBox);
         UserBox.setBackground(new Color(30,30,30));
         userPanel.add(UserBox);
-
 
         return userPanel;
     }

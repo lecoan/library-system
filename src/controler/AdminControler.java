@@ -136,12 +136,11 @@ public class AdminControler {
     private void findUser(){
         System.out.print(adminPanel.searchUserField.getText());
         if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
-            errAlert.findErrAlert(300,500,"找不到用户" + adminPanel.searchUserField.getText());
+            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+150,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
         }
     }
     public static void main(String[] args){
         AdminControler test = new AdminControler();
     }
-
 
 }
