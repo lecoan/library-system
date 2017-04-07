@@ -1,5 +1,6 @@
 package view;
 
+import bean.Book;
 import bean.BookPathTable;
 
 import javax.swing.*;
@@ -25,6 +26,9 @@ public class FindBookFrame {
     public JButton clearBookBtn = new JButton("清除搜索");
     public JTextField searchBook = new JTextField();    //输入搜索框
     public BookJTable bookListTable = new BookJTable(0,0);
+
+    public java.util.List<BookPathTable> curBookList = null;              //设置当前查看图书列表为空
+    public Book curBookItem = null;    //正在查看的图书
 
 
     public void FindBookFrame(){

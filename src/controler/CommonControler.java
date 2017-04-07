@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class CommonControler {  //通用控制器
     ErrAlert errAlert = ErrAlert.getInstance();
     GlobalActionDetector globalActionDetector = GlobalActionDetector.getInstance();
     private GetDate getDate = new GetDate();
-    public List<BookPathTable> curBookList = null;              //设置当前查看图书列表为空
+//    public List<BookPathTable> curBookList = null;              //设置当前查看图书列表为空
     public void setFindBookFrame(FindBookFrame findFrame){
 
     }
@@ -42,10 +43,13 @@ public class CommonControler {  //通用控制器
 
     private void checkList(List<BookPathTable> extraBookList,FindBookFrame findBookFrame){
         //检查当前图书列表与新加条件查询所得图书列表集合关系
-        if(curBookList != null) {   //当前列表不为空，显示列表集合交集
-            curBookList.retainAll(extraBookList);
-            if(curBookList != null) {
-                findBookFrame.showBookList(curBookList,findBookFrame.Frame);
+        if(findBookFrame.curBookList != null && findBookFrame.curBookList.size() != 0) {   //当前列表不为空，显示列表集合交集
+            List<BookPathTable> tempList = new ArrayList<>();
+            tempList.addAll(findBookFrame.curBookList);
+            tempList.retainAll(extraBookList);
+            if(tempList != null && tempList.size() != 0) {
+                findBookFrame.curBookList.retainAll(extraBookList);
+                findBookFrame.showBookList(findBookFrame.curBookList,findBookFrame.Frame);
                 addConditionLabel(findBookFrame.searchBook.getText(),findBookFrame);
             }
             else
@@ -53,7 +57,7 @@ public class CommonControler {  //通用控制器
         }
         else{       //当前列表为空，显示新查询列表
             findBookFrame.showBookList(extraBookList,findBookFrame.Frame);
-            curBookList = extraBookList;
+            findBookFrame.curBookList = extraBookList;
             addConditionLabel(findBookFrame.searchBook.getText(),findBookFrame);
         }
     }
@@ -114,7 +118,7 @@ public class CommonControler {  //通用控制器
         findBookFrame.clearBookBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                curBookList = null;
+                findBookFrame.curBookList = null;
                 findBookFrame.showBookList(null,findBookFrame.Frame);
                 findBookFrame.searchBook.setText("");
                 placeholderHandle.addingPlaceholder(findBookFrame.searchBook,"请输入书名/书号/作者/出版社/类别进行搜索");
@@ -126,7 +130,7 @@ public class CommonControler {  //通用控制器
         findBookFrame.Frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                curBookList = null;
+                findBookFrame.curBookList = null;
                 findBookFrame.showBookList(null,findBookFrame.Frame);
                 clearConditionLabel(findBookFrame);
             }

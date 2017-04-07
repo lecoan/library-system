@@ -5,13 +5,18 @@ import bean.BookPathTable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import controler.UserControler;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.Graphics;
+
 
 /**
  * Created by TaBoo on 2017/3/25.
  */
 
 public class UserView implements ActionListener{
+    public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
     JLabel jl1 =new JLabel();
     JLabel jl2 =new JLabel();
@@ -29,20 +34,36 @@ public class UserView implements ActionListener{
     public UserView(){
         JFrame frame = new JFrame("USER");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setBounds(300,300,350,120);
-        JPanel panel1 = new JPanel(new FlowLayout());
-        JPanel panel2 = new JPanel(new FlowLayout());
+        frame.setBounds(300,300,850,500);
+        JPanel panel = new JPanel();
+        JPanel panel1 = new JPanel();
+        panel1.setBounds(0,0,700,80);
+        JPanel panel2 = new JPanel();
+        JLabel JL = new JLabel("ASDFASFASDF");
+        /*String[] rankedList = {"lal","asdfasf"};
+        JList borrowRateRank = new JList(rankedList);
+        borrowRateRank.setBorder(BorderFactory.createTitledBorder("借阅次数最高的二十本书"));
+        borrowRateRank.setVisibleRowCount(8);
+        panel2.add(borrowRateRank);*/
+        panel2.setBounds(0,100,300,300);
+        JL.setBounds(0,0,100,100);
+        JPanel panel3 = new ImagePanel();
+        panel3.setBounds(480,175,200,185);
+        panel.setLayout(null);
         panel1.setLayout(null);
         panel2.setLayout(null);
 
 
-        jl1.setBounds(20,10,60,25);
+        jl1.setBounds(20,10,100,25);
         jl1.setText("用户名");
-        jl2.setBounds(80,10,60,25);
+        jl1.setFont(new Font("宋体",Font.BOLD, 16));
+        jl2.setBounds(120,10,100,25);
         jl2.setText("asdf");
-        jl3.setBounds(20,35,60,25);
+        jl2.setFont(new Font("宋体",Font.BOLD, 16));
+        jl3.setBounds(20,35,100,25);
         jl3.setText("账户余额");
-        jl4.setBounds(80,35,60,25);
+        jl3.setFont(new Font("宋体",Font.BOLD, 16));
+        jl4.setBounds(120,35,100,25);
         jl4.setText("20.00");
         panel1.add(jl1);
         panel1.add(jl2);
@@ -51,17 +72,23 @@ public class UserView implements ActionListener{
 
         jb1.setText("搜索");
         jb1.setBounds(200,10,100,25);
+        jb1.setBorder(BorderFactory.createRaisedBevelBorder());
         jb1.setActionCommand("find");
         jb1.addActionListener(this);
         jb1.setVisible(true);
         jb2.setText("个人信息");
         jb2.setBounds(200,40,100,25);
+        jb2.setBorder(BorderFactory.createRaisedBevelBorder());
         jb2.setActionCommand("info");
         jb2.addActionListener(this);
         panel1.add(jb1);
         panel1.add(jb2);
 
-        frame.setContentPane(panel1);
+        panel.add(panel1);
+        panel.add(panel2);
+        panel.add(panel3);
+
+        frame.setContentPane(panel);
         frame.setVisible(true);
     }
 
@@ -76,15 +103,19 @@ public class UserView implements ActionListener{
             jpn.setLayout(null);
 
             jb3.setBounds(45,10,160,25);
+            jb3.setBorder(BorderFactory.createRaisedBevelBorder());
             jb3.setActionCommand("在借");
             jb3.addActionListener(this);
             jb4.setBounds(45,55,160,25);
+            jb4.setBorder(BorderFactory.createRaisedBevelBorder());
             jb4.setActionCommand("预借");
             jb4.addActionListener(this);
             jb5.setBounds(45,100,160,25);
+            jb5.setBorder(BorderFactory.createRaisedBevelBorder());
             jb5.setActionCommand("历史");
             jb5.addActionListener(this);
             jb6.setBounds(45,145,160,25);
+            jb6.setBorder(BorderFactory.createRaisedBevelBorder());
             jb6.setActionCommand("充值界面");
             jb6.addActionListener(this);
             jpn.add(jb3);
@@ -99,8 +130,8 @@ public class UserView implements ActionListener{
             JFrame frame = new JFrame("在借图书");
             frame.setBounds(700,300,600,400);
 
-            String[] columnNames = {"A", "B", "C","D"};
-            Object[][] data = {{"12","23","38","234"},{"2","34","4","A"},{"AS","23","234","3"}};
+            String[] columnNames = {"A", "B", "C","D","e"};
+            Object[][] data = {{"12","23","38","234","1"},{"2","2","34","4","A"},{"AS","23","2","234","3"}};
             JTable table = new JTable(data,columnNames);
             table.setBackground(Color.white);
 
@@ -199,12 +230,11 @@ public class UserView implements ActionListener{
     }
 
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
-        JFrame frame = new JFrame();
-        frame.setBounds(500,500,500,450);
+        bookInfoFrame.setBounds(500,500,500,450);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(null);
-        frame.setContentPane(jpn);
-        frame.setVisible(true);
+        bookInfoFrame.setContentPane(jpn);
+        bookInfoFrame.setVisible(true);
 
         JLabel bookNameLabel = new JLabel("书名 ：  " + bookItem.getName());
         bookNameLabel.setBounds(100,20,300,20);
@@ -237,6 +267,22 @@ public class UserView implements ActionListener{
         jpn.add(bookRestNumLabel);
         jpn.add(bookKindLabel);
         jpn.add(bookDesLabel);
+    }
+
+    class ImagePanel extends JPanel {
+
+        public void paint(Graphics g) {
+
+            super.paint(g);
+
+// ImageIcon icon = new ImageIcon("D:\\1.jpg");
+
+            ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\1234.gif");
+
+            g.drawImage(icon.getImage(), 0, 0, 200, 185, this);
+
+        }
+
     }
 //    public static void main(String args[]) {
 //        UserView s = new UserView();
