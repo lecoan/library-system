@@ -3,6 +3,7 @@ package controler;
 import bean.Book;
 import service.BookOperate;
 import service.CustomerService;
+import service.Log;
 import view.AdminView;
 import view.ErrAlert;
 import view.FindBookFrame;
@@ -13,6 +14,7 @@ import java.awt.event.*;
  * Created by ghoskno on 3/29/17.
  */
 public class AdminControler {
+    Log log = Log.getInstance();
     BookOperate bookOperate = BookOperate.getInstance();
     CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
@@ -58,6 +60,7 @@ public class AdminControler {
         if(adminPanel.findBookFrame.curBookItem != null)
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
+        
     }
     private void findUser(AdminView adminPanel){
         System.out.print(adminPanel.searchUserField.getText());

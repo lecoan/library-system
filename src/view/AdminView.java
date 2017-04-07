@@ -54,12 +54,12 @@ public class AdminView {    //展示admin主面板
 
     public AdminView(){
         //初始化界面
-        adminFrame.setSize(600,400);
+        adminFrame.setSize(400,600);
         adminFrame.setResizable(false);
         adminFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         Container mainCon = adminFrame.getContentPane();
-        Box bodyBox = Box.createHorizontalBox();
+        Box bodyBox = Box.createVerticalBox();
         mainCon.add(bodyBox,BorderLayout.CENTER);
 
         mainCon.add(initLabelPanel(),BorderLayout.NORTH);
@@ -209,7 +209,7 @@ public class AdminView {    //展示admin主面板
         JButton signOutBtn = new JButton("退出");
 
         labelBox.add(adminLabel);
-        labelBox.add(Box.createHorizontalStrut(300));
+        labelBox.add(Box.createHorizontalStrut(200));
         labelBox.add(timeLabel);
         labelBox.add(Box.createHorizontalStrut(30));
         labelBox.add(signOutBtn);
@@ -221,12 +221,10 @@ public class AdminView {    //展示admin主面板
         int bookTotalNum = BookOperate.getInstance().GetTotalBooknum();
         int bookRestNum = BookOperate.getInstance().GetTotalRestbooknum();
         JPanel panel = new JPanel();
-//        panel.setBackground(new Color(51,255,255));
         Box containBox = Box.createVerticalBox();   //主容器盒子
 
         Box bookNumBox =  Box.createHorizontalBox();//书本总数盒子
         JLabel bookNumLabel = new JLabel("当前书本总数：");
-
         JLabel bookNum = new JLabel("" + bookTotalNum);
         bookNumBox.add(bookNumLabel);
         bookNumBox.add(Box.createGlue());
@@ -246,18 +244,11 @@ public class AdminView {    //展示admin主面板
         borrowRateBox.add(Box.createGlue());
         borrowRateBox.add(borrowRate);
 
-        String[] rankedList = {"lal","asdfasf"};
-        JList borrowRateRank = new JList(rankedList);
-        borrowRateRank.setBorder(BorderFactory.createTitledBorder("借阅次数最高的二十本书"));
-        borrowRateRank.setVisibleRowCount(8);
-
-
-
         addBookButton.setSize(50,20);
         addBookButton.setSize(50,20);
         Box buttonBox = Box.createHorizontalBox();
         buttonBox.add(addBookButton);
-        buttonBox.add(Box.createHorizontalStrut(40));
+        buttonBox.add(Box.createHorizontalStrut(100));
         buttonBox.add(findBookButton);
 
         containBox.add(Box.createVerticalStrut(10));
@@ -266,8 +257,6 @@ public class AdminView {    //展示admin主面板
         containBox.add(borrowRateBox);
         containBox.add(Box.createVerticalStrut(20));
         containBox.add(borrowedBookNumBox);
-        containBox.add(Box.createVerticalStrut(20));
-        containBox.add(new JScrollPane(borrowRateRank));
         containBox.add(Box.createVerticalStrut(20));
         containBox.add(buttonBox);
         panel.add(containBox);
@@ -366,9 +355,7 @@ public class AdminView {    //展示admin主面板
         UserBox.add(UserInfoBox);
         UserBox.add(Box.createVerticalStrut(20));
         UserBox.add(UserBtnBox);
-        UserBox.setBackground(new Color(30,30,30));
         userPanel.add(UserBox);
-
         return userPanel;
     }
     private JPanel initLogPanel(){
