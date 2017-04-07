@@ -2,6 +2,8 @@ package view;
 
 import bean.Book;
 import bean.BookPathTable;
+import javafx.scene.layout.Border;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -17,10 +19,6 @@ import java.awt.Graphics;
 
 public class UserView implements ActionListener{
     public FindBookFrame findBookFrame = FindBookFrame.getInstance();
-    JLabel jl1 =new JLabel();
-    JLabel jl2 =new JLabel();
-    JLabel jl3 =new JLabel();
-    JLabel jl4 =new JLabel();
 
     public JButton jb1 = new JButton();
     public JButton jb2 = new JButton();
@@ -28,102 +26,167 @@ public class UserView implements ActionListener{
     public JButton jb4 = new JButton("预借图书");
     public JButton jb5 = new JButton("借阅历史");
     public JButton jb6 = new JButton("账户充值");
-    public JButton jb7 = new JButton("充值");
+    public JButton jb7 = new JButton("确认");
 
     public UserView(){
         JFrame frame = new JFrame("USER");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setBounds(300,300,850,500);
-        JPanel panel = new JPanel();
+        frame.setBounds(300,300,800,500);
+        frame.setLayout(null);
+
         JPanel panel1 = new JPanel();
-        panel1.setBounds(0,0,700,80);
         JPanel panel2 = new JPanel();
-        JLabel JL = new JLabel("ASDFASFASDF");
-        /*String[] rankedList = {"lal","asdfasf"};
-        JList borrowRateRank = new JList(rankedList);
-        borrowRateRank.setBorder(BorderFactory.createTitledBorder("借阅次数最高的二十本书"));
-        borrowRateRank.setVisibleRowCount(8);
-        panel2.add(borrowRateRank);*/
-        panel2.setBounds(0,100,300,300);
-        JL.setBounds(0,0,100,100);
         JPanel panel3 = new ImagePanel();
-        panel3.setBounds(480,175,200,185);
-        panel.setLayout(null);
+        JPanel panel4 = new JPanel();
+        JPanel panel5 = new JPanel();
+        JPanel panel6 = new JPanel(){
+            protected void paintComponent(Graphics g){
+                ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\2.jpg");
+                Image imgg = icon.getImage();
+                g.drawImage(imgg,0,0,200,80,icon.getImageObserver());
+            }
+        };
+
+
+        panel1.setBounds(0,0,800,100);
+        panel1.setBackground(Color.PINK);
         panel1.setLayout(null);
+
+        panel2.setBounds(0,100,200,300);
+        panel2.setBackground(Color.WHITE);
         panel2.setLayout(null);
 
+        panel3.setBounds(600,180,200,220);
+        //panel3.setBackground(Color.LIGHT_GRAY);
+        panel3.setLayout(null);
 
-        jl1.setBounds(20,10,100,25);
-        jl1.setText("用户名");
-        jl1.setFont(new Font("宋体",Font.BOLD, 16));
-        jl2.setBounds(120,10,100,25);
-        jl2.setText("asdf");
-        jl2.setFont(new Font("宋体",Font.BOLD, 16));
-        jl3.setBounds(20,35,100,25);
-        jl3.setText("账户余额");
-        jl3.setFont(new Font("宋体",Font.BOLD, 16));
-        jl4.setBounds(120,35,100,25);
-        jl4.setText("20.00");
+        panel4.setBounds(200,100,400,300);
+        panel4.setBackground(Color.PINK);
+        panel4.setLayout(null);
+
+        panel5.setBounds(0,400,800,100);
+        panel5.setBackground(Color.PINK);
+        panel5.setLayout(null);
+
+        panel6.setBounds(600,100,200,80);
+
+
+        panel1.add(jb3);
+        panel1.add(jb4);
+        panel1.add(jb5);
+        JLabel jl1 =new JLabel();
+        JLabel jl2 =new JLabel();
         panel1.add(jl1);
         panel1.add(jl2);
-        panel1.add(jl3);
-        panel1.add(jl4);
+        JLabel jl4 =new JLabel();
+        jl1.setBounds(30,10,200,50);
+        jl1.setText("基本信息");
+        jl1.setForeground(Color.WHITE);
+        jl1.setFont(new Font("宋体",Font.BOLD, 30));
+        jl2.setBounds(337,10,200,50);
+        jl2.setText("图书信息");
+        jl2.setForeground(Color.WHITE);
+        jl2.setFont(new Font("宋体",Font.BOLD, 30));
 
-        jb1.setText("搜索");
-        jb1.setBounds(200,10,100,25);
+        jb3.setText("在借书籍");
+        jb3.setBounds(200,70,120,30);
+        javax.swing.border.Border b1 =BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b2 = BorderFactory.createEtchedBorder();
+        jb3.setBorder(BorderFactory.createCompoundBorder(b1,b2));
+        jb3.setBackground(Color.WHITE);
+        jb3.setForeground(Color.PINK);
+        jb3.setActionCommand("在借");
+        jb3.addActionListener(this);
+
+        jb4.setText("预借书籍");
+        jb4.setBounds(340,70,120,30);
+        javax.swing.border.Border b3 =BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b4 = BorderFactory.createEtchedBorder();
+        jb4.setBorder(BorderFactory.createCompoundBorder(b3,b4));
+        jb4.setBackground(Color.WHITE);
+        jb4.setForeground(Color.PINK);
+        jb4.setActionCommand("预借");
+        jb4.addActionListener(this);
+
+        jb5.setText("历史记录");
+        jb5.setBounds(480,70,120,30);
+        javax.swing.border.Border b5 =BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b6 = BorderFactory.createEtchedBorder();
+        jb5.setBorder(BorderFactory.createCompoundBorder(b5,b6));
+        jb5.setBackground(Color.WHITE);
+        jb5.setForeground(Color.PINK);
+        jb5.setActionCommand("历史");
+        jb5.addActionListener(this);
+//        jb2.setText("个人信息");
+//        jb2.setBounds(20,40,100,25);
+//        jb2.setBorder(BorderFactory.createRaisedBevelBorder());
+//        jb2.setActionCommand("info");
+//        jb2.addActionListener(this);
+
+        panel2.add(jb6);
+        JLabel mjl1 = new JLabel("学号");
+        JLabel mjl2 = new JLabel("学院");
+        JLabel mjl3 = new JLabel("在借本书");
+        JLabel mjl4 = new JLabel("剩余本数");
+        JLabel mjl5 = new JLabel("账户余额");
+        JLabel mjl11 = new JLabel("学号");
+        JLabel mjl22 = new JLabel("学院");
+        JLabel mjl33 = new JLabel("在借本书");
+        JLabel mjl44 = new JLabel("剩余本数");
+        JLabel mjl55 = new JLabel("账户余额");
+        panel2.add(mjl1);
+        panel2.add(mjl2);
+        panel2.add(mjl3);
+        panel2.add(mjl4);
+        panel2.add(mjl5);
+        panel2.add(mjl11);
+        panel2.add(mjl22);
+        panel2.add(mjl33);
+        panel2.add(mjl44);
+        panel2.add(mjl55);
+        mjl1.setBounds(10,20,100,30);
+        mjl1.setFont(new Font("宋体",Font.BOLD, 20));
+        mjl2.setBounds(10,70,100,30);
+        mjl2.setFont(new Font("宋体",Font.BOLD, 20));
+        mjl3.setBounds(10,120,100,30);
+        mjl3.setFont(new Font("宋体",Font.BOLD, 20));
+        mjl4.setBounds(10,170,100,30);
+        mjl4.setFont(new Font("宋体",Font.BOLD, 20));
+        mjl5.setBounds(10,220,100,30);
+        mjl5.setFont(new Font("宋体",Font.BOLD, 20));
+
+        jb6.setText("充值-。-");
+        jb6.setBounds(50,260,100,30);
+        javax.swing.border.Border b7 =BorderFactory.createLineBorder(Color.PINK);
+        javax.swing.border.Border b8 = BorderFactory.createEtchedBorder();
+        jb6.setBorder(BorderFactory.createCompoundBorder(b7,b8));
+        jb6.setBackground(Color.PINK);
+        jb6.setForeground(Color.WHITE);
+        jb6.setActionCommand("充值界面");
+        jb6.addActionListener(this);
+
+
+        panel3.add(jb1);
+        jb1.setBounds(0,0,200,220);
         jb1.setBorder(BorderFactory.createRaisedBevelBorder());
         jb1.setActionCommand("find");
         jb1.addActionListener(this);
-        jb1.setVisible(true);
-        jb2.setText("个人信息");
-        jb2.setBounds(200,40,100,25);
-        jb2.setBorder(BorderFactory.createRaisedBevelBorder());
-        jb2.setActionCommand("info");
-        jb2.addActionListener(this);
-        panel1.add(jb1);
-        panel1.add(jb2);
+        jb1.setBackground(Color.WHITE);
 
-        panel.add(panel1);
-        panel.add(panel2);
-        panel.add(panel3);
 
-        frame.setContentPane(panel);
+
+        frame.getContentPane().add(panel1);
+        frame.getContentPane().add(panel2);
+        frame.getContentPane().add(panel3);
+        frame.getContentPane().add(panel4);
+        frame.getContentPane().add(panel5);
+        frame.getContentPane().add(panel6);
         frame.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
         if("find".equals(e.getActionCommand())){
 
-        }
-        else if("info".equals(e.getActionCommand())){
-            JFrame frame = new JFrame("信息");
-            frame.setBounds(500,300,250,220);
-            JPanel jpn = new JPanel(new FlowLayout());
-            jpn.setLayout(null);
-
-            jb3.setBounds(45,10,160,25);
-            jb3.setBorder(BorderFactory.createRaisedBevelBorder());
-            jb3.setActionCommand("在借");
-            jb3.addActionListener(this);
-            jb4.setBounds(45,55,160,25);
-            jb4.setBorder(BorderFactory.createRaisedBevelBorder());
-            jb4.setActionCommand("预借");
-            jb4.addActionListener(this);
-            jb5.setBounds(45,100,160,25);
-            jb5.setBorder(BorderFactory.createRaisedBevelBorder());
-            jb5.setActionCommand("历史");
-            jb5.addActionListener(this);
-            jb6.setBounds(45,145,160,25);
-            jb6.setBorder(BorderFactory.createRaisedBevelBorder());
-            jb6.setActionCommand("充值界面");
-            jb6.addActionListener(this);
-            jpn.add(jb3);
-            jpn.add(jb4);
-            jpn.add(jb5);
-            jpn.add(jb6);
-
-            frame.setContentPane(jpn);
-            frame.setVisible(true);
         }
         else if("在借".equals(e.getActionCommand())) {
             JFrame frame = new JFrame("在借图书");
@@ -279,7 +342,7 @@ public class UserView implements ActionListener{
 
             ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\1234.gif");
 
-            g.drawImage(icon.getImage(), 0, 0, 200, 185, this);
+            g.drawImage(icon.getImage(), 0, 10, 200, 185, this);
 
         }
 
