@@ -44,7 +44,7 @@ public class Book implements Serializable {
     }
 
     public String setIsbn() {
-        this.isbn = this.publishername + "-" + this.writername + "-" + this.name + "-" + this.kind;
+        this.isbn = this.publishername + "&&" + this.writername + "&&" + this.name + "&&" + this.kind;
         return isbn;
     }
     public void setWritername(String writername) {

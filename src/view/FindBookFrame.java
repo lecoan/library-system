@@ -1,22 +1,21 @@
 package view;
 
+import bean.Book;
 import bean.BookPathTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.*;
 
 /**
  * Created by ghoskno on 4/2/17.
  */
 public class FindBookFrame {
+
     private AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
-    private volatile static FindBookFrame instance;
-    public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
+    public JFrame Frame = new JFrame("查找图书");   //查找图书面板frame
     //查找图书面板组件
     public JLabel ConditionsLabel = new JLabel();
     public JButton findBookByIsbn = new JButton("按书号搜索");
@@ -27,27 +26,21 @@ public class FindBookFrame {
     public JButton clearBookBtn = new JButton("清除搜索");
     public JTextField searchBook = new JTextField();    //输入搜索框
     public BookJTable bookListTable = new BookJTable(0,0);
-    public JFrame errFrame = new JFrame("Err!");
-    public JLabel errMsg = new JLabel();
 
-    private void FindBookFrame(){
-//        initFindBookField();
+    public java.util.List<BookPathTable> curBookList = null;              //设置当前查看图书列表为空
+    public Book curBookItem = null;    //正在查看的图书
+
+
+    public void FindBookFrame(){
+
     }
-    public static FindBookFrame getInstance(){
-        synchronized (FindBookFrame.class) {
-            if(instance == null) {
-                instance = new FindBookFrame();
-            }
-            return instance;
-        }
-    }
-    public void showFindBookField(){
+    public void showFindBookField(){    //初始查找图书面板
         String placeholderText = "请输入书名/书号/作者/出版社/类别进行搜索";
 
-        findBookFrame.setSize(700,400);
-        findBookFrame.setResizable(false);
-        findBookFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        findBookFrame.addWindowListener(new WindowAdapter() {
+        Frame.setSize(700,400);
+        Frame.setResizable(false);
+        Frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        Frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 searchBook.setText(placeholderText);
@@ -94,34 +87,24 @@ public class FindBookFrame {
 
         container.add(findBookBox,BorderLayout.CENTER);
         container.add(bookListBox,BorderLayout.SOUTH);
-        findBookFrame.setContentPane(container);
-        findBookFrame.setLocation(300,100);
-        findBookFrame.setVisible(true);
+        Frame.setContentPane(container);
+        Frame.setLocation(300,100);
+        showBookList(null, Frame);
+        Frame.setVisible(true);
     }
-    public void initErrAlert(){
-        errFrame.setSize(300,80);
-        errFrame.setResizable(false);
-        errFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        errMsg.setSize(200,80);
-        //修改字体颜色
-        Box errBox = Box.createHorizontalBox();
-        errBox.add(Box.createHorizontalGlue());
-        errBox.add(errMsg);
-        errBox.add(Box.createHorizontalGlue());
-        errFrame.getContentPane().add(errBox);
-        errFrame.setVisible(false);
-
-    }
-    public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList){
+    public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList,JFrame findBookFrame){
         //显示书的列表
         String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
-        if(bookList == null) {
+        if(bookList == null) {  //传入图书列表为null，清空当前列表
+            DefaultTableModel tableModel =  (DefaultTableModel)bookListTable.getModel();
+            tableModel.setDataVector((Object[][]) null,bookTableHead);
             bookListTable.setVisible(false);
+            findBookFrame.getContentPane().validate();
             return null;
         }
         Object[][] books = new Object[bookList.size()][5];
         for (int i = 0; i < bookList.size(); i++) {
-            String[] bookIsbn = bookList.get(i).getIsbn().split("-");
+            String[] bookIsbn = bookList.get(i).getIsbn().split("\\&\\&");
             Object[] bookInfo = {bookIsbn[2], bookIsbn[0], bookIsbn[1], bookIsbn[3], bookList.get(i).getRestnum()};
             books[i] = bookInfo;
         }
@@ -131,10 +114,5 @@ public class FindBookFrame {
         bookListTable.setVisible(true);
         findBookFrame.getContentPane().validate();
         return bookList;
-    }
-    public void findErrAlert(String err){
-        errMsg.setText("错误：找不到" + err);
-        errFrame.setLocation((int)(findBookFrame.getLocation().getX()+200),(int)(findBookFrame.getLocation().getY()+100));
-        errFrame.setVisible(true);
     }
 }

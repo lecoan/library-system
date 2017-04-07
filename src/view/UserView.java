@@ -18,7 +18,12 @@ import java.awt.Graphics;
  */
 
 public class UserView implements ActionListener{
-    public FindBookFrame findBookFrame = FindBookFrame.getInstance();
+    public JFrame bookInfoFrame = new JFrame("图书信息");
+    public FindBookFrame findBookFrame = new FindBookFrame();
+    JLabel jl1 =new JLabel();
+    JLabel jl2 =new JLabel();
+    JLabel jl3 =new JLabel();
+    JLabel jl4 =new JLabel();
 
     public JButton jb1 = new JButton();
     public JButton jb2 = new JButton();
@@ -292,12 +297,11 @@ public class UserView implements ActionListener{
     }
 
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
-        JFrame frame = new JFrame();
-        frame.setBounds(500,500,500,450);
+        bookInfoFrame.setBounds(500,500,500,450);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(null);
-        frame.setContentPane(jpn);
-        frame.setVisible(true);
+        bookInfoFrame.setContentPane(jpn);
+        bookInfoFrame.setVisible(true);
 
         JLabel bookNameLabel = new JLabel("书名 ：  " + bookItem.getName());
         bookNameLabel.setBounds(100,20,300,20);

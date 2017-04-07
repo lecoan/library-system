@@ -2,17 +2,18 @@ package view;
 
 import bean.Book;
 import bean.BookPathTable;
+import service.BookOperate;
+import service.CustomerService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.util.*;
 
 /**
  * Created by ghoskno on 3/25/17.
  */
 public class AdminView {    //展示admin主面板
     AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
-    FindBookFrame findBookFrame = FindBookFrame.getInstance();
 
     public JFrame adminFrame = new JFrame("Admin Panel");
 
@@ -20,9 +21,13 @@ public class AdminView {    //展示admin主面板
     public JButton findBookButton = new JButton("查找图书");
 
     public JFrame bookInfoFrame = new JFrame("图书信息");
+    public JButton bookUpdateBtn = new JButton("更新图书");
+    public JButton bookDeleBtn = new JButton("删除图书");
 
     public JFrame addBookFrame = new JFrame("添加图书");
-    public JButton submitAddBook = new JButton("添加");
+    public JButton modifyBookBtn = new JButton();   //添加/更新按钮
+
+    //添加图书面板中输入框
     private JTextField bookNameInput = new JTextField(15);
     private JTextField bookPublisherInput = new JTextField(15);
     private JTextField bookAuthorInput = new JTextField(15);
@@ -30,16 +35,28 @@ public class AdminView {    //展示admin主面板
     private JTextField bookKindInput= new JTextField(15);
     private JTextArea bookDesInput = new JTextArea(10,30);
 
+    //查找用户界面
     public JPanel userPanel = new JPanel();
     public JTextField searchUserField = new JTextField();
     public JButton searchUserBtn = new JButton("搜索");
+    public JLabel userName = new JLabel("");
+    public JLabel userStuNum = new JLabel("");
+    public JLabel userCollege = new JLabel("");
+    public JLabel userStatus = new JLabel("");
+    public JTextField userLimit= new JTextField(1);
+    public JButton changeLimitBtn = new JButton("修改权限");
+    public JButton lookBookListBtn= new JButton("查看借书情况");
+    public JButton unfreezeBtn = new JButton("解冻");
+
+    public FindBookFrame findBookFrame = new FindBookFrame();
+
+    public JLabel timeLabel = new JLabel();
 
     public AdminView(){
+        //初始化界面
         adminFrame.setSize(600,400);
         adminFrame.setResizable(false);
         adminFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        BorderLayout layout = new BorderLayout();
 
         Container mainCon = adminFrame.getContentPane();
         Box bodyBox = Box.createHorizontalBox();
@@ -48,15 +65,13 @@ public class AdminView {    //展示admin主面板
         mainCon.add(initLabelPanel(),BorderLayout.NORTH);
         bodyBox.add(initBookPanel());
         bodyBox.add(initUserPanel());
-        findBookFrame.initErrAlert();
-//        bodyBox.add(initLogPanel());
+//        Frame.initErrAlert();
         adminFrame.setLocation(300,200);
         adminFrame.setVisible(true);
-
     }
 
-    public void showAddBookField(){
-        //展示添加书本区域
+    public void showModifyBookField(Book bookItem, BookPathTable bookPath){
+        //展示添加//修改书本区域
         addBookFrame.setSize(500,450);
         addBookFrame.setResizable(false);
         addBookFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -65,38 +80,53 @@ public class AdminView {    //展示admin主面板
 
         bookNameLabel.setBounds(100,20,60,20);
         bookNameInput.setBounds(200,20,140,20);
-        placeholderHandle.addingPlaceholder(bookNameInput,"请输入书名");
 
         JLabel bookPublisherLabel = new JLabel("出版社名");
 
         bookPublisherLabel.setBounds(100,60,60,20);
         bookPublisherInput.setBounds(200,60,140,20);
-        placeholderHandle.addingPlaceholder(bookPublisherInput,"请输入出版社名");
 
         JLabel bookAuthorLabel = new JLabel("作者");
 
         bookAuthorLabel.setBounds(100,100,60,20);
         bookAuthorInput.setBounds(200,100,140,20);
-        placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
 
         JLabel bookNumLabel = new JLabel("数量");
         bookNumLabel.setBounds(100,140,60,20);
         bookNumInput.setBounds(200,140,140,20);
-        placeholderHandle.addingPlaceholder(bookNumInput,"请输入数量");
 
         JLabel bookKindLabel = new JLabel("种类");
         bookKindLabel.setBounds(100,180,60,20);
         bookKindInput.setBounds(200,180,140,20);
-        placeholderHandle.addingPlaceholder(bookKindInput,"请输入种类");
 
         JLabel bookDesLabel = new JLabel("简介");
         bookDesLabel.setBounds(100,220,60,20);
         bookDesInput.setBounds(100,250,300,100);
+        bookDesInput.setLineWrap(true);
 
-        submitAddBook.setBounds(220,360,80,20);
+        modifyBookBtn.setBounds(220,360,80,20);
 
         JPanel container = new JPanel();
         container.setSize(600,400);
+
+        if(bookItem != null){   //当前查看图书不为空，则为修改图书
+            bookNameInput.setText(bookItem.getName());
+            bookKindInput.setText(bookItem.getKind());
+            bookAuthorInput.setText(bookItem.getWritername());
+            bookDesInput.setText(bookItem.getIntroduction());
+            bookNumInput.setText("" + bookPath.getTotalnum());
+            bookPublisherInput.setText(bookItem.getPublishername());
+            modifyBookBtn.setText("更新");
+        }
+        else{   //当前查看图书为空，则为添加图书
+            placeholderHandle.addingPlaceholder(bookNameInput,"请输入书名");
+            placeholderHandle.addingPlaceholder(bookPublisherInput,"请输入出版社名");
+            placeholderHandle.addingPlaceholder(bookAuthorInput,"请输入作者");
+            placeholderHandle.addingPlaceholder(bookNumInput,"请输入数量");
+            placeholderHandle.addingPlaceholder(bookKindInput,"请输入种类");
+            bookDesInput.setText("");
+            modifyBookBtn.setText("添加");
+        }
 
         container.setLayout(null);
         container.add(bookNameInput);
@@ -111,13 +141,14 @@ public class AdminView {    //展示admin主面板
         container.add(bookKindInput);
         container.add(bookDesInput);
         container.add(bookDesLabel);
-        container.add(submitAddBook);
+        container.add(modifyBookBtn);
         addBookFrame.setContentPane(container);
         addBookFrame.setLocation(300,100);
         addBookFrame.setVisible(true);
 
     }
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
+        //显示图书详细信息界面
         bookInfoFrame.setSize(500,450);
         bookInfoFrame.setResizable(false);
         bookInfoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -146,6 +177,9 @@ public class AdminView {    //展示admin主面板
         System.out.print(bookItem.getIntroduction());
         bookDesLabel.setBounds(100,220,300,80);
 
+        bookUpdateBtn.setBounds(100,320,100,30);
+        bookDeleBtn.setBounds(300,320,100,30);
+
         JPanel container = new JPanel();
         container.setSize(600,400);
 
@@ -157,11 +191,12 @@ public class AdminView {    //展示admin主面板
         container.add(bookAuthorLabel);
         container.add(bookKindLabel);
         container.add(bookDesLabel);
+        container.add(bookUpdateBtn);
+        container.add(bookDeleBtn);
         bookInfoFrame.setContentPane(container);
         bookInfoFrame.setLocation(300,100);
         bookInfoFrame.setVisible(true);
     }
-
 
     public String[] submitBook(){
         String[] bookInfo = {bookNameInput.getText(),bookPublisherInput.getText(),bookAuthorInput.getText(),bookKindInput.getText(),bookNumInput.getText(),bookDesInput.getText()};
@@ -172,7 +207,7 @@ public class AdminView {    //展示admin主面板
         Box labelBox = Box.createHorizontalBox();
         JLabel adminLabel = new JLabel("Admin");
         JButton signOutBtn = new JButton("退出");
-        JLabel timeLabel = new JLabel("2017年4月1日");
+
         labelBox.add(adminLabel);
         labelBox.add(Box.createHorizontalStrut(300));
         labelBox.add(timeLabel);
@@ -183,27 +218,30 @@ public class AdminView {    //展示admin主面板
         return panel;
     }
     private JPanel initBookPanel(){
+        int bookTotalNum = BookOperate.getInstance().GetTotalBooknum();
+        int bookRestNum = BookOperate.getInstance().GetTotalRestbooknum();
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(51,255,255));
+//        panel.setBackground(new Color(51,255,255));
         Box containBox = Box.createVerticalBox();   //主容器盒子
 
         Box bookNumBox =  Box.createHorizontalBox();//书本总数盒子
         JLabel bookNumLabel = new JLabel("当前书本总数：");
-        JLabel bookNum = new JLabel("360020");
+
+        JLabel bookNum = new JLabel("" + bookTotalNum);
         bookNumBox.add(bookNumLabel);
         bookNumBox.add(Box.createGlue());
         bookNumBox.add(bookNum);
 
         Box borrowedBookNumBox =  Box.createHorizontalBox();//借出数量盒子
         JLabel borrowedBookNumLabel = new JLabel("未归还书本数：");
-        JLabel borrowedBookNum = new JLabel("3200");
+        JLabel borrowedBookNum = new JLabel("" + (bookTotalNum - bookRestNum));
         borrowedBookNumBox.add(borrowedBookNumLabel);
         borrowedBookNumBox.add(Box.createGlue());
         borrowedBookNumBox.add(borrowedBookNum);
 
         Box borrowRateBox =  Box.createHorizontalBox();//借出率盒子
         JLabel borrowRateLabel = new JLabel("图书借出率：");
-        JLabel borrowRate = new JLabel("30%");
+        JLabel borrowRate = new JLabel(((bookTotalNum - bookRestNum)/bookTotalNum * 100) + "%");
         borrowRateBox.add(borrowRateLabel);
         borrowRateBox.add(Box.createGlue());
         borrowRateBox.add(borrowRate);
@@ -236,19 +274,19 @@ public class AdminView {    //展示admin主面板
         return panel;
     }
     private JPanel initUserPanel(){
-        userPanel.setBackground(new Color(51,255,204));
+//        userPanel.setBackground(new Color(51,255,204));
         Box UserBox = Box.createVerticalBox();
 
         Box stuUserNumBox = Box.createHorizontalBox();
         JLabel stuUserNumLabel = new JLabel("当前学生用户总数：");
-        JLabel stuUserNum = new JLabel("3500");
+        JLabel stuUserNum = new JLabel("" + CustomerService.getInstance().getStudentNum());
         stuUserNumBox.add(stuUserNumLabel);
         stuUserNumBox.add(Box.createGlue());
         stuUserNumBox.add(stuUserNum);
 
         Box teacherUserNumBox = Box.createHorizontalBox();
         JLabel teacherUserNumLabel = new JLabel("当前教师用户总数：");
-        JLabel teacherUserNum = new JLabel("3500");
+        JLabel teacherUserNum = new JLabel("" + CustomerService.getInstance().getTeacherNum());
         teacherUserNumBox.add(teacherUserNumLabel);
         teacherUserNumBox.add(Box.createGlue());
         teacherUserNumBox.add(teacherUserNum);
@@ -266,6 +304,52 @@ public class AdminView {    //展示admin主面板
         placeholderHandle.addingPlaceholder(searchUserField,placeholderText);
         searchUserField.setSize(100,20);
 
+        Box UserInfoBox = Box.createVerticalBox();
+        Box userNameBox = Box.createHorizontalBox();
+        Box userStuNumBox = Box.createHorizontalBox();
+        Box userCollegeBox = Box.createHorizontalBox();
+        Box userStatusBox = Box.createHorizontalBox();
+        Box userLimitBox = Box.createHorizontalBox();
+
+        JLabel userNameLabel = new JLabel("姓名：");
+        JLabel userStuNumLabel = new JLabel("学号：");
+        JLabel userCollegeLabel = new JLabel("学院：");
+        JLabel userStatusLabel = new JLabel("状态：");
+        JLabel userLimitLabel = new JLabel("权限：");
+
+        userNameBox.add(userNameLabel);
+        userNameBox.add(Box.createGlue());
+        userNameBox.add(userName);
+
+        userStuNumBox.add(userStuNumLabel);
+        userStuNumBox.add(Box.createGlue());
+        userStuNumBox.add(userStuNum);
+
+        userCollegeBox.add(userCollegeLabel);
+        userCollegeBox.add(Box.createGlue());
+        userCollegeBox.add(userCollege);
+
+        userStatusBox.add(userStatusLabel);
+        userStatusBox.add(Box.createGlue());
+        userStatusBox.add(userStatus);
+
+        userLimitBox.add(userLimitLabel);
+        userLimitBox.add(Box.createHorizontalStrut(150));
+        userLimitBox.add(userLimit);
+
+        UserInfoBox.add(userNameBox);
+        UserInfoBox.add(userStuNumBox);
+        UserInfoBox.add(userCollegeBox);
+        UserInfoBox.add(userStatusBox);
+        UserInfoBox.add(userLimitBox);
+
+        Box UserBtnBox = Box.createHorizontalBox();
+        UserBtnBox.add(changeLimitBtn);
+        UserBtnBox.add(Box.createGlue());
+        UserBtnBox.add(lookBookListBtn);
+        UserBtnBox.add(Box.createGlue());
+        UserBtnBox.add(unfreezeBtn);
+
         findUserBox.add(searchUserField);
         findUserBox.add(Box.createHorizontalStrut(30));
         findUserBox.add(searchUserBtn);
@@ -278,9 +362,12 @@ public class AdminView {    //展示admin主面板
         UserBox.add(borrowUserNumBox);
         UserBox.add(Box.createVerticalStrut(20));
         UserBox.add(findUserBox);
+        UserBox.add(Box.createVerticalStrut(20));
+        UserBox.add(UserInfoBox);
+        UserBox.add(Box.createVerticalStrut(20));
+        UserBox.add(UserBtnBox);
         UserBox.setBackground(new Color(30,30,30));
         userPanel.add(UserBox);
-
 
         return userPanel;
     }
