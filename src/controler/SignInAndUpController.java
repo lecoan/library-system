@@ -35,7 +35,7 @@ public class SignInAndUpController {
         }
 
         Customer customer = service.getCustomerById(id);
-        if(customer != null && customer.getPassword().equals(password)) {
+        if(customer == null && customer.getPassword().equals(password)) {
             frame.dispose();
             //TODO
             //UserView view = new UserView();

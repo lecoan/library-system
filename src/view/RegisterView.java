@@ -44,22 +44,16 @@ public class RegisterView extends JFrame{
     }
 
     private void addListener() {
-        teacher.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isTeacher = true;
-                changeCompent();
-                idBox.setVisible(true);
-            }
+        teacher.addActionListener(e -> {
+            isTeacher = true;
+            changeCompent();
+            idBox.setVisible(true);
         });
 
-        student.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isTeacher = false;
-                changeCompent();
-                idBox.setVisible(true);
-            }
+        student.addActionListener(e -> {
+            isTeacher = false;
+            changeCompent();
+            idBox.setVisible(true);
         });
 
         submit.addMouseListener(new MouseAdapter() {

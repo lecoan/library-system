@@ -49,6 +49,13 @@ public class CustomerService {
         }
 
         detector = GlobalActionDetector.getInstance();
+
+        helper.addQuitEvent(() -> {
+            saveAllCustomers();
+            helper.saveConfig("teacherNum", teacherNum);
+            helper.saveConfig("studentNum", studentNum);
+            System.out.println("saved");
+        });
     }
 
     public static CustomerService getInstance() {
@@ -78,6 +85,7 @@ public class CustomerService {
         }
         customers.add(customer);
         customerMap.put(customer.getId(), customer);
+        System.out.println("ok");
     }
 
     public void freezeCustomer(Customer customer) {
@@ -128,11 +136,5 @@ public class CustomerService {
             return true;
         }
         return false;
-    }
-
-    protected void finalize() throws Throwable {
-        saveAllCustomers();
-        helper.saveConfig("teacherNum", teacherNum);
-        helper.saveConfig("studentNum", studentNum);
     }
 }

@@ -1,6 +1,8 @@
 package controler;
 
 import bean.Book;
+import bean.Customer;
+import bean.Student;
 import service.BookOperate;
 import service.CustomerService;
 import view.AdminView;
@@ -135,9 +137,13 @@ public class AdminControler {
     }
     private void findUser(){
         System.out.print(adminPanel.searchUserField.getText());
-        if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
+        Customer customer = customerService.getCustomerById(adminPanel.searchUserField.getText());
+        if( customer == null){
             errAlert.findErrAlert(300,500,"找不到用户" + adminPanel.searchUserField.getText());
+        } else {
+            System.out.print((customer.getPassword()));
         }
+
     }
     public static void main(String[] args){
         AdminControler test = new AdminControler();

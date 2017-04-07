@@ -5,6 +5,7 @@ import controler.SignInAndUpController;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;
+import util.StorageHelper;
 import view.LoginView;
 import view.RegisterView;
 import view.StartUpView;
@@ -18,6 +19,7 @@ import java.io.FileReader;
 
 public class App {
     public static void main(String args[]) {
+        StorageHelper.getInstance().start();
         StartUpView view = new StartUpView();
     }
 }
