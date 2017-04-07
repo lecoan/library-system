@@ -1,14 +1,12 @@
 import bean.Book;
-import bean.BookPathTable;
-import listener.GlobalActionDetector;
+import bean.Customer;
 import service.BookOperate;
-import view.GetDate;
-import view.LoginView;
+import service.CustomerService;
+import view.RegisterView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by lecoan on 17-3-1.
@@ -18,9 +16,8 @@ public class App {
     public static void main(String args[]) {
         //GlobalActionDetector.getInstance().startGlobalActionDetector();
         BookOperate oo = BookOperate.getInstance();
-        
         try {
-            FileReader fr = new FileReader("popular.txt");
+            FileReader fr = new FileReader("bookSpider/popular.txt");
             //可以换成工程目录下的其他文本文件
             BufferedReader br = new BufferedReader(fr);
             String ans = new String();

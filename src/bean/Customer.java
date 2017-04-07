@@ -1,30 +1,31 @@
 package bean;
 
-import constance.CustomerConstance;
-import service.CustomerService;
-
-import java.util.List;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Created by yangxiang on 17-3-8.
  */
-public abstract class Customer {
+public abstract class Customer implements Serializable {
 
     private String username;
-
     private String password;
-
-    private List<String> bookedList;
-
-    private List<String> wantedList;
-
+    private Map<String, Integer> bookedMap;
+    private Set<String> wantedSet;
     private int delayedTimes;
-
     private boolean isFreezed;
-
     private String type;
-
     private String id;
+    private int maxNumForRent;
+    private float money;
+
+    Customer() {
+        bookedMap = new TreeMap<>();
+        wantedSet = new TreeSet<>();
+    }
 
     public String getId() {
         return id;
@@ -33,8 +34,6 @@ public abstract class Customer {
     public void setId(String id) {
         this.id = id;
     }
-
-    public abstract int getMaxNumForRent();
 
     public String getUsername() {
         return username;
@@ -52,20 +51,20 @@ public abstract class Customer {
         this.password = password;
     }
 
-    public List<String> getBookedList() {
-        return bookedList;
+    public Map<String, Integer> getBookedMap() {
+        return bookedMap;
     }
 
-    public void setBookedList(List<String> bookedList) {
-        this.bookedList = bookedList;
+    public void setBookedMap(Map<String, Integer> bookedMap) {
+        this.bookedMap = bookedMap;
     }
 
-    public List<String> getWantedList() {
-        return wantedList;
+    public Set<String> getWantedSet() {
+        return wantedSet;
     }
 
-    public void setWantedList(List<String> wantedList) {
-        this.wantedList = wantedList;
+    public void setWantedSet(Set<String> wantedSet) {
+        this.wantedSet = wantedSet;
     }
 
     public int getDelayedTimes() {
@@ -90,5 +89,21 @@ public abstract class Customer {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getMaxNumForRent() {
+        return maxNumForRent;
+    }
+
+    public void setMaxNumForRent(int maxNumForRent) {
+        this.maxNumForRent = maxNumForRent;
+    }
+
+    public float getMoney() {
+        return money;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
     }
 }

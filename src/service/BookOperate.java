@@ -5,9 +5,12 @@ import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
 import listener.GlobalActionDetector;
+import util.StorageHelper;
 import view.GetDate;
 import java.io.*;
 import java.util.*;
+
+import static util.StorageHelper.ReadObjectFromFile;
 
 //只有booklist中是实时的图书数量信息。
 //将booklist按照hashmap存储
@@ -56,43 +59,6 @@ public class BookOperate {
         return instance;
     }
 
-    private static void WriteObjectToFile(Object obj, String path) {
-        File file = new File(path);
-        FileOutputStream out;
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            out = new FileOutputStream(file);
-            ObjectOutputStream objOut = new ObjectOutputStream(out);
-            objOut.writeObject(obj);
-            objOut.flush();
-            objOut.close();
-            System.out.println("write object success!");
-        } catch (IOException e) {
-            System.out.println("write object failed");
-            e.printStackTrace();
-        }
-    }//只能写入一个对象，之后写入的会把之前写入的对象覆盖
-
-    private static Object ReadObjectFromFile(String path) {
-        Object temp = null;
-        File file = new File(path);
-        FileInputStream in;
-        try {
-            in = new FileInputStream(file);
-            ObjectInputStream objIn = new ObjectInputStream(in);
-            temp = objIn.readObject();
-            objIn.close();
-            System.out.println("read object success!");
-        } catch (IOException e) {
-            System.out.println("read object failed");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return temp;
-    }//读取一个对象
 
     private void AddNewIndextoTable(Map<String, List<BookPathTable>> list, String key, BookPathTable index) {
         if (list.get(key) == null) {
@@ -109,23 +75,23 @@ public class BookOperate {
         File file = new File(bookpath[pathnum]);
         if (!file.exists()) {
             templist.add(newbook);
-            WriteObjectToFile(templist, bookpath[pathnum]);
+            StorageHelper.WriteObjectToFile(templist, bookpath[pathnum]);
             return bookpath[pathnum];
         }//如果存储图书的文件还未建立，就可以直接将图书存入
         else {
             templist = (List<Book>) ReadObjectFromFile(bookpath[pathnum]);
             if (templist.size() < MaxNum) {
                 templist.add(newbook);
-                WriteObjectToFile(templist, bookpath[pathnum]);
+                StorageHelper.WriteObjectToFile(templist, bookpath[pathnum]);
                 return bookpath[pathnum];
             } //当前文件存储容量未满时，就可以将图书存入
             else {
-                WriteObjectToFile(templist, bookpath[pathnum]);//先将原来的数据写回文件
+                StorageHelper.WriteObjectToFile(templist, bookpath[pathnum]);//先将原来的数据写回文件
                 if (pathnum < 4) {
                     pathnum++;
                     List<Book> newlist = new ArrayList<>();
                     newlist.add(newbook);
-                    WriteObjectToFile(newlist, bookpath[pathnum]);
+                    StorageHelper.WriteObjectToFile(newlist, bookpath[pathnum]);
                     return bookpath[pathnum];
                 } else {
                     System.out.println("all full!");
@@ -151,7 +117,7 @@ public class BookOperate {
                     break;
                 }
             }
-            WriteObjectToFile(templist, temp.getBookpath());
+            StorageHelper.WriteObjectToFile(templist, temp.getBookpath());
             System.out.println("update success!");
         }
         else System.out.println("update fail!");
@@ -240,7 +206,7 @@ public class BookOperate {
         data.pathnum = pathnum;
         data.totalbooknum = totalbooknum;
         data.restbooknum = restbooknum;
-        WriteObjectToFile(data, "book.xml");
+        StorageHelper.WriteObjectToFile(data, "book.xml");
         return true;
     }// 将图书操作对象保存到文件中
 
@@ -315,7 +281,7 @@ public class BookOperate {
             }
             else {
                 List<Book> templist = new ArrayList<>();
-                templist = (List<Book>) ReadObjectFromFile(path);
+                templist = (List<Book>)ReadObjectFromFile(path);
                 //System.out.println(templist.size());
                 for (int j = 0; j < templist.size(); ++j) {
                     if (templist.get(j).getIsbn().equals(Isbn)) {
@@ -384,7 +350,7 @@ public class BookOperate {
                     break;
                 }
             }//从文件删除
-            WriteObjectToFile(templist, index.getBookpath());
+            StorageHelper.WriteObjectToFile(templist, index.getBookpath());
             totalbooknum = totalbooknum - index.getTotalnum();
             restbooknum = restbooknum - index.getTotalnum();
             booklist.remove(isbn);

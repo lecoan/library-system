@@ -13,33 +13,38 @@ import java.awt.event.MouseEvent;
  描　述: 启动界面
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public class StartUpView {
+public class StartUpView extends JFrame{
 
     private StartUpInfo info;
 
     public StartUpView() {
-        JFrame frame = new JFrame("register");
-        frame.setSize(500,500);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("main");
+        setSize(500,500);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
         JButton login = new JButton("login");
         JButton register = new JButton("register");
+        panel.add(login);
+        panel.add(register);
+        setContentPane(panel);
 
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                info.handleLogin();
+                if(info!=null)
+                    info.handleLogin();
             }
         });
 
         register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                info.handleRegister();
+                if(info!=null)
+                    info.handleRegister();
             }
         });
 
-        frame.setVisible(true);
+        setVisible(true);
     }
 
     public void setStartUpInfo(StartUpInfo info) {

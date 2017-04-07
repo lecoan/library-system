@@ -9,10 +9,6 @@ public class Teacher extends Customer {
 
     public Teacher() {
         setType("teacher");
-    }
-
-    @Override
-    public int getMaxNumForRent() {
-        return CustomerConstance.MAX_NUM_FOR_TEACHER;
+        setMaxNumForRent(CustomerConstance.MAX_NUM_FOR_TEACHER);
     }
 }

@@ -2,7 +2,9 @@ package controler;
 
 import bean.Book;
 import service.BookOperate;
+import service.CustomerService;
 import view.AdminView;
+import view.ErrAlert;
 import view.FindBookFrame;
 
 import java.awt.event.*;
@@ -11,91 +13,38 @@ import java.awt.event.*;
  * Created by ghoskno on 3/29/17.
  */
 public class AdminControler {
-    //    private List<BookPathTable> curBookList = null;
     BookOperate bookOperate = BookOperate.getInstance();
-    //    CustomerService customerService = CustomerService;
-    FindBookFrame findBookFrame = FindBookFrame.getInstance();
-    CommonControler commonControler = new CommonControler();
-    AdminView adminPanel = null;
+    CustomerService customerService = CustomerService.getInstance();
+    ErrAlert errAlert = ErrAlert.getInstance();
+    CommonControler commonControler = CommonControler.getInstance();
+//    AdminView adminPanel = null;
 
-    Book curBookItem = null;    //正在查看的图书
+//    Book curBookItem = null;    //正在查看的图书
 
-    public AdminControler() {
-        adminPanel = new AdminView();
-        commonControler.findBook();
-        findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
-                if (bookItem != null) {
-                    commonControler.curBookList = null;
-                    showBookItem(bookItem);
-                }
-                else
-                    findBookFrame.findErrAlert("【ISBN ： " + findBookFrame.searchBook.getText() + "】");
+    private volatile static AdminControler instance;
+
+    public static AdminControler getInstance(){
+        synchronized (AdminControler.class) {
+            if(instance == null) {
+                instance = new AdminControler();
             }
-        });
-        adminPanel.addBookFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                bookOperate.SaveData();
-            }
-        });
-        adminPanel.findBookButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //查找图书按钮点击
-                findBookFrame.showFindBookField();
-            }
-        });
-        findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2){
-                    showBookItem(findBookFrame.bookListTable.getSelectedRow());
-                }
-            }
-        });
-        adminPanel.bookUpdateBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                adminPanel.showAddBookField(curBookItem,bookOperate.getBookpathtable(curBookItem.getIsbn()));
-            }
-        });
-        adminPanel.addBookButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //添加图书按钮点击
-                adminPanel.showAddBookField(null,null);
-            }
-        });
-        adminPanel.searchUserBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //添加图书按钮点击
-                findUser();
-            }
-        });
-        adminPanel.modifyBookBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                ModifyBook();
-            }
-        });
+            return instance;
+        }
     }
-    private void showBookItem(Book bookItem){
+    private AdminControler() {   //初始化管理员界面
+        initAdminView();
+    }
+    private void showBookItem(Book bookItem,AdminView adminPanel){   //显示图书信息
         //显示搜索到的单本书
-        curBookItem = bookItem;
+        adminPanel.findBookFrame.curBookItem = bookItem;
         adminPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
     }
-    private void showBookItem(int row){
-        showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(row).getIsbn()));
-    }
-    private void ModifyBook(){
-        //监听确认添加按钮事件
+    private void ModifyBook(AdminView adminPanel){  //修改图书
+        //监听确认添加/修改图书按钮事件
         //校验信息后调用BookOperate方法添加书
         String[] bookInfo = adminPanel.submitBook();
-//                if()判断合法性
+        //if()判断合法性
+        //生成新的Book对象
         Book newBook = new Book();
         newBook.setName(bookInfo[0]);
         newBook.setPublishername(bookInfo[1]);
@@ -103,20 +52,107 @@ public class AdminControler {
         newBook.setIntroduction(bookInfo[5]);
         newBook.setKind(bookInfo[3]);
         newBook.setIsbn();
-        if(curBookItem != null)
-            bookOperate.deleteBook(curBookItem.getIsbn());
+        /*当前查看图书对象不为空，则为更新操作，删除原有图书对象
+        否则为添加新图书
+         */
+        if(adminPanel.findBookFrame.curBookItem != null)
+            bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
-//        bookOperate.SetBooknum(newBook.getIsbn(),new Integer(bookInfo[4]));
-//        bookOperate.
-        curBookItem = null;
     }
-    private void findUser(){
+    private void findUser(AdminView adminPanel){
         System.out.print(adminPanel.searchUserField.getText());
-
+        if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
+            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+150,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
+        }
+    }
+    public void initAdminView(){
+        AdminView adminPanel = new AdminView();
+        commonControler.findBook(adminPanel.findBookFrame);     //初始化查找图书界面
+        //处理通过Isbn查找图书按钮点击事件
+        adminPanel.findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Book bookItem = bookOperate.getBookbyIsbn(adminPanel.findBookFrame.searchBook.getText());
+                if (bookItem != null) { //找到图书
+                    adminPanel.findBookFrame.curBookList = null;
+                    showBookItem(bookItem,adminPanel);
+                }
+                else
+                    errAlert.findErrAlert((int)(adminPanel.findBookFrame.Frame.getLocation().getX()+200),(int)(adminPanel.findBookFrame.Frame.getLocation().getY()+100),"找不到：【ISBN ： " + adminPanel.findBookFrame.searchBook.getText() + "】");
+            }
+        });
+        //添加图书界面关闭时保存添加图书信息
+//        adminPanel.addBookFrame.addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                bookOperate.SaveData();
+//            }
+//        });
+        //点击查找图书按钮，显示查找图书界面
+        adminPanel.findBookButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //查找图书按钮点击
+                adminPanel.findBookFrame.showFindBookField();
+            }
+        });
+        adminPanel.adminFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                bookOperate.SaveData();
+            }
+        });
+        //双击图书列表中某行时，显示图书详细信息
+        adminPanel.findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2){
+                    showBookItem(bookOperate.getBookbyIsbn(adminPanel.findBookFrame.curBookList.get(adminPanel.findBookFrame.bookListTable.getSelectedRow()).getIsbn()),adminPanel);
+//                    showBookItem(Frame.bookListTable.getSelectedRow());
+                }
+            }
+        });
+        //点击更新图书按钮，调用添加图书界面显示修改界面
+        adminPanel.bookUpdateBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.showModifyBookField(adminPanel.findBookFrame.curBookItem,bookOperate.getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()));
+            }
+        });
+        //点击删除图书界面,修改当前查看图书
+        adminPanel.bookDeleBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+                adminPanel.findBookFrame.curBookItem = null;
+            }
+        });
+        //点击添加图书按钮，显示添加图书界面
+        adminPanel.addBookButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //添加图书按钮点击
+                adminPanel.showModifyBookField(null,null);
+            }
+        });
+        //点击查找用户按钮
+        adminPanel.searchUserBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //搜索用户按钮点击
+                findUser(adminPanel);
+            }
+        });
+        //点击修改/添加图书按钮
+        adminPanel.modifyBookBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                ModifyBook(adminPanel);
+            }
+        });
     }
     public static void main(String[] args){
         AdminControler test = new AdminControler();
     }
-
 
 }
