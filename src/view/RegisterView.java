@@ -4,7 +4,6 @@ import bean.Customer;
 import bean.Student;
 import bean.Teacher;
 import controler.SignInAndUpController;
-import service.CustomerService;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
