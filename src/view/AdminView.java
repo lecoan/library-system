@@ -2,12 +2,15 @@ package view;
 
 import bean.Book;
 import bean.BookPathTable;
+import bean.BorrowMemory;
 import service.BookOperate;
 import service.CustomerService;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by ghoskno on 3/25/17.
@@ -22,19 +25,21 @@ public class AdminView {    //展示admin主面板
 
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public JButton bookUpdateBtn = new JButton("更新图书");
+        public JButton lookBorrowHistory = new JButton("借阅历史");
+    public JButton unfreezeBtn = new JButton("解冻");
+
     public JButton bookDeleBtn = new JButton("删除图书");
+    public JFrame modifyBookFrame = new JFrame("添加图书");
 
-    public JFrame addBookFrame = new JFrame("添加图书");
     public JButton modifyBookBtn = new JButton();   //添加/更新按钮
-
     //添加图书面板中输入框
     private JTextField bookNameInput = new JTextField(15);
     private JTextField bookPublisherInput = new JTextField(15);
     private JTextField bookAuthorInput = new JTextField(15);
     private JTextField bookNumInput = new JTextField(15);
     private JTextField bookKindInput= new JTextField(15);
-    private JTextArea bookDesInput = new JTextArea(10,30);
 
+    private JTextArea bookDesInput = new JTextArea(10,30);
     //查找用户界面
     public JPanel userPanel = new JPanel();
     public JTextField searchUserField = new JTextField();
@@ -46,9 +51,11 @@ public class AdminView {    //展示admin主面板
     public JTextField userLimit= new JTextField(1);
     public JButton changeLimitBtn = new JButton("修改权限");
     public JButton lookBookListBtn= new JButton("查看借书情况");
-    public JButton unfreezeBtn = new JButton("解冻");
 
     public FindBookFrame findBookFrame = new FindBookFrame();
+
+    private JFrame bookBorrowFrame = new JFrame("借阅历史");
+    JTable borrowTable= new JTable(0,0);
 
     public JLabel timeLabel = new JLabel();
 
@@ -68,13 +75,16 @@ public class AdminView {    //展示admin主面板
 //        Frame.initErrAlert();
         adminFrame.setLocation(300,200);
         adminFrame.setVisible(true);
+        borrowTable.setEnabled(false);
+        borrowTable.setPreferredScrollableViewportSize(new Dimension(580,200));
+        bookBorrowFrame.getContentPane().add(new JScrollPane(borrowTable));
     }
 
     public void showModifyBookField(Book bookItem, BookPathTable bookPath){
         //展示添加//修改书本区域
-        addBookFrame.setSize(500,450);
-        addBookFrame.setResizable(false);
-        addBookFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        modifyBookFrame.setSize(500,450);
+        modifyBookFrame.setResizable(false);
+        modifyBookFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         JLabel bookNameLabel = new JLabel("书名");
 
@@ -128,6 +138,14 @@ public class AdminView {    //展示admin主面板
             modifyBookBtn.setText("添加");
         }
 
+        if(bookPath.getRestnum()!=bookPath.getTotalnum()){
+            bookNameInput.setEnabled(false);
+            bookDesInput.setEnabled(false);
+            bookPublisherInput.setEnabled(false);
+            bookAuthorInput.setEnabled(false);
+            bookKindInput.setEnabled(false);
+        }
+
         container.setLayout(null);
         container.add(bookNameInput);
         container.add(bookNameLabel);
@@ -142,9 +160,9 @@ public class AdminView {    //展示admin主面板
         container.add(bookDesInput);
         container.add(bookDesLabel);
         container.add(modifyBookBtn);
-        addBookFrame.setContentPane(container);
-        addBookFrame.setLocation(300,100);
-        addBookFrame.setVisible(true);
+        modifyBookFrame.setContentPane(container);
+        modifyBookFrame.setLocation(300,100);
+        modifyBookFrame.setVisible(true);
 
     }
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
@@ -177,8 +195,9 @@ public class AdminView {    //展示admin主面板
         System.out.print(bookItem.getIntroduction());
         bookDesLabel.setBounds(100,220,300,80);
 
-        bookUpdateBtn.setBounds(100,320,100,30);
-        bookDeleBtn.setBounds(300,320,100,30);
+        bookUpdateBtn.setBounds(50,320,100,30);
+        lookBorrowHistory.setBounds(200,320,100,30);
+        bookDeleBtn.setBounds(350,320,100,30);
 
         JPanel container = new JPanel();
         container.setSize(600,400);
@@ -192,10 +211,40 @@ public class AdminView {    //展示admin主面板
         container.add(bookKindLabel);
         container.add(bookDesLabel);
         container.add(bookUpdateBtn);
+        container.add(lookBorrowHistory);
         container.add(bookDeleBtn);
         bookInfoFrame.setContentPane(container);
         bookInfoFrame.setLocation(300,100);
         bookInfoFrame.setVisible(true);
+
+        bookItemPath.setRestnum(bookItemPath.getRestnum()-5);
+        if(bookItemPath.getRestnum() != bookItemPath.getTotalnum()){
+            bookDeleBtn.setEnabled(false);
+        }
+        else{
+            bookDeleBtn.setEnabled(true);
+        }
+    }
+    public void showBookBorrowFram(Book bookItem){
+        bookBorrowFrame.setSize(500,450);
+        bookBorrowFrame.setResizable(false);
+        bookBorrowFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+
+        String[] tableHeader = {"借出时间","归还时间","借阅人"};
+        List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
+        Object[][] tableBody = new Object[5][3];
+//        Object[][] tableBody = new Object[borrowList.size()][3];
+//        for(int i=0;i<borrowList.size();i++){
+        for(int i=0;i<5;i++){
+//            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
+            Object[] rowData = {"" + bookItem.getName(),"borrowList.get(i).getReturntime()","borrowList.get(i).getBorrowman()"};
+            tableBody[i] = rowData;
+        }
+        DefaultTableModel tableModel =  (DefaultTableModel)borrowTable.getModel();
+        tableModel.setDataVector(tableBody,tableHeader);
+        borrowTable.setVisible(true);
+        bookBorrowFrame.setLocation((int)bookInfoFrame.getLocation().getX()+500,(int)bookInfoFrame.getLocation().getY() - 10);
+        bookBorrowFrame.setVisible(true);
     }
 
     public String[] submitBook(){

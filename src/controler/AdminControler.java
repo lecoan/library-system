@@ -4,6 +4,7 @@ import bean.Book;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;
+import view.AddPlaceHolder;
 import view.AdminView;
 import view.ErrAlert;
 import view.FindBookFrame;
@@ -18,6 +19,7 @@ public class AdminControler {
     BookOperate bookOperate = BookOperate.getInstance();
     CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
+    AddPlaceHolder placeHolder = AddPlaceHolder.getInstance();
     CommonControler commonControler = CommonControler.getInstance();
 //    AdminView adminPanel = null;
 
@@ -57,10 +59,17 @@ public class AdminControler {
         /*当前查看图书对象不为空，则为更新操作，删除原有图书对象
         否则为添加新图书
          */
-        if(adminPanel.findBookFrame.curBookItem != null)
+        if(adminPanel.findBookFrame.curBookItem != null) {
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
+        }
+        else{
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功添加新书：" + newBook.getName());
+        }
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
-        
+        adminPanel.modifyBookFrame.dispose();
+        adminPanel.bookInfoFrame.dispose();
+        commonControler.clearFindBookFrame(adminPanel.findBookFrame);
     }
     private void findUser(AdminView adminPanel){
         System.out.print(adminPanel.searchUserField.getText());
@@ -85,7 +94,7 @@ public class AdminControler {
             }
         });
         //添加图书界面关闭时保存添加图书信息
-//        adminPanel.addBookFrame.addWindowListener(new WindowAdapter() {
+//        adminPanel.modifyBookFrame.addWindowListener(new WindowAdapter() {
 //            @Override
 //            public void windowClosing(WindowEvent e) {
 //                bookOperate.SaveData();
@@ -126,8 +135,13 @@ public class AdminControler {
         adminPanel.bookDeleBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(!adminPanel.bookDeleBtn.isEnabled())
+                    return;
                 bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+                errAlert.findErrAlert((int)(adminPanel.bookInfoFrame.getLocation().getX() + 100),(int)(adminPanel.bookInfoFrame.getLocation().getY() + 100),"成功删除图书：" + adminPanel.findBookFrame.curBookItem.getName());
+                adminPanel.bookInfoFrame.dispose();
                 adminPanel.findBookFrame.curBookItem = null;
+                commonControler.clearFindBookFrame(adminPanel.findBookFrame);
             }
         });
         //点击添加图书按钮，显示添加图书界面
@@ -151,6 +165,12 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 ModifyBook(adminPanel);
+            }
+        });
+        adminPanel.lookBorrowHistory.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.showBookBorrowFram(adminPanel.findBookFrame.curBookItem);
             }
         });
     }

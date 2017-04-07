@@ -14,6 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by ghoskno on 4/6/17.
@@ -50,7 +51,8 @@ public class CommonControler {  //通用控制器
             if(tempList != null && tempList.size() != 0) {
                 findBookFrame.curBookList.retainAll(extraBookList);
                 findBookFrame.showBookList(findBookFrame.curBookList,findBookFrame.Frame);
-                addConditionLabel(findBookFrame.searchBook.getText(),findBookFrame);
+                if(!Pattern.matches(".*[" + findBookFrame.searchBook.getText() + "]+.*",findBookFrame.ConditionsLabel.getText()))
+                    addConditionLabel(findBookFrame.searchBook.getText(), findBookFrame);
             }
             else
                 errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"没有找到符合条件图书！");
@@ -62,7 +64,7 @@ public class CommonControler {  //通用控制器
         }
     }
     private void addConditionLabel(String con,FindBookFrame findBookFrame){     //修改查找条件显示
-        findBookFrame.ConditionsLabel.setText(findBookFrame.ConditionsLabel.getText() +"  \"  "+ con + "  \"  ");
+        findBookFrame.ConditionsLabel.setText(findBookFrame.ConditionsLabel.getText() +"  \""+ con + "\"  ");
         findBookFrame.ConditionsLabel.invalidate();
     }
     private void clearConditionLabel(FindBookFrame findBookFrame){     //清空当前所有查找条件
@@ -75,7 +77,7 @@ public class CommonControler {  //通用控制器
             @Override
             public void mouseClicked(MouseEvent e) {
                 List<BookPathTable> extraBookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
-                if (extraBookList != null )
+                if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
                 else
                     errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"找不到：【作者：" + findBookFrame.searchBook.getText() + "】");
@@ -86,7 +88,7 @@ public class CommonControler {  //通用控制器
             @Override
             public void mouseClicked(MouseEvent e) {
                 List<BookPathTable> extraBookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
-                if (extraBookList != null)
+                if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
                 else
                     errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"找不到：【书名：" + findBookFrame.searchBook.getText() + "】");
@@ -97,7 +99,7 @@ public class CommonControler {  //通用控制器
             @Override
             public void mouseClicked(MouseEvent e) {
                 List<BookPathTable> extraBookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
-                if (extraBookList != null)
+                if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
                 else
                     errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"找不到：【种类：" + findBookFrame.searchBook.getText() + "】");
@@ -108,13 +110,13 @@ public class CommonControler {  //通用控制器
             @Override
             public void mouseClicked(MouseEvent e) {
                 List<BookPathTable> extraBookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
-                if (extraBookList != null)
+                if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
                 else
                     errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"找不到：【出版社：" + findBookFrame.searchBook.getText() + "】");
             }
         });
-        //处理通过清楚当前查找的按钮点击事件
+        //处理通过清除当前查找的按钮点击事件
         findBookFrame.clearBookBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -136,7 +138,13 @@ public class CommonControler {  //通用控制器
             }
         });
     }
-
+    public void clearFindBookFrame(FindBookFrame findBookFrame){
+        findBookFrame.showBookList(null,findBookFrame.Frame);
+        findBookFrame.curBookList = null;
+        findBookFrame.searchBook.setText("");
+        placeholderHandle.addingPlaceholder(findBookFrame.searchBook,"请输入书名/书号/作者/出版社/类别进行搜索");
+        clearConditionLabel(findBookFrame);
+    }
     public void setDate(){
         System.out.print(getDate.getDate(globalActionDetector.getDays()));
 
