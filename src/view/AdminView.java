@@ -13,7 +13,6 @@ import java.awt.*;
  */
 public class AdminView {    //展示admin主面板
     AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
-    FindBookFrame findBookFrame = FindBookFrame.getInstance();
 
     public JFrame adminFrame = new JFrame("Admin Panel");
 
@@ -48,6 +47,8 @@ public class AdminView {    //展示admin主面板
     public JButton lookBookListBtn= new JButton("查看借书情况");
     public JButton unfreezeBtn = new JButton("解冻");
 
+    public FindBookFrame findBookFrame = new FindBookFrame();
+
     public JLabel timeLabel = new JLabel();
 
     public AdminView(){
@@ -63,7 +64,7 @@ public class AdminView {    //展示admin主面板
         mainCon.add(initLabelPanel(),BorderLayout.NORTH);
         bodyBox.add(initBookPanel());
         bodyBox.add(initUserPanel());
-//        findBookFrame.initErrAlert();
+//        Frame.initErrAlert();
         adminFrame.setLocation(300,200);
         adminFrame.setVisible(true);
     }

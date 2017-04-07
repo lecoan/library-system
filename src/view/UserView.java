@@ -12,6 +12,7 @@ import controler.UserControler;
  */
 
 public class UserView implements ActionListener{
+    public FindBookFrame findBookFrame = new FindBookFrame();
     JLabel jl1 =new JLabel();
     JLabel jl2 =new JLabel();
     JLabel jl3 =new JLabel();

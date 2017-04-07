@@ -14,28 +14,37 @@ import java.awt.event.*;
  */
 public class AdminControler {
     BookOperate bookOperate = BookOperate.getInstance();
-    FindBookFrame findBookFrame = FindBookFrame.getInstance();
     CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
-    CommonControler commonControler = new CommonControler();
+    CommonControler commonControler = CommonControler.getInstance();
     AdminView adminPanel = null;
 
     Book curBookItem = null;    //正在查看的图书
 
-    public AdminControler() {   //初始化管理员界面
+    private volatile static AdminControler instance;
+
+    public static AdminControler getInstance(){
+        synchronized (AdminControler.class) {
+            if(instance == null) {
+                instance = new AdminControler();
+            }
+            return instance;
+        }
+    }
+    private AdminControler() {   //初始化管理员界面
         adminPanel = new AdminView();
-        commonControler.findBook();     //初始化查找图书界面
+        commonControler.findBook(adminPanel.findBookFrame);     //初始化查找图书界面
         //处理通过Isbn查找图书按钮点击事件
-        findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
+        adminPanel.findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
+                Book bookItem = bookOperate.getBookbyIsbn(adminPanel.findBookFrame.searchBook.getText());
                 if (bookItem != null) { //找到图书
                     commonControler.curBookList = null;
                     showBookItem(bookItem);
                 }
                 else
-                    errAlert.findErrAlert((int)(findBookFrame.findBookFrame.getLocation().getX()+200),(int)(findBookFrame.findBookFrame.getLocation().getY()+100),"找不到：【ISBN ： " + findBookFrame.searchBook.getText() + "】");
+                    errAlert.findErrAlert((int)(adminPanel.findBookFrame.Frame.getLocation().getX()+200),(int)(adminPanel.findBookFrame.Frame.getLocation().getY()+100),"找不到：【ISBN ： " + adminPanel.findBookFrame.searchBook.getText() + "】");
             }
         });
         //添加图书界面关闭时保存添加图书信息
@@ -50,7 +59,7 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //查找图书按钮点击
-                findBookFrame.showFindBookField();
+                adminPanel.findBookFrame.showFindBookField();
             }
         });
         adminPanel.adminFrame.addWindowListener(new WindowAdapter() {
@@ -60,12 +69,12 @@ public class AdminControler {
             }
         });
         //双击图书列表中某行时，显示图书详细信息
-        findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
+        adminPanel.findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){
-                    showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(findBookFrame.bookListTable.getSelectedRow()).getIsbn()));
-//                    showBookItem(findBookFrame.bookListTable.getSelectedRow());
+                    showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(adminPanel.findBookFrame.bookListTable.getSelectedRow()).getIsbn()));
+//                    showBookItem(Frame.bookListTable.getSelectedRow());
                 }
             }
         });

@@ -5,19 +5,16 @@ import bean.BookPathTable;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.*;
 
 /**
  * Created by ghoskno on 4/2/17.
  */
 public class FindBookFrame {
-    private volatile static FindBookFrame instance;
 
     private AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
-    public JFrame findBookFrame = new JFrame("查找图书");   //查找图书面板frame
+    public JFrame Frame = new JFrame("查找图书");   //查找图书面板frame
     //查找图书面板组件
     public JLabel ConditionsLabel = new JLabel();
     public JButton findBookByIsbn = new JButton("按书号搜索");
@@ -30,23 +27,16 @@ public class FindBookFrame {
     public BookJTable bookListTable = new BookJTable(0,0);
 
 
-    private void FindBookFrame(){
-    }
-    public static FindBookFrame getInstance(){
-        synchronized (FindBookFrame.class) {
-            if(instance == null) {
-                instance = new FindBookFrame();
-            }
-            return instance;
-        }
+    public void FindBookFrame(){
+
     }
     public void showFindBookField(){    //初始查找图书面板
         String placeholderText = "请输入书名/书号/作者/出版社/类别进行搜索";
 
-        findBookFrame.setSize(700,400);
-        findBookFrame.setResizable(false);
-        findBookFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        findBookFrame.addWindowListener(new WindowAdapter() {
+        Frame.setSize(700,400);
+        Frame.setResizable(false);
+        Frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        Frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 searchBook.setText(placeholderText);
@@ -93,12 +83,12 @@ public class FindBookFrame {
 
         container.add(findBookBox,BorderLayout.CENTER);
         container.add(bookListBox,BorderLayout.SOUTH);
-        findBookFrame.setContentPane(container);
-        findBookFrame.setLocation(300,100);
-        showBookList(null);
-        findBookFrame.setVisible(true);
+        Frame.setContentPane(container);
+        Frame.setLocation(300,100);
+        showBookList(null, Frame);
+        Frame.setVisible(true);
     }
-    public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList){
+    public java.util.List<BookPathTable> showBookList(java.util.List<BookPathTable> bookList,JFrame findBookFrame){
         //显示书的列表
         String[] bookTableHead = {"书名","出版社","作者","种类","剩余数量"};
         if(bookList == null) {  //传入图书列表为null，清空当前列表
