@@ -57,6 +57,9 @@ public class AdminView {    //展示admin主面板
     private JFrame bookBorrowFrame = new JFrame("借阅历史");
     JTable borrowTable= new JTable(0,0);
 
+    public JButton signOutBtn = new JButton("退出");
+
+
     public JLabel timeLabel = new JLabel();
 
     public AdminView(){
@@ -138,12 +141,18 @@ public class AdminView {    //展示admin主面板
             modifyBookBtn.setText("添加");
         }
 
-        if(bookPath.getRestnum()!=bookPath.getTotalnum()){
+        if(bookPath!=null && bookPath.getRestnum()!=bookPath.getTotalnum()){
             bookNameInput.setEnabled(false);
             bookDesInput.setEnabled(false);
             bookPublisherInput.setEnabled(false);
             bookAuthorInput.setEnabled(false);
             bookKindInput.setEnabled(false);
+        }else{
+            bookNameInput.setEnabled(true);
+            bookDesInput.setEnabled(true);
+            bookPublisherInput.setEnabled(true);
+            bookAuthorInput.setEnabled(true);
+            bookKindInput.setEnabled(true);
         }
 
         container.setLayout(null);
@@ -232,10 +241,10 @@ public class AdminView {    //展示admin主面板
 
         String[] tableHeader = {"借出时间","归还时间","借阅人"};
         List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
-        Object[][] tableBody = new Object[5][3];
+        Object[][] tableBody = new Object[borrowList.size()][3];
 //        Object[][] tableBody = new Object[borrowList.size()][3];
 //        for(int i=0;i<borrowList.size();i++){
-        for(int i=0;i<5;i++){
+        for(int i=0;i<borrowList.size();i++){
 //            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
             Object[] rowData = {"" + bookItem.getName(),"borrowList.get(i).getReturntime()","borrowList.get(i).getBorrowman()"};
             tableBody[i] = rowData;
@@ -255,7 +264,6 @@ public class AdminView {    //展示admin主面板
         JPanel panel = new JPanel();
         Box labelBox = Box.createHorizontalBox();
         JLabel adminLabel = new JLabel("Admin");
-        JButton signOutBtn = new JButton("退出");
 
         labelBox.add(adminLabel);
         labelBox.add(Box.createHorizontalStrut(200));

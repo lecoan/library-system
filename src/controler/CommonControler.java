@@ -76,6 +76,10 @@ public class CommonControler {  //通用控制器
         findBookFrame.findBookByAuthor.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 List<BookPathTable> extraBookList = bookOperate.getBookbyWriter(findBookFrame.searchBook.getText());
                 if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
@@ -87,6 +91,10 @@ public class CommonControler {  //通用控制器
         findBookFrame.findBookByName.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 List<BookPathTable> extraBookList = bookOperate.getBookbyName(findBookFrame.searchBook.getText());
                 if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
@@ -98,6 +106,10 @@ public class CommonControler {  //通用控制器
         findBookFrame.findBookByKind.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 List<BookPathTable> extraBookList = bookOperate.getBookbyKind(findBookFrame.searchBook.getText());
                 if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);
@@ -109,6 +121,10 @@ public class CommonControler {  //通用控制器
         findBookFrame.findBookByPublisher.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 List<BookPathTable> extraBookList = bookOperate.getBookbyPublisher(findBookFrame.searchBook.getText());
                 if (extraBookList != null && extraBookList.size() != 0)
                     checkList(extraBookList,findBookFrame);

@@ -69,6 +69,7 @@ public class AdminControler {
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
         adminPanel.modifyBookFrame.dispose();
         adminPanel.bookInfoFrame.dispose();
+        adminPanel.findBookFrame.curBookItem = null;
         commonControler.clearFindBookFrame(adminPanel.findBookFrame);
     }
     private void findUser(AdminView adminPanel){
@@ -84,6 +85,10 @@ public class AdminControler {
         adminPanel.findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(adminPanel.findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(adminPanel.findBookFrame.Frame.getLocation().getX()+200),(int)(adminPanel.findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 Book bookItem = bookOperate.getBookbyIsbn(adminPanel.findBookFrame.searchBook.getText());
                 if (bookItem != null) { //找到图书
                     adminPanel.findBookFrame.curBookList = null;
@@ -171,6 +176,13 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 adminPanel.showBookBorrowFram(adminPanel.findBookFrame.curBookItem);
+            }
+        });
+        adminPanel.signOutBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.adminFrame.dispose();
+//                adminPanel
             }
         });
     }
