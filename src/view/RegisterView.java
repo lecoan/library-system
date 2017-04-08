@@ -3,7 +3,7 @@ package view;
 import bean.Customer;
 import bean.Student;
 import bean.Teacher;
-import service.CustomerService;
+import controler.SignInAndUpController;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -21,6 +21,8 @@ import java.awt.event.MouseEvent;
  ******************************************************************/
 public class RegisterView extends JFrame{
 
+    private SignInAndUpController controller;
+
     private JButton submit;
     private JRadioButton teacher;
     private JRadioButton student;
@@ -29,7 +31,6 @@ public class RegisterView extends JFrame{
 
     private JTextField userID;
     private JComboBox<String> clleages;
-    private RegisterInfo info;
 
     private boolean isTeacher;
     private JLabel idLabel;
@@ -37,37 +38,28 @@ public class RegisterView extends JFrame{
     private Box colleageBox;
 
     public RegisterView() {
+        this.controller = SignInAndUpController.getInstance();
         initView();
         addListener();
-
     }
 
     private void addListener() {
-        teacher.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isTeacher = true;
-                changeCompent();
-                idBox.setVisible(true);
-            }
+        teacher.addActionListener(e -> {
+            isTeacher = true;
+            changeCompent();
+            idBox.setVisible(true);
         });
 
-        student.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isTeacher = false;
-                changeCompent();
-                idBox.setVisible(true);
-            }
+        student.addActionListener(e -> {
+            isTeacher = false;
+            changeCompent();
+            idBox.setVisible(true);
         });
 
         submit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(!judge()) {
-                    return;
-                }
-                if(CustomerService.getInstance().getCustomerById(userID.getText())!=null){
                     return;
                 }
                 Customer customer = null;
@@ -83,7 +75,7 @@ public class RegisterView extends JFrame{
                 customer.setPassword(new String(password.getPassword()));
                 customer.setId(userID.getText());
 
-                info.handleRegisterInfo(customer);
+                controller.handleRegister(customer,RegisterView.this);
             }
         });
     }
@@ -170,20 +162,4 @@ public class RegisterView extends JFrame{
         setContentPane(panel);
         setVisible(true);
     }
-
-    public void setRegisterInfoHandler(RegisterInfo infoHandler) {
-
-        this.info = infoHandler;
-    }
-
-    public interface RegisterInfo {
-
-        /**
-         * 处理注册逻辑
-         * @param customer 参数为注册用户对象，根据getType()判断是teacher还是student以便于向下强转
-         */
-        public void handleRegisterInfo(Customer customer);
-
-    }
-
 }

@@ -1,30 +1,29 @@
 package bean;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by yangxiang on 17-3-8.
  */
 public abstract class Customer implements Serializable {
 
-    private String username;
-    private String password;
-    private Map<String, Integer> bookedMap;
-    private Set<String> wantedSet;
-    private int delayedTimes;
-    private boolean isFreezed;
-    private String type;
-    private String id;
-    private int maxNumForRent;
-    private float money;
+    protected String username;
+    protected String password;
+    protected Map<String, Integer> bookedMap;
+    protected Set<String> wantedSet;
+    protected int delayedTimes;
+    protected boolean isFreezed;
+    protected String type;
+    protected String id;
+    protected int maxNumForRent;
+    protected float money;
+    protected List<String> historyList;
 
     Customer() {
         bookedMap = new TreeMap<>();
         wantedSet = new TreeSet<>();
+        historyList = new LinkedList<>();
     }
 
     public String getId() {
@@ -55,17 +54,11 @@ public abstract class Customer implements Serializable {
         return bookedMap;
     }
 
-    public void setBookedMap(Map<String, Integer> bookedMap) {
-        this.bookedMap = bookedMap;
-    }
 
     public Set<String> getWantedSet() {
         return wantedSet;
     }
 
-    public void setWantedSet(Set<String> wantedSet) {
-        this.wantedSet = wantedSet;
-    }
 
     public int getDelayedTimes() {
         return delayedTimes;
@@ -106,4 +99,9 @@ public abstract class Customer implements Serializable {
     public void setMoney(float money) {
         this.money = money;
     }
+
+    public List<String> getHistoryList() {
+        return historyList;
+    }
+
 }

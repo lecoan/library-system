@@ -1,13 +1,14 @@
 package controler;
 
 import bean.Book;
+import bean.Student;
+import bean.Teacher;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;
 import view.AddPlaceHolder;
 import view.AdminView;
 import view.ErrAlert;
-import view.FindBookFrame;
 
 import java.awt.event.*;
 
@@ -36,7 +37,7 @@ public class AdminControler {
         }
     }
     private AdminControler() {   //初始化管理员界面
-        initAdminView();
+//        initAdminView();
     }
     private void showBookItem(Book bookItem,AdminView adminPanel){   //显示图书信息
         //显示搜索到的单本书
@@ -74,8 +75,30 @@ public class AdminControler {
     }
     private void findUser(AdminView adminPanel){
         System.out.print(adminPanel.searchUserField.getText());
-        if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
-            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+150,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
+        adminPanel.curCustomer =customerService.getCustomerById(adminPanel.searchUserField.getText());
+        if(adminPanel.curCustomer == null){
+            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
+        }
+        else{
+            if(adminPanel.curCustomer.getType() == "student"){
+                adminPanel.curCustomer = (Student)adminPanel.curCustomer;
+                adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
+                adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
+                adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
+                adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
+            }
+            else{
+                adminPanel.curCustomer = (Teacher)adminPanel.curCustomer;
+                adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
+                adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
+                adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
+            }
+            if(adminPanel.curCustomer.isFreezed())
+                adminPanel.unfreezeBtn.setEnabled(true);
+            adminPanel.changeLimitBtn.setEnabled(true);
+            adminPanel.lookBookListBtn.setEnabled(true);
         }
     }
     public void initAdminView(){
@@ -117,6 +140,7 @@ public class AdminControler {
             @Override
             public void windowClosing(WindowEvent e) {
                 bookOperate.SaveData();
+                adminPanel.destroyAdminView();
             }
         });
         //双击图书列表中某行时，显示图书详细信息
@@ -172,17 +196,52 @@ public class AdminControler {
                 ModifyBook(adminPanel);
             }
         });
+        //点击查看图书的借阅历史
         adminPanel.lookBorrowHistory.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                adminPanel.showBookBorrowFram(adminPanel.findBookFrame.curBookItem);
+                adminPanel.showBookBorrowFrame(adminPanel.findBookFrame.curBookItem);
             }
         });
+        //点击查看用户借书情况
+        adminPanel.lookBookListBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(adminPanel.lookBookListBtn.isEnabled()){
+                    //TODO 查看用户借书情况
+                    adminPanel.showUserBookListFrame();
+                }
+            }
+        });
+        //点击解冻用户
+        adminPanel.unfreezeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(adminPanel.unfreezeBtn.isEnabled()){
+                    adminPanel.curCustomer.setFreezed(false);
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功解冻用户：" +adminPanel.curCustomer.getUsername());
+                }
+            }
+        });
+        //点击修改用户权限
+        adminPanel.changeLimitBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int limit = new Integer(adminPanel.userLimit.getText());
+                if(limit>0&&limit<30){
+                    adminPanel.curCustomer.setMaxNumForRent(limit);
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
+                }
+                else
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"输入借书权限值非法");
+            }
+        });
+        //点击退出按钮
         adminPanel.signOutBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 adminPanel.adminFrame.dispose();
-//                adminPanel
+                adminPanel.destroyAdminView();
             }
         });
     }

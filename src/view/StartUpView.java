@@ -1,9 +1,17 @@
 package view;
 
+import bean.BookPathTable;
+import controler.SignInAndUpController;
+import listener.GlobalActionDetector;
+import service.BookOperate;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.*;
 
 /******************************************************************
  创建人: 杨翔
@@ -15,44 +23,62 @@ import java.awt.event.MouseEvent;
  ******************************************************************/
 public class StartUpView extends JFrame{
 
-    private StartUpInfo info;
+    private SignInAndUpController controller;
+    private GlobalActionDetector detector;
 
     public StartUpView() {
+        controller = SignInAndUpController.getInstance();
+        detector = GlobalActionDetector.getInstance();
+
+
+
+        initView();
+
+    }
+
+    private void initView() {
+        JLabel label = new JLabel("time: "+GetDate.getDate(detector.getDays()));
+        detector.addEvent(days -> label.setText("time: "+GetDate.getDate(detector.getDays())));
+
         setTitle("main");
-        setSize(500,500);
+        setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
         JButton login = new JButton("login");
         JButton register = new JButton("register");
         panel.add(login);
         panel.add(register);
+        panel.add(label);
         setContentPane(panel);
 
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(info!=null)
-                    info.handleLogin();
+                LoginView loginView = new LoginView();
             }
         });
 
         register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(info!=null)
-                    info.handleRegister();
+                RegisterView view = new RegisterView();
             }
         });
 
+        JTable table = new JTable(0,0);
+        java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
+        String[] tableHeader = {"排名","书名","借阅次数"};
+        Object[][] tableBody = new Object[list.size()][3];
+        for(int i=0;i<list.size();i++){
+            Object[] rowData = {""+i,""+list.get(i).getIsbn(),""+list.get(i).getBorrownum()};
+            tableBody[i] = rowData;
+        }
+        DefaultTableModel tableModel =  (DefaultTableModel)table.getModel();
+        tableModel.setDataVector(tableBody,tableHeader);
+        table.setEnabled(false);
+        table.setVisible(true);
+        panel.add(new JScrollPane(table));
         setVisible(true);
-    }
 
-    public void setStartUpInfo(StartUpInfo info) {
-        this.info = info;
-    }
-
-    public interface StartUpInfo{
-        public void handleLogin();
-        public void handleRegister();
     }
 }
