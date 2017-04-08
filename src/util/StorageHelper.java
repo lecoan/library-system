@@ -23,6 +23,7 @@ public class StorageHelper {
             config = new TreeMap<>();
         }
         eventList = new LinkedList<>();
+        start();
     }
 
     /**
@@ -36,7 +37,7 @@ public class StorageHelper {
         return instance;
     }
 
-    public void start(){
+    private void start(){
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             eventList.forEach(Event::handle);
             StorageHelper.WriteObjectToFile(config,"./config");

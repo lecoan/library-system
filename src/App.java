@@ -1,17 +1,12 @@
-import bean.Book;
-import bean.Customer;
-import controler.AdminControler;
-import controler.SignInAndUpController;
+import bean.BookPathTable;
+import bean.Student;
+import bean.Teacher;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
-import service.Log;
-import util.StorageHelper;
-import view.LoginView;
-import view.RegisterView;
 import view.StartUpView;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.util.List;
 
 /**
  * Created by lecoan on 17-3-1.
@@ -19,7 +14,23 @@ import java.io.FileReader;
 
 public class App {
     public static void main(String args[]) {
-        StorageHelper.getInstance().start();
-        StartUpView view = new StartUpView();
+        GlobalActionDetector.getInstance().startGlobalActionDetector();
+//        for(int i = 100;i<1000;++i){
+//            Student student = new Student();
+//            student.setUsername("student"+i);
+//            student.setPassword("123456");
+//            student.setColleage("计算机学院");
+//            student.setId("2015211"+i);
+//            CustomerService.getInstance().saveCustomer(student);
+//        }
+//        for(int i = 100;i<500;++i){
+//            Teacher teacher = new Teacher();
+//            teacher.setUsername("teacher"+i);
+//            teacher.setPassword("123456");
+//            teacher.setId("2014211"+i);
+//            CustomerService.getInstance().saveCustomer(teacher);
+//        }
+        new StartUpView();
+
     }
 }

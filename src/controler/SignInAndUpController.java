@@ -28,10 +28,13 @@ public class SignInAndUpController {
     }
 
     public void handleLogin(String id, String password, JFrame frame){
-        if(id.equals("admin") && password.equals("123456")){
-            AdminControler controler = new AdminControler();
-            frame.dispose();
-            return;
+        if(id.equals("admin")){
+            if(password.equals("123456")){
+                AdminControler controler = new AdminControler();
+                frame.dispose();
+                return;
+            }
+            ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
         }
 
         Customer customer = service.getCustomerById(id);

@@ -24,6 +24,7 @@ public class CustomerService {
     private static CustomerService instance;
     private int studentNum;
     private int teacherNum;
+    private int rentedNum;
     private Map<String, Customer> customerMap;
     private Set<Customer> customers;
     private GlobalActionDetector detector;
@@ -41,6 +42,8 @@ public class CustomerService {
         studentNum = temp == null ? 0 : temp;
         temp = helper.getConfig("teacherNum");
         teacherNum = temp == null ? 0 : temp;
+        temp = helper.getConfig("rentedNum");
+        rentedNum = temp == null ? 0 : temp;
         customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
         if (customers == null) customers = new HashSet<>();
         customerMap = new HashMap<>();
@@ -54,6 +57,7 @@ public class CustomerService {
             saveAllCustomers();
             helper.saveConfig("teacherNum", teacherNum);
             helper.saveConfig("studentNum", studentNum);
+            helper.saveConfig("rentedNum",rentedNum);
             System.out.println("saved");
         });
     }
@@ -114,11 +118,19 @@ public class CustomerService {
         if (customer.getWantedSet().contains(isbn)) {
             customer.getWantedSet().remove(isbn);
         }
+        if(customer.getWantedSet().isEmpty()){
+            rentedNum--;
+        }
         int rentTime = customer.getBookedMap().remove(isbn);
         if (detector.getDays() - rentTime > 30) {
 
             customer.setDelayedTimes(customer.getDelayedTimes() + 1);
         }
+        List<String> list = customer.getHistoryList();
+        if(list.size()>=30){
+            list.remove(list.size()-1);
+        }
+        list.add(0,isbn+" "+rentTime+" "+GlobalActionDetector.getInstance().getDays());
         return rentTime;
     }
 
@@ -136,5 +148,9 @@ public class CustomerService {
             return true;
         }
         return false;
+    }
+
+    public int getRentedNum() {
+        return rentedNum;
     }
 }
