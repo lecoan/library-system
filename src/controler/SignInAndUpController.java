@@ -35,6 +35,7 @@ public class SignInAndUpController {
                 return;
             }
             ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
+            return;
         }
 
         Customer customer = service.getCustomerById(id);
