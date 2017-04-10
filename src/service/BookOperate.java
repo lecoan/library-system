@@ -208,6 +208,15 @@ public class BookOperate {
         return null;
     }
 
+    public List<String> ArrivedBook(Set<String> set) {
+        List<String> ans = new ArrayList<>();
+        for(String isbn:set) {
+            BookPathTable index = getBookpathtable(isbn);
+            if(index.getRestnum() > 0) ans.add(isbn);
+        }
+        if(ans.size() == 0) return null;
+        return ans;
+    }
     public List<BookPathTable> getBookbyWriter(String writername) {
         if(writersbooklist.get(writername) != null) {
             List<BookPathTable> copylist = new ArrayList<>();
@@ -276,13 +285,9 @@ public class BookOperate {
         isbn = newbook.getIsbn();
         BookPathTable index = getBookpathtable(isbn);
         if (index != null) {
-            int addnum = num - index.getTotalnum();
-            index.setTotalnum(index.getTotalnum() + addnum);
-            index.setRestnum(index.getRestnum() + addnum);
+            SetBooknum(isbn, index.getTotalnum() + num);
             //booklist.remove(isbn);
             //booklist.put(isbn, index);
-            totalbooknum = totalbooknum + addnum;
-            restbooknum = restbooknum + addnum;
         }
         //首先会在booklist里面找这本书,因为传递的是引用，所以修改会影响原位置的数据
         // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
@@ -300,9 +305,9 @@ public class BookOperate {
             AddNewIndextoTable(publishersbooklist, newbook.getPublishername(), index1);
             AddNewIndextoTable(samenamebooklist, newbook.getName(), index1);
             AddNewIndextoTable(samekindbooklist, newbook.getKind(), index1);
-            totalbooknum = totalbooknum + num;
-            restbooknum = restbooknum + num;
         }//否则就要重新保存这本书
+        totalbooknum = totalbooknum + num;
+        restbooknum = restbooknum + num;
         return true;//代表添加成功
     }//添加一本新书，保存到相应文件，并将这本书对应的索引保存到图书索引中，//并且按照种类，作者，出版社，书名将这本书保存到相应的索引中
 
@@ -381,14 +386,11 @@ public class BookOperate {
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
 
     public boolean SetBooknum(String isbn, int num) {
-        if (booklist.get(isbn).getIsbn().equals(isbn)) {
             Book book = getBookbyIsbn(isbn);
             booklist.get(isbn).setTotalnum(num);
             booklist.get(isbn).setRestnum(num);
             UpdateTable(book);
             return true;
-        }
-        return false;
     }
 }
 //程序结束时要调用savedata将bookoperate数据保存，通过图书编号找到特定图书后，显示剩余数量的问题。

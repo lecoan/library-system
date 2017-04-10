@@ -1,6 +1,4 @@
-import bean.Customer;
-import service.CustomerService;
-import view.RegisterView;
+import listener.GlobalActionDetector;
 import view.StartUpView;
 
 /**
@@ -9,6 +7,8 @@ import view.StartUpView;
 
 public class App {
     public static void main(String args[]) {
-        StartUpView view = new StartUpView();
+        GlobalActionDetector.getInstance().startGlobalActionDetector();
+        new StartUpView();
+
     }
 }
