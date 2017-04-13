@@ -54,6 +54,7 @@ public class Log {
         }
         return temp;
     }//读取一个对象
+
     public static Log getInstance() {
         if(instance == null) {
             instance = new Log();
@@ -74,6 +75,19 @@ public class Log {
         String day = date.getDate(GlobalActionDetector.getInstance().getDays());
         String[] ll = {day, operator, operatetype[_type], info};
         log.add(ll);
+        try {
+            File file=new File("log.txt");
+            if(!file.exists())
+                file.createNewFile();
+            FileOutputStream out=new FileOutputStream(file,true);
+                StringBuffer sb=new StringBuffer();
+                sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info);
+                out.write(sb.toString().getBytes("utf-8"));
+            out.close();
+        }
+        catch (IOException e) {
+            System.out.println("write log");
+        }
     }
     public List<String[]> GetLog() {
         return log;

@@ -30,7 +30,8 @@ public class SignInAndUpController {
     public void handleLogin(String id, String password, JFrame frame){
         if(id.equals("admin")){
             if(password.equals("123456")){
-                AdminControler controler = new AdminControler();
+                AdminControler controler = AdminControler.getInstance();
+                controler.initAdminView();
                 frame.dispose();
                 return;
             }
