@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.Set;
 import bean.*;
+import service.CustomerService;
 
 
 /**
@@ -272,8 +273,9 @@ public class UserView{
 
     }
 
-    public void destroyAdminView(){
+    public void destroyUserView(){
         userframe.dispose();
+        CustomerService.getInstance().updateCustomer(customer);
         findBookFrame.Frame.dispose();
         findBookFrame = null;
         bookInfoFrame.dispose();

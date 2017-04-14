@@ -2,6 +2,7 @@
 .idea/
 library-system.iml
 out/
+data/
 user.xml
 config
 book.xml

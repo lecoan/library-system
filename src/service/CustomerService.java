@@ -85,7 +85,14 @@ public class CustomerService {
     }
 
     public void updateCustomer(Customer customer) {
-        saveCustomer(customer);
+        Map<String, Customer> customerMap =
+                (Map<String, Customer>) StorageHelper
+                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
+        if(customerMap == null) {
+            customerMap = new HashMap<>();
+        }
+        customerMap.put(customer.getId(),customer);
+        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
 
     public void saveCustomer(Customer customer) {

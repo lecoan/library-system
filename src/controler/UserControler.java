@@ -53,7 +53,7 @@ public class UserControler {
             @Override
             public void windowClosing(WindowEvent e) {
                 bookOperate.SaveData();
-                UserPanel.destroyAdminView();
+                UserPanel.destroyUserView();
             }
         });
         UserPanel.jb1.addMouseListener(new MouseAdapter() {

@@ -64,8 +64,8 @@ public class App {
 //        }
 //        catch(IOException e) {
 //        }
-//
-//        GlobalActionDetector.getInstance().startGlobalActionDetector();
+////
+////        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        for(int i = 100;i<1000;++i){
 //            Student student = new Student();
 //            student.setUsername("student"+i);
