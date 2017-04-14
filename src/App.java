@@ -1,4 +1,6 @@
 import bean.Book;
+import bean.Customer;
+import controler.UserControler;
 import bean.BookPathTable;
 import bean.Student;
 import bean.Teacher;
@@ -18,7 +20,18 @@ import java.util.List;
 
 public class App {
     public static void main(String args[]) {
-        //GlobalActionDetector.getInstance().startGlobalActionDetector();
+//<<<<<<< HEAD
+//
+////        RegisterView test = new RegisterView();
+//        Student testSt = new Student();
+//        testSt.setColleage("asdfasdf");
+//        testSt.setId("2015211432");
+//        testSt.setMoney(23);
+//        testSt.setUsername("ZYX是SB");
+//
+//        UserControler test = UserControler.getInstance();
+//        test.initUserView(testSt);
+        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        BookOperate oo = BookOperate.getInstance();
 //        try {
 //            FileReader fr = new FileReader("bookSpider/popular.txt");
@@ -54,23 +67,23 @@ public class App {
 //        }
 //        catch(IOException e) {
 //        }
-
-        GlobalActionDetector.getInstance().startGlobalActionDetector();
-        for(int i = 100;i<1000;++i){
-            Student student = new Student();
-            student.setUsername("student"+i);
-            student.setPassword("123456");
-            student.setColleage("计算机学院");
-            student.setId("2015211"+i);
-            CustomerService.getInstance().saveCustomer(student);
-        }
-        for(int i = 100;i<500;++i){
-            Teacher teacher = new Teacher();
-            teacher.setUsername("teacher"+i);
-            teacher.setPassword("123456");
-            teacher.setId("2014211"+i);
-            CustomerService.getInstance().saveCustomer(teacher);
-        }
+//
+////        GlobalActionDetector.getInstance().startGlobalActionDetector();
+//        for(int i = 100;i<1000;++i){
+//            Student student = new Student();
+//            student.setUsername("student"+i);
+//            student.setPassword("123456");
+//            student.setColleage("计算机学院");
+//            student.setId("2015211"+i);
+//            CustomerService.getInstance().saveCustomer(student);
+//        }
+//        for(int i = 100;i<500;++i){
+//            Teacher teacher = new Teacher();
+//            teacher.setUsername("teacher"+i);
+//            teacher.setPassword("123456");
+//            teacher.setId("2014211"+i);
+//            CustomerService.getInstance().saveCustomer(teacher);
+//        }
         new StartUpView();
     }
 }
