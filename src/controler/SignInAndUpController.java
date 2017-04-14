@@ -42,7 +42,6 @@ public class SignInAndUpController {
         if(customer == null && customer.getPassword().equals(password)) {
             frame.dispose();
             //TODO
-            //UserView view = new UserView();
             return;
         }
         ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
