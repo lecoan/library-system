@@ -4,7 +4,9 @@ package service;
 import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
+import bean.OperateData;
 import listener.GlobalActionDetector;
+import util.LRUCache;
 import util.StorageHelper;
 import view.GetDate;
 import java.io.*;
@@ -17,22 +19,13 @@ import static util.StorageHelper.ReadObjectFromFile;
 //其实在不同图书分类索引表中，只需要存储图书的编号的list
 //增加了缓冲区，每找一本书，就将这本书添加到缓冲区，如果缓冲区已满，就随机去掉一个？，
 //删除图书时从缓冲区删除，更新图书时也要更新缓冲区？
-class OperateData implements Serializable {
-    public Map<String, BookPathTable> booklist;
-    public Map<String, List<BookPathTable>> writersbooklist;
-    public Map<String, List<BookPathTable>> publishersbooklist;
-    public Map<String, List<BookPathTable>> samenamebooklist;
-    public Map<String, List<BookPathTable>> samekindbooklist;
-    public List<BookPathTable> ranklist;//借阅次数最高的二十本书的排行榜
-    public int pathnum;
-    public int totalbooknum;//增加一本书就加一，删除一本书就减一
-    public int restbooknum;//借阅一本书就加一，归还一本书就减一
-}
+
 
 public class BookOperate {
+
     private Map<String, BookPathTable> booklist;
     private List<BookPathTable> ranklist;
-    private Map<String, Book> bufferlist;//缓存哈希表
+    private LRUCache<String, Book> bufferlist;//缓存哈希表
     private Map<String, List<BookPathTable>> writersbooklist;
     private Map<String, List<BookPathTable>> publishersbooklist;
     private Map<String, List<BookPathTable>> samenamebooklist;
@@ -109,7 +102,7 @@ public class BookOperate {
         bufferlist.put(isbn, newbook);
         BookPathTable temp = getBookpathtable(isbn);
         if (temp != null) {
-            List<Book> templist = new ArrayList<>();
+            List<Book> templist;
             templist = (List<Book>) ReadObjectFromFile(temp.getBookpath());
             for (int j = 0; j < templist.size(); ++j) {
                 if (templist.get(j).getIsbn().equals(isbn)) {
@@ -151,7 +144,7 @@ public class BookOperate {
             System.out.println("first time run!");
         }//文件不存在说明未经过初始化，所以要将变量进行初始化
         else {
-            OperateData data = new OperateData();
+            OperateData data;
             data = (OperateData) ReadObjectFromFile("book.xml");
             booklist = data.booklist;
             ranklist = data.ranklist;
@@ -164,7 +157,7 @@ public class BookOperate {
             restbooknum = data.restbooknum;
             System.out.println("next run!");
         }//直接从文件中读取出数据赋给相关数据
-        bufferlist = new TreeMap<>();
+        bufferlist = new LRUCache<>(1000,10*1000*10);
     }//单例模式
 
     private void Sort(List<BookPathTable> list) {
@@ -287,11 +280,11 @@ public class BookOperate {
                     if (templist.get(j).getIsbn().equals(Isbn)) {
                         System.out.println("get the book by isbn!");
 
-                        if(bufferlist.size() > 1000) {
-                            Set<String> ss = bufferlist.keySet();
-                            Iterator<String> it = ss.iterator();
-                            if(it.hasNext()) bufferlist.remove(it.next());
-                        }
+//                        if(bufferlist.size() > 1000) {
+//                            Set<String> ss = bufferlist.keySet();
+//                            Iterator<String> it = ss.iterator();
+//                            if(it.hasNext()) bufferlist.remove(it.next());
+//                        }
                         bufferlist.put(Isbn, templist.get(j));
 
                         return templist.get(j);
@@ -418,5 +411,6 @@ public class BookOperate {
             UpdateTable(book);
             return true;
     }
+
 }
 //程序结束时要调用savedata将bookoperate数据保存，通过图书编号找到特定图书后，显示剩余数量的问题。

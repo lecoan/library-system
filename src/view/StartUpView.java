@@ -23,11 +23,11 @@ import java.util.*;
  ******************************************************************/
 public class StartUpView extends JFrame{
 
-    private SignInAndUpController controller;
+    //private SignInAndUpController controller;
     private GlobalActionDetector detector;
 
     public StartUpView() {
-        controller = SignInAndUpController.getInstance();
+        //controller = SignInAndUpController.getInstance();
         detector = GlobalActionDetector.getInstance();
 
 
@@ -54,14 +54,14 @@ public class StartUpView extends JFrame{
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                LoginView loginView = new LoginView();
+                new LoginView();
             }
         });
 
         register.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                RegisterView view = new RegisterView();
+                new RegisterView();
             }
         });
 

@@ -288,7 +288,7 @@ public class AdminView {    //展示admin主面板
 
         Box borrowRateBox =  Box.createHorizontalBox();//借出率盒子
         JLabel borrowRateLabel = new JLabel("图书借出率：");
-        JLabel borrowRate = new JLabel(((bookTotalNum - bookRestNum)/bookTotalNum * 100) + "%");
+        JLabel borrowRate = new JLabel(bookTotalNum==0?"0":(((bookTotalNum - bookRestNum)/bookTotalNum * 100) + "%"));
         borrowRateBox.add(borrowRateLabel);
         borrowRateBox.add(Box.createGlue());
         borrowRateBox.add(borrowRate);

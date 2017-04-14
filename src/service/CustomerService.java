@@ -9,8 +9,6 @@ import util.LRUCache;
 import util.StorageHelper;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -32,8 +30,6 @@ public class CustomerService {
     private int teacherNum;
     private int rentedNum;
 
-//    private Map<String, Customer> customerMap;
-//    private Set<Customer> customers;
     private GlobalActionDetector detector;
     private StorageHelper helper;
     private Cache<String, Customer> cache;
@@ -52,18 +48,11 @@ public class CustomerService {
         teacherNum = temp == null ? 0 : temp;
         temp = helper.getConfig("rentedNum");
         rentedNum = temp == null ? 0 : temp;
-//        customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
-//        if (customers == null) customers = new HashSet<>();
-//        customerMap = new HashMap<>();
-//        for (Customer customer : customers) {
-//            customerMap.put(customer.getId(), customer);
-//        }
 
         detector = GlobalActionDetector.getInstance();
         cache = new LRUCache<>(CACHE_SIZE,DEFAULT_CACHE_SAVE_TIME);
 
         helper.addQuitEvent(() -> {
-            //saveAllCustomers();
             helper.saveConfig("teacherNum", teacherNum);
             helper.saveConfig("studentNum", studentNum);
             helper.saveConfig("rentedNum",rentedNum);
@@ -78,10 +67,6 @@ public class CustomerService {
         return instance = new CustomerService();
     }
 
-//    public Set<Customer> getAllCustomers() {
-//        return customers;
-//    }
-
     public Customer getCustomerById(String id) {
         Customer customer = cache.get(id);
         if(customer == null){
@@ -90,12 +75,7 @@ public class CustomerService {
             customer = customerMap.get(id);
         }
         return customer;
-        //return customerMap.get(id);
     }
-
-//    private void saveAllCustomers() {
-//        StorageHelper.WriteObjectToFile(customers, USER_DATA_PATH);
-//    }
 
     public void saveCustomer(Customer customer) {
         if (customer instanceof Student) {
@@ -109,9 +89,6 @@ public class CustomerService {
         assert customerMap != null;
         customerMap.put(customer.getId(),customer);
         StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
-//        customers.add(customer);
-//        customerMap.put(customer.getId(), customer);
-//        System.out.println("ok");
     }
 
     public void freezeCustomer(Customer customer) {
