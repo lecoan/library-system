@@ -1,5 +1,6 @@
 package view;
 
+import controler.SignInAndUpController;
 import oracle.jrockit.jfr.JFR;
 
 import javax.swing.*;
@@ -20,7 +21,12 @@ public class LoginView extends JFrame{
     private final JTextField id;
     private final JPasswordField password;
 
+    private SignInAndUpController controller;
+
     public LoginView() {
+
+        this.controller = SignInAndUpController.getInstance();
+
         setTitle("login");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(500,500);
@@ -48,20 +54,25 @@ public class LoginView extends JFrame{
         setContentPane(panel);
         setVisible(true);
 
+        setLoginListener();
+
     }
 
 
-    public void setLoginListener(LoginInfo info) {
+    private void setLoginListener() {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(info!=null)
-                    info.handleLoginInfo(id.getText(),new String(password.getPassword()));
+                String userid = id.getText();
+                String pw = new String(password.getPassword());
+                if(!"".equals(userid) && !"".equals(pw)){
+                    controller.handleLogin(userid,pw, LoginView.this);
+                }
+
+                else {
+                    ErrAlert.getInstance().findErrAlert(50,50,"请确保信息填写完整");
+                }
             }
         });
-    }
-
-    public interface LoginInfo{
-        public void handleLoginInfo(String id, String password);
     }
 }

@@ -79,7 +79,7 @@ public class Log {
             File file=new File("log.txt");
             if(!file.exists())
                 file.createNewFile();
-            FileOutputStream out=new FileOutputStream(file,true);
+                FileOutputStream out=new FileOutputStream(file,true);
                 StringBuffer sb=new StringBuffer();
                 sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info);
                 out.write(sb.toString().getBytes("utf-8"));
@@ -91,5 +91,8 @@ public class Log {
     }
     public List<String[]> GetLog() {
         return log;
+    }
+    public void Save() {
+        WriteObjectToFile(log,"log.xml" );
     }
 }

@@ -11,7 +11,22 @@ import java.io.*;
 import java.util.*;
 
 import static util.StorageHelper.ReadObjectFromFile;
+/*BookOperate
+作者：张悦祥
+功能：实现对图书数据的所有操作
+主要函数：
+    增加图书
+    删除图书
+    更新图书借阅次数排行榜
+    获取特定的图书数据
+    为图书增加借阅历
+    获取预约图书中已经归还的图书
+主要设计思路：
+    将图书分文件存储，并为图书创建索引表
+    索引表储存图书保存的文件，以及一些占用内存小，需要经常改变的变量
+    图书的比较大的数据（如借阅历史等）保存到文件中，然后从文件中读取时建立缓冲区，以提高效率
 
+* */
 //只有booklist中是实时的图书数量信息。
 //将booklist按照hashmap存储
 //其实在不同图书分类索引表中，只需要存储图书的编号的list
@@ -27,7 +42,7 @@ class OperateData implements Serializable {
     public int pathnum;
     public int totalbooknum;//增加一本书就加一，删除一本书就减一
     public int restbooknum;//借阅一本书就加一，归还一本书就减一
-}
+}//方便存储
 
 public class BookOperate {
     private Map<String, BookPathTable> booklist;
@@ -380,6 +395,7 @@ public class BookOperate {
     }
 
     public boolean UpdateBookrank(String isbn) {
+        if(booklist.get(isbn).getRestnum() == 0) return false;
         booklist.get(isbn).setBorrownum(booklist.get(isbn).getBorrownum() + 1);
         booklist.get(isbn).setRestnum(booklist.get(isbn).getRestnum() - 1);
         //更新借阅次数,剩余数量

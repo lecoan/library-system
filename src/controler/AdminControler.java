@@ -1,6 +1,8 @@
 package controler;
 
 import bean.Book;
+import bean.Customer;
+import bean.Student;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;

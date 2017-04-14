@@ -3,6 +3,9 @@
 library-system.iml
 out/
 user.xml
+config
+book.xml
+book1.xml
 book.txt
 user
 bookSpider/node_modules/
