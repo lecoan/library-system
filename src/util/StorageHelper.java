@@ -1,6 +1,10 @@
 package util;
 
+import org.omg.SendingContext.RunTime;
+
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,6 +14,7 @@ import java.util.TreeMap;
 public class StorageHelper {
 
     private Map<String, Integer> config;
+    private List<Event> eventList;
 
     private static StorageHelper instance;
     private StorageHelper(){
@@ -17,6 +22,8 @@ public class StorageHelper {
         if(config == null) {
             config = new TreeMap<>();
         }
+        eventList = new LinkedList<>();
+        start();
     }
 
     /**
@@ -28,6 +35,18 @@ public class StorageHelper {
             instance = new StorageHelper();
         }
         return instance;
+    }
+
+    private void start(){
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            eventList.forEach(Event::handle);
+            StorageHelper.WriteObjectToFile(config,"./config");
+            System.out.println("saved in file");
+        }));
+    }
+
+    public void addQuitEvent(Event event){
+        eventList.add(event);
     }
 
     public void saveConfig(String key, int value){
@@ -93,8 +112,7 @@ public class StorageHelper {
         }
     }//只能写入一个对象，之后写入的会把之前写入的对象覆盖
 
-    @Override
-    protected void finalize() throws Throwable {
-        StorageHelper.WriteObjectToFile(config,"./config");
+    public interface Event{
+        void handle();
     }
 }

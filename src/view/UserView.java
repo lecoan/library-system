@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import bean.*;
+import controler.*;
 
 
 /**
@@ -199,8 +200,6 @@ public class UserView implements ActionListener{
         panel3.add(jb1);
         jb1.setBounds(0,0,200,220);
         jb1.setBorder(BorderFactory.createRaisedBevelBorder());
-        jb1.setActionCommand("find");
-        jb1.addActionListener(this);
         jb1.setBackground(Color.WHITE);
 
         Map<String, Integer> map = customer.getBookedMap();
@@ -234,10 +233,7 @@ public class UserView implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-        if("find".equals(e.getActionCommand())){
-
-        }
-        else if("在借".equals(e.getActionCommand())) {
+         if("在借".equals(e.getActionCommand())) {
             String[] columnNames = {"书目", "借阅天数"};
             JTable table = new JTable(zaijiestrings,columnNames);
             table.setBackground(Color.lightGray);

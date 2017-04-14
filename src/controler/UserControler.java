@@ -30,7 +30,7 @@ public class UserControler {
         }
     }
     private UserControler() {
-
+        //initUserView(customer);
     }
     public UserView initUserView(Customer customer){
         UserView UserPanel = new UserView(customer);
@@ -66,7 +66,16 @@ public class UserControler {
             //查找
             @Override
             public void mouseClicked(MouseEvent e) {
-                jieyueRetrun(UserPanel.findBookFrame.curBookItem.getIsbn());
+                if(bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum()>0){
+                    jieyueRetrun(UserPanel.findBookFrame.curBookItem.getIsbn());
+                    UserPanel.bookInfoFrame.dispose();
+                    UserPanel.findBookFrame.curBookItem = null;
+                    commonControler.clearFindBookFrame(UserPanel.findBookFrame);
+                    errAlert.findErrAlert((int)UserPanel.bookInfoFrame.getLocation().getX()+100,(int)UserPanel.bookInfoFrame.getLocation().getY()+100,"借阅成功");
+                }
+                else {
+                    errAlert.findErrAlert((int)UserPanel.bookInfoFrame.getLocation().getX()+100,(int)UserPanel.bookInfoFrame.getLocation().getY()+100,"剩余数量不足，请预定");
+                }
             }
         });
         UserPanel.yudingjb.addMouseListener(new MouseAdapter() {
@@ -87,7 +96,6 @@ public class UserControler {
     }
 
     public void jieyueRetrun(String isbn){
-        //if()
         bookOperate.UpdateBookrank(isbn);
     }
 
