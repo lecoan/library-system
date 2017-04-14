@@ -1,7 +1,6 @@
 
 package service;
 /*创建bookoperate操作对象时，在结束使用后要调用一次savedata*/
-
 import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
@@ -11,9 +10,13 @@ import view.GetDate;
 import java.io.*;
 import java.util.*;
 
+import static util.StorageHelper.ReadObjectFromFile;
+
 //只有booklist中是实时的图书数量信息。
 //将booklist按照hashmap存储
 //其实在不同图书分类索引表中，只需要存储图书的编号的list
+//增加了缓冲区，每找一本书，就将这本书添加到缓冲区，如果缓冲区已满，就随机去掉一个？，
+//删除图书时从缓冲区删除，更新图书时也要更新缓冲区？
 class OperateData implements Serializable {
     public Map<String, BookPathTable> booklist;
     public Map<String, List<BookPathTable>> writersbooklist;
@@ -29,6 +32,7 @@ class OperateData implements Serializable {
 public class BookOperate {
     private Map<String, BookPathTable> booklist;
     private List<BookPathTable> ranklist;
+    private Map<String, Book> bufferlist;//缓存哈希表
     private Map<String, List<BookPathTable>> writersbooklist;
     private Map<String, List<BookPathTable>> publishersbooklist;
     private Map<String, List<BookPathTable>> samenamebooklist;
@@ -45,8 +49,12 @@ public class BookOperate {
     }
 
     public static BookOperate getInstance() {
-        if (instance == null) {
-            instance = new BookOperate();
+        if(instance == null) {
+            synchronized (BookOperate.class) {
+                if (instance == null) {
+                    instance = new BookOperate();
+                }
+            }
         }
         return instance;
     }
@@ -71,7 +79,7 @@ public class BookOperate {
             return bookpath[pathnum];
         }//如果存储图书的文件还未建立，就可以直接将图书存入
         else {
-            templist = (List<Book>) StorageHelper.ReadObjectFromFile(bookpath[pathnum]);
+            templist = (List<Book>) ReadObjectFromFile(bookpath[pathnum]);
             if (templist.size() < MaxNum) {
                 templist.add(newbook);
                 StorageHelper.WriteObjectToFile(templist, bookpath[pathnum]);
@@ -97,10 +105,12 @@ public class BookOperate {
     private void UpdateBook(Book newbook) {
         String isbn = new String();
         isbn = newbook.getIsbn();
+        if(bufferlist.get(isbn) != null) bufferlist.remove(isbn);
+        bufferlist.put(isbn, newbook);
         BookPathTable temp = getBookpathtable(isbn);
         if (temp != null) {
             List<Book> templist = new ArrayList<>();
-            templist = (List<Book>) StorageHelper.ReadObjectFromFile(temp.getBookpath());
+            templist = (List<Book>) ReadObjectFromFile(temp.getBookpath());
             for (int j = 0; j < templist.size(); ++j) {
                 if (templist.get(j).getIsbn().equals(isbn)) {
                     templist.set(j, newbook);
@@ -109,7 +119,8 @@ public class BookOperate {
             }
             StorageHelper.WriteObjectToFile(templist, temp.getBookpath());
             System.out.println("update success!");
-        } else System.out.println("update fail!");
+        }
+        else System.out.println("update fail!");
     }//更新一本图书的内容，实际更新的是借阅历史
 
     private void DeleteFromTable(Map<String, List<BookPathTable>> list, String key, String isbn) {
@@ -141,7 +152,7 @@ public class BookOperate {
         }//文件不存在说明未经过初始化，所以要将变量进行初始化
         else {
             OperateData data = new OperateData();
-            data = (OperateData) StorageHelper.ReadObjectFromFile("book.xml");
+            data = (OperateData) ReadObjectFromFile("book.xml");
             booklist = data.booklist;
             ranklist = data.ranklist;
             publishersbooklist = data.publishersbooklist;
@@ -153,15 +164,15 @@ public class BookOperate {
             restbooknum = data.restbooknum;
             System.out.println("next run!");
         }//直接从文件中读取出数据赋给相关数据
+        bufferlist = new TreeMap<>();
     }//单例模式
 
     private void Sort(List<BookPathTable> list) {
         for (int i = 0; i < list.size(); ++i) {
             for (int j = list.size() - 1; j > i; --j) {
                 if (list.get(j).getBorrownum() > list.get(j - 1).getBorrownum()) {
-                    BookPathTable temp = list.get(j - 1);
-                    list.set(j - 1, list.get(j));
-                    list.set(j, temp);
+                    list.add(j - 1, list.get(j));
+                    list.remove(j + 1);
                 }
             }
         }
@@ -212,7 +223,7 @@ public class BookOperate {
         List<String> ans = new ArrayList<>();
         for(String isbn:set) {
             BookPathTable index = getBookpathtable(isbn);
-            if(index.getRestnum() > 0) ans.add(isbn);
+            if(index != null) if(index.getRestnum() > 0) ans.add(isbn);
         }
         if(ans.size() == 0) return null;
         return ans;
@@ -264,15 +275,30 @@ public class BookOperate {
         }
         //先从索引表中寻找图书所在文件
         if (flag) {
-            List<Book> templist = new ArrayList<>();
-            templist = (List<Book>) StorageHelper.ReadObjectFromFile(path);
-            //System.out.println(templist.size());
-            for (int j = 0; j < templist.size(); ++j) {
-                if (templist.get(j).getIsbn().equals(Isbn)) {
-                    System.out.println("get the book by isbn!");
-                    return templist.get(j);
+            if(bufferlist.get(Isbn) != null) {
+                System.out.println("get the book by isbn! --througn buffer");
+                return bufferlist.get(Isbn);
+            }
+            else {
+                List<Book> templist = new ArrayList<>();
+                templist = (List<Book>)ReadObjectFromFile(path);
+                //System.out.println(templist.size());
+                for (int j = 0; j < templist.size(); ++j) {
+                    if (templist.get(j).getIsbn().equals(Isbn)) {
+                        System.out.println("get the book by isbn!");
+
+                        if(bufferlist.size() > 1000) {
+                            Set<String> ss = bufferlist.keySet();
+                            Iterator<String> it = ss.iterator();
+                            if(it.hasNext()) bufferlist.remove(it.next());
+                        }
+                        bufferlist.put(Isbn, templist.get(j));
+
+                        return templist.get(j);
+                    }
                 }
             }
+
         }//如果找到就从相应文件中读取图书并返回,但是修改这本图书并不会影响文件中的图书
         else {
             System.out.println("not found the book!");
@@ -312,12 +338,12 @@ public class BookOperate {
     }//添加一本新书，保存到相应文件，并将这本书对应的索引保存到图书索引中，//并且按照种类，作者，出版社，书名将这本书保存到相应的索引中
 
     public boolean deleteBook(String isbn) {
-        boolean flag = false;
+        if(bufferlist.get(isbn) != null) bufferlist.remove(isbn);
         BookPathTable index = getBookpathtable(isbn);
         if (index != null) {
             Book temp = getBookbyIsbn(isbn);
             List<Book> templist = new ArrayList<>();
-            templist = (List<Book>) StorageHelper.ReadObjectFromFile(index.getBookpath());
+            templist = (List<Book>) ReadObjectFromFile(index.getBookpath());
             for (int j = 0; j < templist.size(); ++j) {
                 if (templist.get(j).getIsbn().equals(isbn)) {
                     templist.remove(j);
@@ -335,7 +361,7 @@ public class BookOperate {
             DeleteFromTable(samenamebooklist, temp.getName(), isbn);
         }
         else {
-                System.out.println("cannot delete, not return!");
+                System.out.println("cannot delete, not exist!");
                 return false;
         }
         return false;//图书不存在无法删除。
@@ -385,7 +411,7 @@ public class BookOperate {
         restbooknum++;
     }//为一本书添加借阅历史，并更新图书此时剩余图书数量加一*/
 
-    public boolean SetBooknum(String isbn, int num) {
+    private boolean SetBooknum(String isbn, int num) {
             Book book = getBookbyIsbn(isbn);
             booklist.get(isbn).setTotalnum(num);
             booklist.get(isbn).setRestnum(num);

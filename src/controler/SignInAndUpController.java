@@ -30,7 +30,6 @@ public class SignInAndUpController {
     public void handleLogin(String id, String password, JFrame frame){
         if(id.equals("admin")){
             if(password.equals("123456")){
-                AdminControler controler = new AdminControler();
                 frame.dispose();
                 return;
             }
@@ -42,7 +41,6 @@ public class SignInAndUpController {
         if(customer == null && customer.getPassword().equals(password)) {
             frame.dispose();
             //TODO
-            //UserView view = new UserView();
             return;
         }
         ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");

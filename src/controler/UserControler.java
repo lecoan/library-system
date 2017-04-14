@@ -2,13 +2,11 @@ package controler;
 
 import bean.Book;
 import bean.BookPathTable;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import service.BookOperate;
 import view.ErrAlert;
 import view.FindBookFrame;
 import view.UserView;
 
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.List;
 
@@ -16,29 +14,52 @@ import java.util.List;
  * Created by ghoskno on 3/29/17.
  */
 public class UserControler {
-    //    private List<BookPathTable> curBookList = null;
-    BookOperate bookOperate = BookOperate.getInstance();
-    FindBookFrame findBookFrame = FindBookFrame.getInstance();
-    ErrAlert errAlert = ErrAlert.getInstance();
-    CommonControler commonControler = new CommonControler();
-    UserView UserPanel = null;
 
-    public UserControler() {
-        UserPanel = new UserView();
+    BookOperate bookOperate = BookOperate.getInstance();
+    ErrAlert errAlert = ErrAlert.getInstance();
+    CommonControler commonControler = CommonControler.getInstance();
+
+    private volatile static UserControler instance;
+
+    public static UserControler getInstance(){
+        synchronized (UserControler.class) {
+            if(instance == null) {
+                instance = new UserControler();
+            }
+            return instance;
+        }
+    }
+    private UserControler() {
+
+    }
+    public void initUserView(){
+        UserView UserPanel = new UserView();
+        commonControler.findBook(UserPanel.findBookFrame);
         UserPanel.jb1.addMouseListener(new MouseAdapter() {
             //查找
             @Override
             public void mouseClicked(MouseEvent e) {
-                findBookFrame.showFindBookField();
-                commonControler.findBook();
+                UserPanel.findBookFrame.showFindBookField();
             }
         });
-        findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
+        UserPanel.findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2){
-                    showBookItem(findBookFrame.bookListTable.getSelectedRow());
+                    showBookItem(bookOperate.getBookbyIsbn(UserPanel.findBookFrame.curBookList.get(UserPanel.findBookFrame.bookListTable.getSelectedRow()).getIsbn()),UserPanel);
                 }
+            }
+        });
+        UserPanel.findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Book bookItem = bookOperate.getBookbyIsbn(UserPanel.findBookFrame.searchBook.getText());
+                if (bookItem != null) { //找到图书
+                    UserPanel.findBookFrame.curBookList = null;
+                    showBookItem(bookItem,UserPanel);
+                }
+                else
+                    errAlert.findErrAlert((int)(UserPanel.findBookFrame.Frame.getLocation().getX()+200),(int)(UserPanel.findBookFrame.Frame.getLocation().getY()+100),"找不到：【ISBN ： " + UserPanel.findBookFrame.searchBook.getText() + "】");
             }
         });
         UserPanel.jb3.addMouseListener(new MouseAdapter() {
@@ -71,38 +92,22 @@ public class UserControler {
 
             }
         });
-        findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Book bookItem = bookOperate.getBookbyIsbn(findBookFrame.searchBook.getText());
-                if (bookItem != null) {
-                    commonControler.curBookList = null;
-//                    System.out.print(bookItem);
-                    showBookItem(bookItem);
-                }
-                else
-                    errAlert.findErrAlert((int)(findBookFrame.findBookFrame.getLocation().getX()+200),(int)(findBookFrame.findBookFrame.getLocation().getY()+100),"找不到：【ISBN ： " + findBookFrame.searchBook.getText() + "】");
-            }
-        });
     }
 
-
-    private void showBookItem(Book bookItem){
+    private void showBookItem(Book bookItem,UserView UserPanel){
         //    显示搜索到的单本书
+        UserPanel.findBookFrame.curBookItem = bookItem;
         UserPanel.showBookInfoFrame(bookItem,bookOperate.getBookpathtable(bookItem.getIsbn()));
         System.out.print(bookItem.getIsbn());
-    }
-
-    private void showBookItem(int row){
-        showBookItem(bookOperate.getBookbyIsbn(commonControler.curBookList.get(row).getIsbn()));
     }
 
     public void jieyueRetrun(){}
     public void yudingReturn(){}
 
-
     public static void main(String[] args){
-        UserControler test = new UserControler();
+
+        UserControler test = UserControler.getInstance();
+        test.initUserView();test.initUserView();
     }
 
 
