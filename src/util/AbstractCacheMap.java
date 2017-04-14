@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by lecoan on 17-4-14.
  */
-abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
+public abstract class AbstractCacheMap<K,V> implements Cache<K,V> {
 
     class CacheObject<K2,V2> {
 

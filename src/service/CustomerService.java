@@ -4,10 +4,13 @@ import bean.Customer;
 import bean.Student;
 import constance.CustomerConstance;
 import listener.GlobalActionDetector;
+import util.Cache;
+import util.LRUCache;
 import util.StorageHelper;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -20,15 +23,20 @@ import java.util.function.BiConsumer;
 public class CustomerService {
 
     private static final String USER_DATA_PATH = "./user";
+    private static final int CACHE_SIZE = 1000;
+    private static final long DEFAULT_CACHE_SAVE_TIME = 10*1000*10;
 
     private static CustomerService instance;
+
     private int studentNum;
     private int teacherNum;
     private int rentedNum;
-    private Map<String, Customer> customerMap;
-    private Set<Customer> customers;
+
+//    private Map<String, Customer> customerMap;
+//    private Set<Customer> customers;
     private GlobalActionDetector detector;
     private StorageHelper helper;
+    private Cache<String, Customer> cache;
 
     public int getStudentNum(){
         return studentNum;
@@ -44,17 +52,18 @@ public class CustomerService {
         teacherNum = temp == null ? 0 : temp;
         temp = helper.getConfig("rentedNum");
         rentedNum = temp == null ? 0 : temp;
-        customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
-        if (customers == null) customers = new HashSet<>();
-        customerMap = new HashMap<>();
-        for (Customer customer : customers) {
-            customerMap.put(customer.getId(), customer);
-        }
+//        customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
+//        if (customers == null) customers = new HashSet<>();
+//        customerMap = new HashMap<>();
+//        for (Customer customer : customers) {
+//            customerMap.put(customer.getId(), customer);
+//        }
 
         detector = GlobalActionDetector.getInstance();
+        cache = new LRUCache<>(CACHE_SIZE,DEFAULT_CACHE_SAVE_TIME);
 
         helper.addQuitEvent(() -> {
-            saveAllCustomers();
+            //saveAllCustomers();
             helper.saveConfig("teacherNum", teacherNum);
             helper.saveConfig("studentNum", studentNum);
             helper.saveConfig("rentedNum",rentedNum);
@@ -69,17 +78,24 @@ public class CustomerService {
         return instance = new CustomerService();
     }
 
-    public Set<Customer> getAllCustomers() {
-        return customers;
-    }
+//    public Set<Customer> getAllCustomers() {
+//        return customers;
+//    }
 
     public Customer getCustomerById(String id) {
-        return customerMap.get(id);
+        Customer customer = cache.get(id);
+        if(customer == null){
+            Map<String, Customer> customerMap =
+                    (Map<String, Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH+"_"+hash(id));
+            customer = customerMap.get(id);
+        }
+        return customer;
+        //return customerMap.get(id);
     }
 
-    private void saveAllCustomers() {
-        StorageHelper.WriteObjectToFile(customers, USER_DATA_PATH);
-    }
+//    private void saveAllCustomers() {
+//        StorageHelper.WriteObjectToFile(customers, USER_DATA_PATH);
+//    }
 
     public void saveCustomer(Customer customer) {
         if (customer instanceof Student) {
@@ -87,9 +103,15 @@ public class CustomerService {
         } else {
             teacherNum++;
         }
-        customers.add(customer);
-        customerMap.put(customer.getId(), customer);
-        System.out.println("ok");
+        Map<String, Customer> customerMap =
+                (Map<String, Customer>) StorageHelper
+                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
+        assert customerMap != null;
+        customerMap.put(customer.getId(),customer);
+        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
+//        customers.add(customer);
+//        customerMap.put(customer.getId(), customer);
+//        System.out.println("ok");
     }
 
     public void freezeCustomer(Customer customer) {
@@ -153,5 +175,9 @@ public class CustomerService {
 
     public int getRentedNum() {
         return rentedNum;
+    }
+
+    private int hash(String id){
+        return new Integer(id)%10;
     }
 }
