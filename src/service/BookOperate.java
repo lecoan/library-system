@@ -34,7 +34,8 @@ public class BookOperate {
     private int totalbooknum;//增加一本书就加一，删除一本书就减一
     private int restbooknum;//借阅一本书就减一，归还一本书就加一
     private final int MaxNum = 2000;//每个文件保存图书的最大数量
-    private final String[] bookpath = {"book1.xml", "book2.xml", "book3.xml", "book4.xml", "book5.xml"};//图书可以保存的所有文件，每个文件最多保存2000本图书
+    private final String[] bookpath = {"./data/book1.xml", "./data/book2.xml", "./data/book3.xml", "./data/book4.xml",
+            "./data/book5.xml"};//图书可以保存的所有文件，每个文件最多保存2000本图书
     private volatile static BookOperate instance;
 
     public BookPathTable getBookpathtable(String isbn) {
@@ -130,7 +131,7 @@ public class BookOperate {
     }//从四个索引表中删除图书
 
     private BookOperate() {
-        File file = new File("book.xml");
+        File file = new File("./data/book.xml");
         if (!file.exists()) {
             ranklist = new ArrayList<>();
             writersbooklist = new HashMap<>();
@@ -145,7 +146,7 @@ public class BookOperate {
         }//文件不存在说明未经过初始化，所以要将变量进行初始化
         else {
             OperateData data;
-            data = (OperateData) ReadObjectFromFile("book.xml");
+            data = (OperateData) ReadObjectFromFile("./data/book.xml");
             booklist = data.booklist;
             ranklist = data.ranklist;
             publishersbooklist = data.publishersbooklist;
@@ -199,7 +200,7 @@ public class BookOperate {
         data.pathnum = pathnum;
         data.totalbooknum = totalbooknum;
         data.restbooknum = restbooknum;
-        StorageHelper.WriteObjectToFile(data, "book.xml");
+        StorageHelper.WriteObjectToFile(data, "./data/book.xml");
         return true;
     }// 将图书操作对象保存到文件中
 

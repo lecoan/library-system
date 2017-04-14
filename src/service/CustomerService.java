@@ -20,7 +20,7 @@ import java.util.*;
  ******************************************************************/
 public class CustomerService {
 
-    private static final String USER_DATA_PATH = "./user";
+    private static final String USER_DATA_PATH = "./data/user";
     private static final int CACHE_SIZE = 1000;
     private static final long DEFAULT_CACHE_SAVE_TIME = 10*1000*10;
 
@@ -77,10 +77,15 @@ public class CustomerService {
                 return null;
             }else{
                 customer = customerMap.get(id);
+                cache.put(id,customer);
             }
 
         }
         return customer;
+    }
+
+    public void updateCustomer(Customer customer) {
+        saveCustomer(customer);
     }
 
     public void saveCustomer(Customer customer) {
@@ -97,10 +102,6 @@ public class CustomerService {
         }
         customerMap.put(customer.getId(),customer);
         StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
-    }
-
-    public void freezeCustomer(Customer customer) {
-        customer.setFreezed(true);
     }
 
     /**
