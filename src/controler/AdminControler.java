@@ -1,15 +1,15 @@
 package controler;
 
 import bean.Book;
-import bean.Customer;
 import bean.Student;
+import bean.Teacher;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;
 import view.AddPlaceHolder;
 import view.AdminView;
 import view.ErrAlert;
-import view.FindBookFrame;
 
 import java.awt.event.*;
 
@@ -38,7 +38,7 @@ public class AdminControler {
         }
     }
     private AdminControler() {   //初始化管理员界面
-        initAdminView();
+//        initAdminView();
     }
     private void showBookItem(Book bookItem,AdminView adminPanel){   //显示图书信息
         //显示搜索到的单本书
@@ -63,20 +63,45 @@ public class AdminControler {
          */
         if(adminPanel.findBookFrame.curBookItem != null) {
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+            Log.getInstance().CreateLog("admin",6,"修改图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
         }
         else{
+            Log.getInstance().CreateLog("admin",2,"添加图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功添加新书：" + newBook.getName());
         }
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
         adminPanel.modifyBookFrame.dispose();
         adminPanel.bookInfoFrame.dispose();
+        adminPanel.findBookFrame.curBookItem = null;
         commonControler.clearFindBookFrame(adminPanel.findBookFrame);
     }
     private void findUser(AdminView adminPanel){
         System.out.print(adminPanel.searchUserField.getText());
-        if(customerService.getCustomerById(adminPanel.searchUserField.getText()) == null){
-            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+150,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
+        adminPanel.curCustomer =customerService.getCustomerById(adminPanel.searchUserField.getText());
+        if(adminPanel.curCustomer == null){
+            errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
+        }
+        else{
+            if("student".equals(adminPanel.curCustomer.getType() )){
+                adminPanel.curCustomer = (Student)adminPanel.curCustomer;
+                adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
+                adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
+                adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
+                adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
+            }
+            else{
+                adminPanel.curCustomer = (Teacher)adminPanel.curCustomer;
+                adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
+                adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
+                adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
+            }
+            if(adminPanel.curCustomer.isFreezed())
+                adminPanel.unfreezeBtn.setEnabled(true);
+            adminPanel.changeLimitBtn.setEnabled(true);
+            adminPanel.lookBookListBtn.setEnabled(true);
         }
     }
     public void initAdminView(){
@@ -86,6 +111,10 @@ public class AdminControler {
         adminPanel.findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(adminPanel.findBookFrame.searchBook.getText().equals("请输入书名/书号/作者/出版社/类别进行搜索")){
+                    errAlert.findErrAlert((int)(adminPanel.findBookFrame.Frame.getLocation().getX()+200),(int)(adminPanel.findBookFrame.Frame.getLocation().getY()+100),"请输入查询内容");
+                    return;
+                }
                 Book bookItem = bookOperate.getBookbyIsbn(adminPanel.findBookFrame.searchBook.getText());
                 if (bookItem != null) { //找到图书
                     adminPanel.findBookFrame.curBookList = null;
@@ -113,7 +142,7 @@ public class AdminControler {
         adminPanel.adminFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                bookOperate.SaveData();
+                adminPanel.destroyAdminView();
             }
         });
         //双击图书列表中某行时，显示图书详细信息
@@ -140,6 +169,7 @@ public class AdminControler {
                 if(!adminPanel.bookDeleBtn.isEnabled())
                     return;
                 bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+                Log.getInstance().CreateLog("admin",3,"删除图书 " + adminPanel.findBookFrame.curBookItem.getIsbn());
                 errAlert.findErrAlert((int)(adminPanel.bookInfoFrame.getLocation().getX() + 100),(int)(adminPanel.bookInfoFrame.getLocation().getY() + 100),"成功删除图书：" + adminPanel.findBookFrame.curBookItem.getName());
                 adminPanel.bookInfoFrame.dispose();
                 adminPanel.findBookFrame.curBookItem = null;
@@ -169,10 +199,66 @@ public class AdminControler {
                 ModifyBook(adminPanel);
             }
         });
+        //点击查看图书的借阅历史
         adminPanel.lookBorrowHistory.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                adminPanel.showBookBorrowFram(adminPanel.findBookFrame.curBookItem);
+                adminPanel.showBookBorrowFrame(adminPanel.findBookFrame.curBookItem);
+            }
+        });
+        //点击查看用户借书情况
+        adminPanel.lookBookListBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(adminPanel.lookBookListBtn.isEnabled()){
+                    //TODO 查看用户借书情况
+                    adminPanel.showUserBookListFrame();
+                }
+            }
+        });
+        //点击解冻用户
+        adminPanel.unfreezeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(adminPanel.unfreezeBtn.isEnabled()){
+                    adminPanel.curCustomer.setFreezed(false);
+                    Log.getInstance().CreateLog("admin",1,"解冻用户 " + adminPanel.curCustomer.getUsername());
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功解冻用户：" +adminPanel.curCustomer.getUsername());
+                }
+            }
+        });
+        //点击修改用户权限
+        adminPanel.changeLimitBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int limit = new Integer(adminPanel.userLimit.getText());
+                if(limit>0&&limit<30){
+                    adminPanel.curCustomer.setMaxNumForRent(limit);
+                    Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "天");
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
+                }
+                else
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"输入借书权限值非法");
+            }
+        });
+        //点击退出按钮
+        adminPanel.signOutBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.adminFrame.dispose();
+                adminPanel.destroyAdminView();
+            }
+        });
+        adminPanel.visitLogBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.initLogPanel();
+            }
+        });
+        GlobalActionDetector.getInstance().addEvent(new GlobalActionDetector.Event() {
+            @Override
+            public void handle(int days) {
+                adminPanel.refreshAdminView();
             }
         });
     }

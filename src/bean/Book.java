@@ -23,6 +23,7 @@ public class Book implements Serializable {
     }//如果借阅历史不为空，就不需要初始化list对象，否则要先初始化list再添加借阅历史。
 
     public List<BorrowMemory> getBorrowmemory() {
+        if(borrowmemory == null)  borrowmemory = new ArrayList<>();
         return borrowmemory;
     }
 

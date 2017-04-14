@@ -72,7 +72,13 @@ public class CustomerService {
         if(customer == null){
             Map<String, Customer> customerMap =
                     (Map<String, Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH+"_"+hash(id));
-            customer = customerMap.get(id);
+
+            if(customerMap == null){
+                return null;
+            }else{
+                customer = customerMap.get(id);
+            }
+
         }
         return customer;
     }
@@ -86,7 +92,9 @@ public class CustomerService {
         Map<String, Customer> customerMap =
                 (Map<String, Customer>) StorageHelper
                         .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
-        assert customerMap != null;
+        if(customerMap == null) {
+            customerMap = new HashMap<>();
+        }
         customerMap.put(customer.getId(),customer);
         StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
@@ -101,10 +109,8 @@ public class CustomerService {
      * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
-        if (customer.isFreezed() || customer.getMaxNumForRent() <= customer.getBookedMap().size()) {
-            return CustomerConstance.RENT_TO_MUCH;
-        }
-        if(customer.getBookedMap().isEmpty()) rentedNum++;
+        if(customer.getBookedMap().isEmpty())
+            rentedNum++;
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }

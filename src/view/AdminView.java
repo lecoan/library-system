@@ -3,8 +3,11 @@ package view;
 import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
+import bean.Customer;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
+import service.Log;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,6 +20,7 @@ import java.util.List;
  */
 public class AdminView {    //展示admin主面板
     AddPlaceHolder placeholderHandle = AddPlaceHolder.getInstance();
+//    private List<JFrame> frameManager = new ArrayList<JFrame>();
 
     public JFrame adminFrame = new JFrame("Admin Panel");
 
@@ -25,24 +29,26 @@ public class AdminView {    //展示admin主面板
 
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public JButton bookUpdateBtn = new JButton("更新图书");
-        public JButton lookBorrowHistory = new JButton("借阅历史");
-    public JButton unfreezeBtn = new JButton("解冻");
-
+    public JButton lookBorrowHistory = new JButton("借阅历史");
     public JButton bookDeleBtn = new JButton("删除图书");
-    public JFrame modifyBookFrame = new JFrame("添加图书");
 
+    public JFrame modifyBookFrame = new JFrame("添加图书");
     public JButton modifyBookBtn = new JButton();   //添加/更新按钮
+
     //添加图书面板中输入框
     private JTextField bookNameInput = new JTextField(15);
     private JTextField bookPublisherInput = new JTextField(15);
     private JTextField bookAuthorInput = new JTextField(15);
     private JTextField bookNumInput = new JTextField(15);
     private JTextField bookKindInput= new JTextField(15);
-
     private JTextArea bookDesInput = new JTextArea(10,30);
+
     //查找用户界面
     public JPanel userPanel = new JPanel();
     public JTextField searchUserField = new JTextField();
+    public JLabel stuUserNum = new JLabel();
+    public JLabel teacherUserNum = new JLabel();
+    public JLabel borrowUserNum = new JLabel();
     public JButton searchUserBtn = new JButton("搜索");
     public JLabel userName = new JLabel("");
     public JLabel userStuNum = new JLabel("");
@@ -50,14 +56,25 @@ public class AdminView {    //展示admin主面板
     public JLabel userStatus = new JLabel("");
     public JTextField userLimit= new JTextField(1);
     public JButton changeLimitBtn = new JButton("修改权限");
+    public JButton unfreezeBtn = new JButton("解冻");
     public JButton lookBookListBtn= new JButton("查看借书情况");
+    public JFrame userBookListFrame = new JFrame("借书情况");
+    public Customer curCustomer = null;
+
+    //图书区域
+    public JLabel borrowedBookNum = new JLabel();
+    public JLabel borrowRate = new JLabel();
+    public JLabel bookNum = new JLabel();
 
     public FindBookFrame findBookFrame = new FindBookFrame();
 
     private JFrame bookBorrowFrame = new JFrame("借阅历史");
     JTable borrowTable= new JTable(0,0);
 
-    public JLabel timeLabel = new JLabel();
+    public JButton signOutBtn = new JButton("退出");
+    public JButton visitLogBtn = new JButton("查看日志");
+
+    public JLabel timeLabel = new JLabel(GetDate.getDate(GlobalActionDetector.getInstance().getDays()));
 
     public AdminView(){
         //初始化界面
@@ -138,12 +155,18 @@ public class AdminView {    //展示admin主面板
             modifyBookBtn.setText("添加");
         }
 
-        if(bookPath.getRestnum()!=bookPath.getTotalnum()){
+        if(bookPath!=null && bookPath.getRestnum()!=bookPath.getTotalnum()){
             bookNameInput.setEnabled(false);
             bookDesInput.setEnabled(false);
             bookPublisherInput.setEnabled(false);
             bookAuthorInput.setEnabled(false);
             bookKindInput.setEnabled(false);
+        }else{
+            bookNameInput.setEnabled(true);
+            bookDesInput.setEnabled(true);
+            bookPublisherInput.setEnabled(true);
+            bookAuthorInput.setEnabled(true);
+            bookKindInput.setEnabled(true);
         }
 
         container.setLayout(null);
@@ -217,7 +240,6 @@ public class AdminView {    //展示admin主面板
         bookInfoFrame.setLocation(300,100);
         bookInfoFrame.setVisible(true);
 
-        bookItemPath.setRestnum(bookItemPath.getRestnum()-5);
         if(bookItemPath.getRestnum() != bookItemPath.getTotalnum()){
             bookDeleBtn.setEnabled(false);
         }
@@ -225,17 +247,17 @@ public class AdminView {    //展示admin主面板
             bookDeleBtn.setEnabled(true);
         }
     }
-    public void showBookBorrowFram(Book bookItem){
+    public void showBookBorrowFrame(Book bookItem){
         bookBorrowFrame.setSize(500,450);
         bookBorrowFrame.setResizable(false);
         bookBorrowFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         String[] tableHeader = {"借出时间","归还时间","借阅人"};
         List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
-        Object[][] tableBody = new Object[5][3];
+        Object[][] tableBody = new Object[borrowList.size()][3];
 //        Object[][] tableBody = new Object[borrowList.size()][3];
 //        for(int i=0;i<borrowList.size();i++){
-        for(int i=0;i<5;i++){
+        for(int i=0;i<borrowList.size();i++){
 //            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
             Object[] rowData = {"" + bookItem.getName(),"borrowList.get(i).getReturntime()","borrowList.get(i).getBorrowman()"};
             tableBody[i] = rowData;
@@ -246,6 +268,27 @@ public class AdminView {    //展示admin主面板
         bookBorrowFrame.setLocation((int)bookInfoFrame.getLocation().getX()+500,(int)bookInfoFrame.getLocation().getY() - 10);
         bookBorrowFrame.setVisible(true);
     }
+    public void showUserBookListFrame(){
+        userBookListFrame.setSize(500,450);
+        userBookListFrame.setResizable(false);
+        userBookListFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        //TODO copy txt userView
+//        String[] tableHeader = {"借出时间","归还时间","借阅人"};
+//        List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
+//        Object[][] tableBody = new Object[borrowList.size()][3];
+////        Object[][] tableBody = new Object[borrowList.size()][3];
+////        for(int i=0;i<borrowList.size();i++){
+//        for(int i=0;i<borrowList.size();i++){
+////            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
+//            Object[] rowData = {"" + bookItem.getName(),"borrowList.get(i).getReturntime()","borrowList.get(i).getBorrowman()"};
+//            tableBody[i] = rowData;
+//        }
+//        DefaultTableModel tableModel =  (DefaultTableModel)borrowTable.getModel();
+//        tableModel.setDataVector(tableBody,tableHeader);
+//        borrowTable.setVisible(true);
+//        userBookListFrame.setLocation((int)bookInfoFrame.getLocation().getX()+500,(int)bookInfoFrame.getLocation().getY() - 10);
+        userBookListFrame.setVisible(true);
+    }
 
     public String[] submitBook(){
         String[] bookInfo = {bookNameInput.getText(),bookPublisherInput.getText(),bookAuthorInput.getText(),bookKindInput.getText(),bookNumInput.getText(),bookDesInput.getText()};
@@ -255,12 +298,13 @@ public class AdminView {    //展示admin主面板
         JPanel panel = new JPanel();
         Box labelBox = Box.createHorizontalBox();
         JLabel adminLabel = new JLabel("Admin");
-        JButton signOutBtn = new JButton("退出");
 
         labelBox.add(adminLabel);
-        labelBox.add(Box.createHorizontalStrut(200));
+        labelBox.add(Box.createHorizontalStrut(100));
         labelBox.add(timeLabel);
         labelBox.add(Box.createHorizontalStrut(30));
+        labelBox.add(visitLogBtn);
+        labelBox.add(Box.createHorizontalStrut(10));
         labelBox.add(signOutBtn);
         panel.add(labelBox);
         panel.setBackground(new Color(60,200,255));
@@ -274,14 +318,14 @@ public class AdminView {    //展示admin主面板
 
         Box bookNumBox =  Box.createHorizontalBox();//书本总数盒子
         JLabel bookNumLabel = new JLabel("当前书本总数：");
-        JLabel bookNum = new JLabel("" + bookTotalNum);
+        bookNum.setText("" + bookTotalNum);
         bookNumBox.add(bookNumLabel);
         bookNumBox.add(Box.createGlue());
         bookNumBox.add(bookNum);
 
         Box borrowedBookNumBox =  Box.createHorizontalBox();//借出数量盒子
         JLabel borrowedBookNumLabel = new JLabel("未归还书本数：");
-        JLabel borrowedBookNum = new JLabel("" + (bookTotalNum - bookRestNum));
+        borrowedBookNum.setText("" + (bookTotalNum - bookRestNum));
         borrowedBookNumBox.add(borrowedBookNumLabel);
         borrowedBookNumBox.add(Box.createGlue());
         borrowedBookNumBox.add(borrowedBookNum);
@@ -317,21 +361,21 @@ public class AdminView {    //展示admin主面板
 
         Box stuUserNumBox = Box.createHorizontalBox();
         JLabel stuUserNumLabel = new JLabel("当前学生用户总数：");
-        JLabel stuUserNum = new JLabel("" + CustomerService.getInstance().getStudentNum());
+        stuUserNum.setText("" + CustomerService.getInstance().getStudentNum());
         stuUserNumBox.add(stuUserNumLabel);
         stuUserNumBox.add(Box.createGlue());
         stuUserNumBox.add(stuUserNum);
 
         Box teacherUserNumBox = Box.createHorizontalBox();
         JLabel teacherUserNumLabel = new JLabel("当前教师用户总数：");
-        JLabel teacherUserNum = new JLabel("" + CustomerService.getInstance().getTeacherNum());
+        teacherUserNum.setText("" + CustomerService.getInstance().getTeacherNum());
         teacherUserNumBox.add(teacherUserNumLabel);
         teacherUserNumBox.add(Box.createGlue());
         teacherUserNumBox.add(teacherUserNum);
 
         Box borrowUserNumBox = Box.createHorizontalBox();
         JLabel borrowUserNumLabel = new JLabel("已借书用户总数：");
-        JLabel borrowUserNum = new JLabel("3500");
+        borrowUserNum.setText("" + CustomerService.getInstance().getRentedNum());
         borrowUserNumBox.add(borrowUserNumLabel);
         borrowUserNumBox.add(Box.createGlue());
         borrowUserNumBox.add(borrowUserNum);
@@ -350,7 +394,7 @@ public class AdminView {    //展示admin主面板
         Box userLimitBox = Box.createHorizontalBox();
 
         JLabel userNameLabel = new JLabel("姓名：");
-        JLabel userStuNumLabel = new JLabel("学号：");
+        JLabel userStuNumLabel = new JLabel("学号/工号：");
         JLabel userCollegeLabel = new JLabel("学院：");
         JLabel userStatusLabel = new JLabel("状态：");
         JLabel userLimitLabel = new JLabel("权限：");
@@ -405,14 +449,61 @@ public class AdminView {    //展示admin主面板
         UserBox.add(Box.createVerticalStrut(20));
         UserBox.add(UserBtnBox);
         userPanel.add(UserBox);
+
+        lookBookListBtn.setEnabled(false);
+        unfreezeBtn.setEnabled(false);
+        changeLimitBtn.setEnabled(false);
+
         return userPanel;
     }
-    private JPanel initLogPanel(){
-        JPanel panel = new JPanel();
-        JButton button = new JButton("Log");
-        panel.add(button);
-        panel.setBackground(new Color(255,255,255));
-        return panel;
+    public void initLogPanel(){
+        JFrame LogFrame = new JFrame("查看日志");
+        LogFrame.setSize(600,400);
+        LogFrame.setResizable(false);
+        LogFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        List LogList = Log.getInstance().GetLog();
+        String[] tableHeader = {"日期","操作人","操作类型","描述"};
+        int logSize = 50>LogList.size()?LogList.size():50;
+        Object[][] logs = new Object[logSize][2];
+        for(int i=0;i<logSize;i++){
+            logs[i] = (Object[]) LogList.get(i);
+        }
+        JTable LogTable = new JTable(logs,tableHeader);
+        LogTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        LogTable.getColumnModel().getColumn(3).setPreferredWidth(200);
+        LogTable.setEnabled(false);
+        Box LogBox = Box.createHorizontalBox();
+        LogTable.setPreferredScrollableViewportSize(new Dimension(580,200));
+        JScrollPane scrollPane = new JScrollPane(LogTable);
+        LogBox.add(scrollPane);
+
+        LogFrame.getContentPane().add(LogBox);
+        LogFrame.setVisible(true);
+        return ;
+    }
+    public void refreshAdminView(){
+        int bookTotalNum = BookOperate.getInstance().GetTotalBooknum();
+        int bookRestNum = BookOperate.getInstance().GetTotalRestbooknum();
+        bookNum.setText("" + bookTotalNum);
+        borrowedBookNum.setText("" + (bookTotalNum - bookRestNum));
+        borrowRate.setText(bookTotalNum ==0?"0":(((bookTotalNum - bookRestNum)/bookTotalNum * 100) + "%"));
+
+        timeLabel.setText(GetDate.getDate(GlobalActionDetector.getInstance().getDays()));
+        stuUserNum.setText("" + CustomerService.getInstance().getStudentNum());
+        teacherUserNum.setText("" + CustomerService.getInstance().getTeacherNum());
+        borrowUserNum.setText("" + CustomerService.getInstance().getRentedNum());
+
+    }
+    public void destroyAdminView(){
+        adminFrame.dispose();
+        findBookFrame.Frame.dispose();
+        findBookFrame = null;
+        userBookListFrame.dispose();
+        bookInfoFrame.dispose();
+        bookBorrowFrame.dispose();
+        modifyBookFrame.dispose();
+        bookBorrowFrame.dispose();
     }
 
 }
