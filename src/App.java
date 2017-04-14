@@ -1,3 +1,4 @@
+
 import bean.Book;
 import bean.Customer;
 import controler.UserControler;
@@ -31,7 +32,6 @@ public class App {
 //
 //        UserControler test = UserControler.getInstance();
 //        test.initUserView(testSt);
-//=======
         GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        BookOperate oo = BookOperate.getInstance();
 //        try {

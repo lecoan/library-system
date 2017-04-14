@@ -102,9 +102,6 @@ public class CustomerService {
      * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
-        if (customer.isFreezed() || customer.getMaxNumForRent() <= customer.getBookedMap().size()) {
-            return CustomerConstance.RENT_TO_MUCH;
-        }
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }

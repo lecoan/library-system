@@ -80,7 +80,7 @@ public class AdminControler {
             errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"找不到用户：" + adminPanel.searchUserField.getText());
         }
         else{
-            if(adminPanel.curCustomer.getType() == "student"){
+            if("student".equals(adminPanel.curCustomer.getType() )){
                 adminPanel.curCustomer = (Student)adminPanel.curCustomer;
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
