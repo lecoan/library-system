@@ -105,6 +105,7 @@ public class CustomerService {
         if (customer.isFreezed() || customer.getMaxNumForRent() <= customer.getBookedMap().size()) {
             return CustomerConstance.RENT_TO_MUCH;
         }
+        if(customer.getBookedMap().isEmpty()) rentedNum++;
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }
