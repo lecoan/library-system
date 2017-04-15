@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.Set;
 import bean.*;
+import service.CustomerService;
 
 
 /**
@@ -22,7 +23,8 @@ public class UserView{
     Customer customer;
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
-    JFrame frame = new JFrame("USER");
+    public BookJTable huanshulist = new BookJTable(0,0);
+    public JFrame userframe = new JFrame("USER");
     JLabel jl1 =new JLabel();
     JLabel jl2 =new JLabel();
     JLabel jl3 =new JLabel();
@@ -45,13 +47,16 @@ public class UserView{
     public JPanel panel5 = new JPanel();
 
     public JLabel mjl33 = new JLabel();
+    public JLabel mjl55 = new JLabel();
 
+    public JFrame chongzhiframe = new JFrame("充值");
+    public JFrame huanshuframe = new JFrame("还书");
 
     public UserView(Customer customer){
         this.customer = customer;
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.setBounds(300,300,800,500);
-        frame.setLayout(null);
+        userframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        userframe.setBounds(300,300,800,500);
+        userframe.setLayout(null);
 
         JPanel panel6 = new JPanel(){
             protected void paintComponent(Graphics g){
@@ -145,7 +150,7 @@ public class UserView{
         JLabel mjl22 = new JLabel(customer.getId());
         mjl33.setText(String.valueOf(customer.getBookedMap().size()));
         JLabel mjl44 = new JLabel(String.valueOf(customer.getMaxNumForRent()));
-        JLabel mjl55 = new JLabel(String.valueOf(customer.getMoney()));
+        mjl55.setText(String.valueOf(customer.getBookedMap().size()));
 
         panel2.add(mjl1);
         panel2.add(mjl2);
@@ -204,13 +209,13 @@ public class UserView{
 
 
 
-        frame.getContentPane().add(panel1);
-        frame.getContentPane().add(panel2);
-        frame.getContentPane().add(panel3);
-        frame.getContentPane().add(panel4);
-        frame.getContentPane().add(panel5);
-        frame.getContentPane().add(panel6);
-        frame.setVisible(true);
+        userframe.getContentPane().add(panel1);
+        userframe.getContentPane().add(panel2);
+        userframe.getContentPane().add(panel3);
+        userframe.getContentPane().add(panel4);
+        userframe.getContentPane().add(panel5);
+        userframe.getContentPane().add(panel6);
+        userframe.setVisible(true);
     }
 
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
@@ -266,6 +271,16 @@ public class UserView{
             g.drawImage(icon.getImage(), 0, 10, 200, 185, this);
         }
 
+    }
+
+    public void destroyUserView(){
+        userframe.dispose();
+        CustomerService.getInstance().updateCustomer(customer);
+        findBookFrame.Frame.dispose();
+        findBookFrame = null;
+        bookInfoFrame.dispose();
+        chongzhiframe.dispose();
+        huanshuframe.dispose();
     }
 
 }

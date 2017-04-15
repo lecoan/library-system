@@ -311,7 +311,7 @@ public class BookOperate {
         //首先会在booklist里面找这本书,因为传递的是引用，所以修改会影响原位置的数据
         // 如果这本书已经在文件中保存过，只需要将这本书的总数量,剩余数量加一即可
         else {
-            String path = new String();
+            String path;
             path = SaveBook(newbook);
             BookPathTable index1 = new BookPathTable();
             index1.setBookpath(path);
