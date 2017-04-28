@@ -44,7 +44,6 @@ public class SignInAndUpController {
         Customer customer = service.getCustomerById(id);
         if(customer != null && customer.getPassword().equals(password)) {
             frame.dispose();
-            //TODO
             UserControler userControler = UserControler.getInstance();
             userControler.initUserView(customer);
             return;
@@ -64,7 +63,6 @@ public class SignInAndUpController {
         }
         service.saveCustomer(customer);
         frame.dispose();
-        //TODO
-        //UserView view = new UserView();
+
     }
 }

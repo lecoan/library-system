@@ -85,7 +85,15 @@ public class CustomerService {
     }
 
     public void updateCustomer(Customer customer) {
-        saveCustomer(customer);
+        Map<String, Customer> customerMap =
+                (Map<String, Customer>) StorageHelper
+                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
+        if(customerMap == null) {
+            customerMap = new HashMap<>();
+        }
+        customerMap.put(customer.getId(),customer);
+        cache.put(customer.getId(),customer);
+        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
 
     public void saveCustomer(Customer customer) {
@@ -101,15 +109,20 @@ public class CustomerService {
             customerMap = new HashMap<>();
         }
         customerMap.put(customer.getId(),customer);
+        cache.put(customer.getId(),customer);
         StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
 
     /**
-     * @param customer
-     * @param isbn
+     * @param customer customer
+     * @param isbn isbn
      * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
+        //如果该书在用户心愿单里
+        if (customer.getWantedSet().contains(isbn)) {
+            customer.getWantedSet().remove(isbn);
+        }
         if(customer.getBookedMap().isEmpty())
             rentedNum++;
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
@@ -117,18 +130,15 @@ public class CustomerService {
     }
 
     /**
-     * @param customer
-     * @param isbn
+     * @param customer customer
+     * @param isbn isbn
      * @return 借阅时间
      */
     public int returnBook(Customer customer, String isbn) {
-        if (customer.getWantedSet().contains(isbn)) {
-            customer.getWantedSet().remove(isbn);
-        }
-        if(customer.getWantedSet().isEmpty()){
+        int rentTime = customer.getBookedMap().remove(isbn);
+        if(customer.getBookedMap().isEmpty()){
             rentedNum--;
         }
-        int rentTime = customer.getBookedMap().remove(isbn);
         if (detector.getDays() - rentTime > 30) {
 
             customer.setDelayedTimes(customer.getDelayedTimes() + 1);
@@ -142,7 +152,7 @@ public class CustomerService {
     }
 
     /**
-     * @param customer
+     * @param customer customer
      * @return 当用户被冻结时返回true
      */
     public boolean caculateMoney(Customer customer) {
