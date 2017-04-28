@@ -81,7 +81,7 @@ public class Log {
                 file.createNewFile();
                 FileOutputStream out=new FileOutputStream(file,true);
                 StringBuffer sb=new StringBuffer();
-                sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info);
+                sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info + "\n");
                 out.write(sb.toString().getBytes("utf-8"));
             out.close();
         }
