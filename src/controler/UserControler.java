@@ -32,7 +32,7 @@ public class UserControler {
     Object[][] lishistrings;
     List<String> A;
     private String mm;
-    private static String name,pass1,pass2;
+    public String name,pass1,pass2;
 
     private volatile static UserControler instance;
 
@@ -276,7 +276,13 @@ public class UserControler {
         UserPanel.confirm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(pass1 == pass2){
+                System.out.print(name+pass1+pass2);
+
+                name = UserPanel.inforchangeframe.JP.newName.getText().trim();
+                pass1 = newPassward.getText().trim();
+                pass2 = passConfirm.getText().trim();
+
+                if(pass1.equals(pass2)){
                     customer.setPassword(pass1);
                     customer.setId(name);
                     UserPanel.mjl11.setText(name);
