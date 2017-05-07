@@ -3,6 +3,9 @@ package controler;
 import bean.BookPathTable;
 import listener.GlobalActionDetector;
 import service.BookOperate;
+import service.CustomerService;
+import service.Log;
+import util.StorageHelper;
 import view.AddPlaceHolder;
 import view.ErrAlert;
 import view.FindBookFrame;
@@ -31,7 +34,15 @@ public class CommonControler {  //通用控制器
 
     }
     private volatile static CommonControler instance;
-    private  CommonControler(){}
+    private  CommonControler(){
+        StorageHelper.getInstance().addQuitEvent(new StorageHelper.Event() {
+            @Override
+            public void handle() {
+                bookOperate.SaveData();
+                Log.getInstance().Save();
+            }
+        });
+    }
 
     public static CommonControler getInstance(){
         synchronized (CommonControler.class) {
@@ -163,6 +174,6 @@ public class CommonControler {  //通用控制器
     }
     public void setDate(){
         System.out.print(getDate.getDate(globalActionDetector.getDays()));
-
     }
+
 }

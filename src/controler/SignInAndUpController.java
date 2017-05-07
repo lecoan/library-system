@@ -5,6 +5,7 @@ import service.CustomerService;
 import view.AdminView;
 import view.ErrAlert;
 import view.UserView;
+import controler.UserControler;
 
 import javax.swing.*;
 
@@ -33,6 +34,7 @@ public class SignInAndUpController {
                 AdminControler controler = AdminControler.getInstance();
                 controler.initAdminView();
                 frame.dispose();
+                AdminControler.getInstance();
                 return;
             }
             ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
@@ -40,10 +42,11 @@ public class SignInAndUpController {
         }
 
         Customer customer = service.getCustomerById(id);
-        if(customer == null && customer.getPassword().equals(password)) {
+        if(customer != null && customer.getPassword().equals(password)) {
             frame.dispose();
             //TODO
-            //UserView view = new UserView();
+            UserControler userControler = UserControler.getInstance();
+            userControler.initUserView(customer);
             return;
         }
         ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
