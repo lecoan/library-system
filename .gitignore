@@ -4,6 +4,7 @@ library-system.iml
 out/
 data/
 user.xml
+
 config
 book.xml
 book1.xml
@@ -20,3 +21,4 @@ bookSpider/node_modules/
 *.zip
 *.tar.gz
 *.rar
+

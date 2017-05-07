@@ -21,7 +21,7 @@ import java.util.Properties;
 public class App {
 
     public static void main(String args[]) {
-       // GlobalActionDetector.getInstance().startGlobalActionDetector();
+       GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        BookOperate oo = BookOperate.getInstance();
 //        try {
 //            FileReader fr = new FileReader("bookSpider/popular.txt");
@@ -74,6 +74,6 @@ public class App {
 //            teacher.setId("2014211"+i);
 //            CustomerService.getInstance().saveCustomer(teacher);
 //        }
-       // new StartUpView();
+        new StartUpView();
     }
 }
