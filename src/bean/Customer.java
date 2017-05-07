@@ -3,9 +3,14 @@ package bean;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Created by yangxiang on 17-3-8.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/5
+ 修改人:
+ 日　期:
+ 描　述: 用户模型封装
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public abstract class Customer implements Serializable {
 
     protected String username;
