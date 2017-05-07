@@ -9,9 +9,14 @@ import controler.UserControler;
 
 import javax.swing.*;
 
-/**
- * Created by lecoan on 17-4-6.
- */
+/******************************************************************
+ 创建人: 杨翔
+ 日　期: 2017/3/10
+ 修改人:
+ 日　期:
+ 描　述: 控制用户的登陆和注册
+ 版　本: v1.00 Copyright(c).
+ ******************************************************************/
 public class SignInAndUpController {
 
     private CustomerService service;
@@ -21,6 +26,9 @@ public class SignInAndUpController {
         service = CustomerService.getInstance();
     }
 
+    /**
+     * @return singleton
+     */
     public static SignInAndUpController getInstance(){
         if(instance == null) {
             instance = new SignInAndUpController();
@@ -28,6 +36,12 @@ public class SignInAndUpController {
         return instance;
     }
 
+    /**
+     *
+     * @param id 用户的学号或者工号
+     * @param password 密码
+     * @param frame view层窗口实例
+     */
     public void handleLogin(String id, String password, JFrame frame){
         if(id.equals("admin")){
             if(password.equals("123456")){
@@ -44,7 +58,6 @@ public class SignInAndUpController {
         Customer customer = service.getCustomerById(id);
         if(customer != null && customer.getPassword().equals(password)) {
             frame.dispose();
-            //TODO
             UserControler userControler = UserControler.getInstance();
             userControler.initUserView(customer);
             return;
@@ -64,7 +77,6 @@ public class SignInAndUpController {
         }
         service.saveCustomer(customer);
         frame.dispose();
-        //TODO
-        //UserView view = new UserView();
+
     }
 }

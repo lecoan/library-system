@@ -19,7 +19,7 @@ import java.awt.event.MouseEvent;
  描　述: 注册界面
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public class RegisterView extends JFrame{
+public class RegisterView extends JFrame {
 
     private SignInAndUpController controller;
 
@@ -43,6 +43,9 @@ public class RegisterView extends JFrame{
         addListener();
     }
 
+    /**
+     * 添加点击处理逻辑
+     */
     private void addListener() {
         teacher.addActionListener(e -> {
             isTeacher = true;
@@ -59,11 +62,11 @@ public class RegisterView extends JFrame{
         submit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(!judge()) {
+                if (!judge()) {
                     return;
                 }
                 Customer customer = null;
-                if(isTeacher) {
+                if (isTeacher) {
                     Teacher teacher = new Teacher();
                     customer = teacher;
                 } else {
@@ -75,31 +78,39 @@ public class RegisterView extends JFrame{
                 customer.setPassword(new String(password.getPassword()));
                 customer.setId(userID.getText());
 
-                controller.handleRegister(customer,RegisterView.this);
+                controller.handleRegister(customer, RegisterView.this);
             }
         });
     }
 
+    /**
+     * 根据用户的身份更新文字
+     */
     private void changeCompent() {
-        if(isTeacher){
-            idLabel.setText("gong hao");
+        if (isTeacher) {
+            idLabel.setText("工号");
             colleageBox.setVisible(false);
         } else {
-            idLabel.setText("xue hao");
+            idLabel.setText("学号");
             colleageBox.setVisible(true);
         }
     }
 
+    /**
+     * 判断输入是否合法
+     *
+     * @return 输入是否合法
+     */
     private boolean judge() {
         boolean isOk = true;
-        if(username.getText().isEmpty() || !username.getText().matches("^[A-Za-z0-9]{4,40}$")) {
+        if (username.getText().isEmpty() || !username.getText().matches("^[A-Za-z0-9]{4,40}$")) {
             isOk = false;
         }
         String pw = new String(password.getPassword());
-        if(pw.isEmpty() || !pw.matches("^[A-Za-z0-9]{4,40}$")) {
+        if (pw.isEmpty() || !pw.matches("^[A-Za-z0-9]{4,40}$")) {
             isOk = false;
         }
-        if(!userID.getText().matches("^\\d{10}$")){
+        if (!userID.getText().matches("^\\d{10}$")) {
             isOk = false;
         }
         return isOk;
@@ -108,7 +119,7 @@ public class RegisterView extends JFrame{
     private void initView() {
 
         setTitle("register");
-        setSize(500,500);
+        setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 
