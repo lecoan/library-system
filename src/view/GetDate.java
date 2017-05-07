@@ -1,5 +1,4 @@
 package view;
-
 /**
  * Created by zyx on 2017/4/1.
  */
@@ -7,7 +6,6 @@ public class GetDate {
     private static final int YEAR = 2000;
     private static final int MONTH = 1;
     private static final int DAY = 1;
-
     public GetDate () {}
     public static String getDate(int pastdays) {
         int year = YEAR, month = MONTH, day = DAY;
