@@ -4,10 +4,11 @@ import bean.Customer;
 import bean.Student;
 import constance.CustomerConstance;
 import listener.GlobalActionDetector;
+import util.Cache;
+import util.LRUCache;
 import util.StorageHelper;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -19,15 +20,19 @@ import java.util.function.BiConsumer;
  ******************************************************************/
 public class CustomerService {
 
-    private static final String USER_DATA_PATH = "./user";
+    private static final String USER_DATA_PATH = "./data/user";
+    private static final int CACHE_SIZE = 1000;
+    private static final long DEFAULT_CACHE_SAVE_TIME = 10*1000*10;
 
     private static CustomerService instance;
+
     private int studentNum;
     private int teacherNum;
-    private Map<String, Customer> customerMap;
-    private Set<Customer> customers;
+    private int rentedNum;
+
     private GlobalActionDetector detector;
     private StorageHelper helper;
+    private Cache<String, Customer> cache;
 
     public int getStudentNum(){
         return studentNum;
@@ -41,14 +46,18 @@ public class CustomerService {
         studentNum = temp == null ? 0 : temp;
         temp = helper.getConfig("teacherNum");
         teacherNum = temp == null ? 0 : temp;
-        customers = (Set<Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH);
-        if (customers == null) customers = new HashSet<>();
-        customerMap = new HashMap<>();
-        for (Customer customer : customers) {
-            customerMap.put(customer.getId(), customer);
-        }
+        temp = helper.getConfig("rentedNum");
+        rentedNum = temp == null ? 0 : temp;
 
         detector = GlobalActionDetector.getInstance();
+        cache = new LRUCache<>(CACHE_SIZE,DEFAULT_CACHE_SAVE_TIME);
+
+        helper.addQuitEvent(() -> {
+            helper.saveConfig("teacherNum", teacherNum);
+            helper.saveConfig("studentNum", studentNum);
+            helper.saveConfig("rentedNum",rentedNum);
+            System.out.println("saved");
+        });
     }
 
     public static CustomerService getInstance() {
@@ -58,16 +67,32 @@ public class CustomerService {
         return instance = new CustomerService();
     }
 
-    public Set<Customer> getAllCustomers() {
-        return customers;
-    }
-
     public Customer getCustomerById(String id) {
-        return customerMap.get(id);
+        Customer customer = cache.get(id);
+        if(customer == null){
+            Map<String, Customer> customerMap =
+                    (Map<String, Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH+"_"+hash(id));
+
+            if(customerMap == null){
+                return null;
+            }else{
+                customer = customerMap.get(id);
+                cache.put(id,customer);
+            }
+
+        }
+        return customer;
     }
 
-    private void saveAllCustomers() {
-        StorageHelper.WriteObjectToFile(customers, USER_DATA_PATH);
+    public void updateCustomer(Customer customer) {
+        Map<String, Customer> customerMap =
+                (Map<String, Customer>) StorageHelper
+                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
+        if(customerMap == null) {
+            customerMap = new HashMap<>();
+        }
+        customerMap.put(customer.getId(),customer);
+        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
 
     public void saveCustomer(Customer customer) {
@@ -76,12 +101,14 @@ public class CustomerService {
         } else {
             teacherNum++;
         }
-        customers.add(customer);
-        customerMap.put(customer.getId(), customer);
-    }
-
-    public void freezeCustomer(Customer customer) {
-        customer.setFreezed(true);
+        Map<String, Customer> customerMap =
+                (Map<String, Customer>) StorageHelper
+                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
+        if(customerMap == null) {
+            customerMap = new HashMap<>();
+        }
+        customerMap.put(customer.getId(),customer);
+        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
     }
 
     /**
@@ -90,9 +117,8 @@ public class CustomerService {
      * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
-        if (customer.isFreezed() || customer.getMaxNumForRent() <= customer.getBookedMap().size()) {
-            return CustomerConstance.RENT_TO_MUCH;
-        }
+        if(customer.getBookedMap().isEmpty())
+            rentedNum++;
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }
@@ -106,11 +132,19 @@ public class CustomerService {
         if (customer.getWantedSet().contains(isbn)) {
             customer.getWantedSet().remove(isbn);
         }
+        if(customer.getWantedSet().isEmpty()){
+            rentedNum--;
+        }
         int rentTime = customer.getBookedMap().remove(isbn);
         if (detector.getDays() - rentTime > 30) {
 
             customer.setDelayedTimes(customer.getDelayedTimes() + 1);
         }
+        List<String> list = customer.getHistoryList();
+        if(list.size()>=30){
+            list.remove(list.size()-1);
+        }
+        list.add(0,isbn+" "+rentTime+" "+GlobalActionDetector.getInstance().getDays());
         return rentTime;
     }
 
@@ -130,9 +164,11 @@ public class CustomerService {
         return false;
     }
 
-    protected void finalize() throws Throwable {
-        saveAllCustomers();
-        helper.saveConfig("teacherNum", teacherNum);
-        helper.saveConfig("studentNum", studentNum);
+    public int getRentedNum() {
+        return rentedNum;
+    }
+
+    private int hash(String id){
+        return new Integer(id)%10;
     }
 }

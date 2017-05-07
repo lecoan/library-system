@@ -114,6 +114,8 @@ public class GlobalActionDetector {
                     eventList.forEach(event -> {        //处理时间改变的事件
                         event.handle(days);
                     });
+                    StorageHelper.getInstance().saveConfig("days",days);
+                    System.out.println("days:"+days);
                 }
             }, 10 * 1000, 10 * 1000);
         }

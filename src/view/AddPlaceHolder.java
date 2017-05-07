@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
  */
 public class AddPlaceHolder {
     private volatile static AddPlaceHolder instance;
-    private  AddPlaceHolder(){};
+    private  AddPlaceHolder(){}
 
     public static AddPlaceHolder getInstance(){
         synchronized (AddPlaceHolder.class) {
