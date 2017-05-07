@@ -1,8 +1,4 @@
-
 import bean.Book;
-import bean.Customer;
-import controler.UserControler;
-import bean.BookPathTable;
 import bean.Student;
 import bean.Teacher;
 import listener.GlobalActionDetector;
@@ -13,25 +9,14 @@ import view.StartUpView;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by lecoan on 17-3-1.
  */
 
 public class App {
+
     public static void main(String args[]) {
-//<<<<<<< HEAD
-//
-////        RegisterView test = new RegisterView();
-//        Student testSt = new Student();
-//        testSt.setColleage("asdfasdf");
-//        testSt.setId("2015211432");
-//        testSt.setMoney(23);
-//        testSt.setUsername("ZYX是SB");
-//
-//        UserControler test = UserControler.getInstance();
-//        test.initUserView(testSt);
         GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        BookOperate oo = BookOperate.getInstance();
 //        try {
@@ -68,7 +53,7 @@ public class App {
 //        }
 //        catch(IOException e) {
 //        }
-//
+////
 ////        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        for(int i = 100;i<1000;++i){
 //            Student student = new Student();

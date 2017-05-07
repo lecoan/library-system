@@ -12,8 +12,8 @@ import java.util.List;
  * Created by zyx on 2017/4/2.
  */
 public class Log {
-    private final String[] operatetype = {"冻结用户","解冻用户","增加图书",
-                                 "删除图书","借阅图书","归还图书","修改图书"};
+    private final String[] operatetype = {"冻结用户","解冻用户","添加图书",
+                                 "删除图书","借阅图书","归还图书","修改图书","修改权限"};
     //public enum type {Freeze,Refreeze,AddBook,DelBook,BorBook,RetBook,ModBook};
     private List<String[]> log;
     private volatile static Log instance;
@@ -79,9 +79,9 @@ public class Log {
             File file=new File("log.txt");
             if(!file.exists())
                 file.createNewFile();
-            FileOutputStream out=new FileOutputStream(file,true);
+                FileOutputStream out=new FileOutputStream(file,true);
                 StringBuffer sb=new StringBuffer();
-                sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info);
+                sb.append(day + ":  " + operator + "  " + operatetype[_type] + "  " + info + "\n");
                 out.write(sb.toString().getBytes("utf-8"));
             out.close();
         }
@@ -91,5 +91,8 @@ public class Log {
     }
     public List<String[]> GetLog() {
         return log;
+    }
+    public void Save() {
+        WriteObjectToFile(log, "log.xml");
     }
 }

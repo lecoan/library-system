@@ -3,6 +3,7 @@ package controler;
 import bean.Book;
 import bean.Student;
 import bean.Teacher;
+import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
 import service.Log;
@@ -62,9 +63,11 @@ public class AdminControler {
          */
         if(adminPanel.findBookFrame.curBookItem != null) {
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+            Log.getInstance().CreateLog("admin",6,"修改图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
         }
         else{
+            Log.getInstance().CreateLog("admin",2,"添加图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功添加新书：" + newBook.getName());
         }
         bookOperate.addBook(newBook,new Integer(bookInfo[4]));
@@ -139,7 +142,6 @@ public class AdminControler {
         adminPanel.adminFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                bookOperate.SaveData();
                 adminPanel.destroyAdminView();
             }
         });
@@ -167,6 +169,7 @@ public class AdminControler {
                 if(!adminPanel.bookDeleBtn.isEnabled())
                     return;
                 bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
+                Log.getInstance().CreateLog("admin",3,"删除图书 " + adminPanel.findBookFrame.curBookItem.getIsbn());
                 errAlert.findErrAlert((int)(adminPanel.bookInfoFrame.getLocation().getX() + 100),(int)(adminPanel.bookInfoFrame.getLocation().getY() + 100),"成功删除图书：" + adminPanel.findBookFrame.curBookItem.getName());
                 adminPanel.bookInfoFrame.dispose();
                 adminPanel.findBookFrame.curBookItem = null;
@@ -219,6 +222,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 if(adminPanel.unfreezeBtn.isEnabled()){
                     adminPanel.curCustomer.setFreezed(false);
+                    Log.getInstance().CreateLog("admin",1,"解冻用户 " + adminPanel.curCustomer.getUsername());
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功解冻用户：" +adminPanel.curCustomer.getUsername());
                 }
             }
@@ -230,6 +234,7 @@ public class AdminControler {
                 int limit = new Integer(adminPanel.userLimit.getText());
                 if(limit>0&&limit<30){
                     adminPanel.curCustomer.setMaxNumForRent(limit);
+                    Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "天");
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
                 }
                 else
@@ -242,6 +247,18 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 adminPanel.adminFrame.dispose();
                 adminPanel.destroyAdminView();
+            }
+        });
+        adminPanel.visitLogBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                adminPanel.initLogPanel();
+            }
+        });
+        GlobalActionDetector.getInstance().addEvent(new GlobalActionDetector.Event() {
+            @Override
+            public void handle(int days) {
+                adminPanel.refreshAdminView();
             }
         });
     }

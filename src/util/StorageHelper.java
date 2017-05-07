@@ -12,7 +12,6 @@ import java.util.TreeMap;
  * Created by lecoan on 2017/4/6.
  */
 public class StorageHelper {
-
     private Map<String, Integer> config;
     private List<Event> eventList;
 

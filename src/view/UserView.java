@@ -19,6 +19,7 @@ import bean.*;
 import listener.GlobalActionDetector;
 
 
+
 /**
  * Created by TaBoo on 2017/3/25.
  */
@@ -63,6 +64,10 @@ public class UserView{
     public JFrame huanshuframe = new JFrame("还书");
     public JFrame inforchangeframe = new JFrame("修改个人消息");
 
+//    public JTextField newname = new JTextField();
+//    public JTextField newPassword = new JTextField();
+//    public JTextField passwordConfirm = new JTextField();
+
     public UserView(Customer customer){
         this.customer = customer;
         userframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -71,7 +76,7 @@ public class UserView{
 
         JPanel panel6 = new JPanel(){
             protected void paintComponent(Graphics g){
-                ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\2.jpg");
+                ImageIcon icon = new ImageIcon("res\\2.jpg");
                 Image imgg = icon.getImage();
                 g.drawImage(imgg,0,0,200,80,icon.getImageObserver());
             }
@@ -333,14 +338,15 @@ public class UserView{
 
         public void paint(Graphics g) {
             super.paint(g);
-            ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\1234.gif");
+            ImageIcon icon = new ImageIcon("res\\1234.gif");
             g.drawImage(icon.getImage(), 0, 10, 200, 185, this);
         }
 
     }
 
-    public void destroyAdminView(){
+    public void destroyUserView(){
         userframe.dispose();
+        CustomerService.getInstance().updateCustomer(customer);
         findBookFrame.Frame.dispose();
         findBookFrame = null;
         bookInfoFrame.dispose();

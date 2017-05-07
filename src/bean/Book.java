@@ -1,5 +1,8 @@
 package bean;
 
+import listener.GlobalActionDetector;
+import view.GetDate;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +84,9 @@ public class Book implements Serializable {
     }
 
     public void setBoughttime(String boughttime) {
-        this.boughttime = boughttime;
-    }
+        GlobalActionDetector gg = GlobalActionDetector.getInstance();
+        String bt = GetDate.getDate(gg.getDays());
+        this.boughttime = bt;
+    }//设置当前时间为购入时间
 
 }

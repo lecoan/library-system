@@ -34,6 +34,10 @@ public class UserControler {
     private String mm;
     public String name,pass1,pass2;
 
+    public JTextField newName = new JTextField();
+    public JTextField newPassward = new JTextField();
+    public JTextField passConfirm = new JTextField();
+
     private volatile static UserControler instance;
 
     public static UserControler getInstance(){
@@ -58,7 +62,7 @@ public class UserControler {
             @Override
             public void windowClosing(WindowEvent e) {
                 bookOperate.SaveData();
-                UserPanel.destroyAdminView();
+                UserPanel.destroyUserView();
             }
         });
 
@@ -276,9 +280,9 @@ public class UserControler {
         UserPanel.confirm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.print(name+pass1+pass2);
+               // System.out.print(name+pass1+pass2);
 
-                name = UserPanel.inforchangeframe.JP.newName.getText().trim();
+                name = newName.getText().trim();
                 pass1 = newPassward.getText().trim();
                 pass2 = passConfirm.getText().trim();
 
@@ -393,12 +397,12 @@ public class UserControler {
         JLabel oldname = new JLabel("旧用户名:");
         JLabel oleName = new JLabel(customer.getUsername());
         JLabel newname = new JLabel("新用户名:");
-        JTextField newName = new JTextField();
+        //JTextField newName = new JTextField();
 
         JLabel newpassward = new JLabel("新密码:");
         JLabel passconfirm = new JLabel("新密码确认:");
-        JTextField newPassward = new JTextField();
-        JTextField passConfirm = new JTextField();
+//        JTextField newPassward = new JTextField();
+//        JTextField passConfirm = new JTextField();
 
         oldname.setFont(new Font("幼圆",Font.BOLD, 15));
         oleName.setFont(new Font("幼圆",Font.BOLD, 15));
@@ -434,9 +438,9 @@ public class UserControler {
 
         userPanel.confirm.setBounds(200,150,100,25);
 
-        name = newName.getText().trim();
-        pass1 = newPassward.getText().trim();
-        pass2 = passConfirm.getText().trim();
+//        name = newName.getText().trim();
+//        pass1 = newPassward.getText().trim();
+//        pass2 = passConfirm.getText().trim();
 
 
         userPanel.inforchangeframe.getContentPane().add(JP);

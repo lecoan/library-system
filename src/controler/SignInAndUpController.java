@@ -34,6 +34,7 @@ public class SignInAndUpController {
                 AdminControler controler = AdminControler.getInstance();
                 controler.initAdminView();
                 frame.dispose();
+                AdminControler.getInstance();
                 return;
             }
             ErrAlert.getInstance().findErrAlert(50,50,"用户名或密码错误");
