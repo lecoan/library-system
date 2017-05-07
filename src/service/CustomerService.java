@@ -177,7 +177,7 @@ public class CustomerService {
         if (list.size() >= 30) {
             list.remove(list.size() - 1);
         }
-        list.add(0, isbn + " " + rentTime + " " + GlobalActionDetector.getInstance().getDays());
+        list.add(0, isbn + "##" + rentTime + "##" + GlobalActionDetector.getInstance().getDays());
         return rentTime;
     }
 

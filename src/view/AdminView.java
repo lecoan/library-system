@@ -333,8 +333,8 @@ public class AdminView {    //展示admin主面板
         String[][] borrowHistoryList = new String[historyList.size()][3];
         for (int i = 0; i < historyList.size(); i++) {
             borrowHistoryList[i][0] = historyList.get(i).split("&&")[2];
-            borrowHistoryList[i][1] = GetDate.getDate(new Integer(historyList.get(i).split(" ")[1]));
-            borrowHistoryList[i][2] = GetDate.getDate(new Integer(historyList.get(i).split(" ")[2]));
+            borrowHistoryList[i][1] = GetDate.getDate(new Integer(historyList.get(i).split("##")[1]));
+            borrowHistoryList[i][2] = GetDate.getDate(new Integer(historyList.get(i).split("##")[2]));
         }
         String[] borrowHistoryTableHeader = {"书名","借书时间","还书时间"};
         ((DefaultTableModel)borrowingHistoryTable.getModel()).setDataVector(borrowHistoryList,borrowHistoryTableHeader);

@@ -402,14 +402,12 @@ public class BookOperate {
             }
             if(!flag) {
                 ranklist.add(temp);
-                if(ranklist.size() > 20) {
+                if (ranklist.size() > 20) {
                     Sort(ranklist);
                     ranklist.remove(ranklist.size() - 1);
                 }
-                else Sort(ranklist);
             }
-            else
-                Sort(ranklist);
+            Sort(ranklist);
         }
         restbooknum--;
         return true;
