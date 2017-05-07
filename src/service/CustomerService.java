@@ -22,7 +22,7 @@ public class CustomerService {
 
     private static final String USER_DATA_PATH = "./data/user";
     private static final int CACHE_SIZE = 1000;
-    private static final long DEFAULT_CACHE_SAVE_TIME = 10*1000*10;
+    private static final long DEFAULT_CACHE_SAVE_TIME = 10 * 1000 * 10;
 
     private static CustomerService instance;
 
@@ -34,12 +34,14 @@ public class CustomerService {
     private StorageHelper helper;
     private Cache<String, Customer> cache;
 
-    public int getStudentNum(){
+    public int getStudentNum() {
         return studentNum;
     }
-    public int getTeacherNum(){
+
+    public int getTeacherNum() {
         return teacherNum;
     }
+
     private CustomerService() {
         helper = StorageHelper.getInstance();
         Integer temp = helper.getConfig("studentNum");
@@ -50,12 +52,12 @@ public class CustomerService {
         rentedNum = temp == null ? 0 : temp;
 
         detector = GlobalActionDetector.getInstance();
-        cache = new LRUCache<>(CACHE_SIZE,DEFAULT_CACHE_SAVE_TIME);
+        cache = new LRUCache<>(CACHE_SIZE, DEFAULT_CACHE_SAVE_TIME);
 
         helper.addQuitEvent(() -> {
             helper.saveConfig("teacherNum", teacherNum);
             helper.saveConfig("studentNum", studentNum);
-            helper.saveConfig("rentedNum",rentedNum);
+            helper.saveConfig("rentedNum", rentedNum);
             System.out.println("saved");
         });
     }
@@ -69,15 +71,15 @@ public class CustomerService {
 
     public Customer getCustomerById(String id) {
         Customer customer = cache.get(id);
-        if(customer == null){
-            Map<String, Customer> customerMap =
-                    (Map<String, Customer>) StorageHelper.ReadObjectFromFile(USER_DATA_PATH+"_"+hash(id));
+        if (customer == null) {
+            Map<String, Customer> customerMap = (Map<String, Customer>) StorageHelper
+                    .ReadObjectFromFile(USER_DATA_PATH + "_" + hash(id));
 
-            if(customerMap == null){
+            if (customerMap == null) {
                 return null;
-            }else{
+            } else {
                 customer = customerMap.get(id);
-                cache.put(id,customer);
+                cache.put(id, customer);
             }
 
         }
@@ -85,14 +87,14 @@ public class CustomerService {
     }
 
     public void updateCustomer(Customer customer) {
-        Map<String, Customer> customerMap =
-                (Map<String, Customer>) StorageHelper
-                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
-        if(customerMap == null) {
+        Map<String, Customer> customerMap = (Map<String, Customer>) StorageHelper
+                .ReadObjectFromFile(USER_DATA_PATH + "_" + hash(customer.getId()));
+        if (customerMap == null) {
             customerMap = new HashMap<>();
         }
-        customerMap.put(customer.getId(),customer);
-        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
+        customerMap.put(customer.getId(), customer);
+        cache.put(customer.getId(), customer);
+        StorageHelper.WriteObjectToFile(customerMap, USER_DATA_PATH + "_" + hash(customer.getId()));
     }
 
     public void saveCustomer(Customer customer) {
@@ -101,55 +103,56 @@ public class CustomerService {
         } else {
             teacherNum++;
         }
-        Map<String, Customer> customerMap =
-                (Map<String, Customer>) StorageHelper
-                        .ReadObjectFromFile(USER_DATA_PATH+"_"+hash(customer.getId()));
-        if(customerMap == null) {
+        Map<String, Customer> customerMap = (Map<String, Customer>) StorageHelper
+                .ReadObjectFromFile(USER_DATA_PATH + "_" + hash(customer.getId()));
+        if (customerMap == null) {
             customerMap = new HashMap<>();
         }
-        customerMap.put(customer.getId(),customer);
-        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
+        customerMap.put(customer.getId(), customer);
+        cache.put(customer.getId(), customer);
+        StorageHelper.WriteObjectToFile(customerMap, USER_DATA_PATH + "_" + hash(customer.getId()));
     }
 
     /**
-     * @param customer
-     * @param isbn
+     * @param customer customer
+     * @param isbn isbn
      * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
      */
     public int rentBookByISBN(Customer customer, String isbn) {
-        if(customer.getBookedMap().isEmpty())
+        //如果该书在用户心愿单里
+        if (customer.getWantedSet().contains(isbn)) {
+            customer.getWantedSet().remove(isbn);
+        }
+        if (customer.getBookedMap().isEmpty())
             rentedNum++;
         customer.getBookedMap().put(isbn, GlobalActionDetector.getInstance().getDays());
         return CustomerConstance.RENT_SUCCESSFULL;
     }
 
     /**
-     * @param customer
-     * @param isbn
+     * @param customer customer
+     * @param isbn isbn
      * @return 借阅时间
      */
     public int returnBook(Customer customer, String isbn) {
-        if (customer.getWantedSet().contains(isbn)) {
-            customer.getWantedSet().remove(isbn);
-        }
-        if(customer.getWantedSet().isEmpty()){
+        int rentTime = customer.getBookedMap().remove(isbn);
+        if (customer.getBookedMap().isEmpty()) {
             rentedNum--;
         }
-        int rentTime = customer.getBookedMap().remove(isbn);
         if (detector.getDays() - rentTime > 30) {
 
             customer.setDelayedTimes(customer.getDelayedTimes() + 1);
         }
         List<String> list = customer.getHistoryList();
-        if(list.size()>=30){
-            list.remove(list.size()-1);
+        if (list.size() >= 30) {
+            list.remove(list.size() - 1);
         }
-        list.add(0,isbn+" "+rentTime+" "+GlobalActionDetector.getInstance().getDays());
+        list.add(0, isbn + " " + rentTime + " " + GlobalActionDetector.getInstance().getDays());
         return rentTime;
     }
 
     /**
-     * @param customer
+     * @param customer customer
      * @return 当用户被冻结时返回true
      */
     public boolean caculateMoney(Customer customer) {
@@ -168,7 +171,7 @@ public class CustomerService {
         return rentedNum;
     }
 
-    private int hash(String id){
-        return new Integer(id)%10;
+    private int hash(String id) {
+        return new Integer(id) % 10;
     }
 }
