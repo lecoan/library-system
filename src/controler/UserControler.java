@@ -61,6 +61,7 @@ public class UserControler {
         UserPanel.userframe.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                //查书按钮
                 bookOperate.SaveData();
                 UserPanel.destroyUserView();
             }
@@ -87,7 +88,8 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Book bookItem = bookOperate.getBookbyIsbn(UserPanel.findBookFrame.searchBook.getText());
-                if (bookItem != null) { //找到图书
+                if (bookItem != null) {
+                    //找到图书
                     UserPanel.findBookFrame.curBookList = null;
                     showBookItem(bookItem,UserPanel);
                 }
@@ -99,6 +101,7 @@ public class UserControler {
         UserPanel.zaijiejb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //在借列表
                 zaijieTable(UserPanel);
             }
         });
@@ -106,6 +109,7 @@ public class UserControler {
         UserPanel.yujiejb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //预借列表
                 yujietable(UserPanel);
             }
         });
@@ -113,6 +117,7 @@ public class UserControler {
         UserPanel.lishijb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //历史列表
                 lishitable(UserPanel);
             }
         });
@@ -120,6 +125,7 @@ public class UserControler {
         UserPanel.chongzhijb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //充值按钮
                 chongzhi(UserPanel);
             }
         });
@@ -158,6 +164,7 @@ public class UserControler {
             //查找
             @Override
             public void mouseClicked(MouseEvent e) {
+                //借阅按钮
                 int flagZaijie = 0;
                 int flagYujie = 0;
 
@@ -222,6 +229,7 @@ public class UserControler {
         UserPanel.yudingjb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //预定按钮
                 if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
                     yudingReturn(UserPanel.findBookFrame.curBookItem.getIsbn());
                     UserPanel.bookInfoFrame.dispose();
@@ -241,6 +249,7 @@ public class UserControler {
         UserPanel.huanshujb.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //还书按钮
                 JScrollPane scrollPane = new JScrollPane(UserPanel.huanshulist);
                 huanshujiemian(UserPanel);
             }
@@ -371,6 +380,7 @@ public class UserControler {
     }
 
     public void inforchange(Customer customer,UserView userPanel){
+        //个人信息修改界面
         userPanel.inforchangeframe.setBounds(500,500,500,320);
         JPanel JP = new JPanel();
         JPanel jp1 = new JPanel();
@@ -478,15 +488,18 @@ public class UserControler {
     }
 
     public void jieyueRetrun(String isbn){
+        //借阅后对整体数据改动
         bookOperate.UpdateBookrank(isbn);
         customerService.rentBookByISBN(customer,isbn);
     }
 
     public void yudingReturn(String isbn){
+        //预定后对整体数据改动
         customer.getWantedSet().add(isbn);
     }
 
     public void chongzhi10Return(Customer customer,UserView userPanel){
+        //充值后对整体数据改动
         mm="10.00";
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
@@ -495,6 +508,7 @@ public class UserControler {
     }
 
     public void chongzhi50Return(Customer customer,UserView userPanel){
+        //充值后对整体数据改动
         mm="50.00";
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
@@ -503,6 +517,7 @@ public class UserControler {
     }
 
     public void chongzhi100Return(Customer customer,UserView userPanel){
+        //充值后对整体数据改动
         mm="100.00";
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
@@ -511,6 +526,7 @@ public class UserControler {
     }
 
     public void huanshujiemian(UserView userPanel){
+        //还书界面
         userPanel.huanshuframe.setBounds(700,500,300,440);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(new BorderLayout());
@@ -543,6 +559,7 @@ public class UserControler {
     }
 
     public void huanshuReturn(String isbn){
+        //还书后对整体数据改动
         GetDate ggetDate = new GetDate();
         int a=customerService.returnBook(customer,isbn);
         bookOperate.addBorrowMemory(customer.getUsername(),isbn,ggetDate.getDate(a));

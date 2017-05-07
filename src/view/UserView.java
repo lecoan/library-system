@@ -290,6 +290,7 @@ public class UserView{
     }
 
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
+        //图书信息
         bookInfoFrame.setBounds(500,500,500,500);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(null);
