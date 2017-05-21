@@ -37,15 +37,15 @@ public class StartUpView extends JFrame{
     }
 
     private void initView() {
-        JLabel label = new JLabel("time: "+GetDate.getDate(detector.getDays()));
-        detector.addEvent(days -> label.setText("time: "+GetDate.getDate(detector.getDays())));
+        JLabel label = new JLabel("当前时间: "+GetDate.getDate(detector.getDays()));
+        detector.addEvent(days -> label.setText("当前时间: "+GetDate.getDate(detector.getDays())));
 
-        setTitle("main");
+        setTitle("主界面");
         setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
-        JButton login = new JButton("login");
-        JButton register = new JButton("register");
+        JButton login = new JButton("登录");
+        JButton register = new JButton("注册");
         panel.add(login);
         panel.add(register);
         panel.add(label);
