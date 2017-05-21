@@ -211,7 +211,7 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(adminPanel.lookBookListBtn.isEnabled()){
-                    //TODO 查看用户借书情况
+                    //查看用户借书情况
                     adminPanel.showUserBookListFrame();
                 }
             }

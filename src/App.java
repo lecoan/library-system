@@ -4,9 +4,6 @@ import bean.Teacher;
 import listener.GlobalActionDetector;
 import view.StartUpView;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

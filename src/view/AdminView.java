@@ -277,13 +277,13 @@ public class AdminView {    //展示admin主面板
         userBookListFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         Box mainBox = Box.createHorizontalBox();
         Box tableBox = Box.createVerticalBox();
-        tableBox.add(new JLabel("在借书单"));
+//        tableBox.add(new JLabel("在借书单"));
         tableBox.add(new JScrollPane(borrowingBookTable));
         tableBox.add(Box.createVerticalStrut(50));
-        tableBox.add(new JLabel("在借书单"));
+//        tableBox.add(new JLabel("在借书单"));
         tableBox.add(new JScrollPane(reserveBookTable));
         tableBox.add(Box.createVerticalStrut(50));
-        tableBox.add(new JLabel("在借书单"));
+//        tableBox.add(new JLabel("在借书单"));
         tableBox.add(new JScrollPane(borrowingHistoryTable));
         tableBox.add(Box.createVerticalStrut(50));
 
@@ -312,7 +312,7 @@ public class AdminView {    //展示admin主面板
             }
         }
         //在借列表
-        String[] borrowingTableHeader = {"书目", "借阅天数"};
+        String[] borrowingTableHeader = {"在借书目", "借阅天数"};
         ((DefaultTableModel)borrowingBookTable.getModel()).setDataVector(borrowingList,borrowingTableHeader);
 
         Set<String> reserveBookSet = curCustomer.getWantedSet();
@@ -326,7 +326,7 @@ public class AdminView {    //展示admin主面板
             }
         }
         //预借书单
-        String[] reserveTableHeader = {"书目"};
+        String[] reserveTableHeader = {"预借书目"};
         ((DefaultTableModel)reserveBookTable.getModel()).setDataVector(reserveBookList,reserveTableHeader);
 
         List<String> historyList = curCustomer.getHistoryList();
@@ -336,7 +336,7 @@ public class AdminView {    //展示admin主面板
             borrowHistoryList[i][1] = GetDate.getDate(new Integer(historyList.get(i).split("##")[1]));
             borrowHistoryList[i][2] = GetDate.getDate(new Integer(historyList.get(i).split("##")[2]));
         }
-        String[] borrowHistoryTableHeader = {"书名","借书时间","还书时间"};
+        String[] borrowHistoryTableHeader = {"借阅历史书目","借书时间","还书时间"};
         ((DefaultTableModel)borrowingHistoryTable.getModel()).setDataVector(borrowHistoryList,borrowHistoryTableHeader);
 
         userBookListFrame.invalidate();
