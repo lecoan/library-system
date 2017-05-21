@@ -82,10 +82,10 @@ public class RegisterView extends JFrame{
 
     private void changeCompent() {
         if(isTeacher){
-            idLabel.setText("gong hao");
+            idLabel.setText("工号：");
             colleageBox.setVisible(false);
         } else {
-            idLabel.setText("xue hao");
+            idLabel.setText("学号：");
             colleageBox.setVisible(true);
         }
     }
@@ -107,7 +107,7 @@ public class RegisterView extends JFrame{
 
     private void initView() {
 
-        setTitle("register");
+        setTitle("注册界面");
         setSize(500,500);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
@@ -127,22 +127,22 @@ public class RegisterView extends JFrame{
         idLabel = new JLabel();
 
         username = new JTextField(30);
-        nameBox.add(new JLabel("username:"));
+        nameBox.add(new JLabel("用户名："));
         nameBox.add(Box.createHorizontalStrut(20));
         nameBox.add(username);
         password = new JPasswordField(30);
-        passwordBox.add(new JLabel("password:"));
+        passwordBox.add(new JLabel("密码："));
         nameBox.add(Box.createHorizontalStrut(20));
         passwordBox.add(password);
         userID = new JTextField(30);
         idBox.add(idLabel);
         idBox.add(userID);
-        teacher = new JRadioButton("teacher");
-        student = new JRadioButton("student");
+        teacher = new JRadioButton("教师");
+        student = new JRadioButton("学生");
         ButtonGroup group = new ButtonGroup();
         group.add(teacher);
         group.add(student);
-        typeBox.add(new JLabel("type"));
+        typeBox.add(new JLabel("用户类型"));
         typeBox.add(teacher);
         typeBox.add(student);
         clleages = new JComboBox<>();
@@ -151,10 +151,10 @@ public class RegisterView extends JFrame{
         clleages.addItem("电子学院");
         clleages.addItem("经济管理学院");
         clleages.addItem("艺术与传媒学院");
-        colleageBox.add(new JLabel("college"));
+        colleageBox.add(new JLabel("学院"));
         colleageBox.add(clleages);
 
-        submit = new JButton("register");
+        submit = new JButton("注册");
         mainBox.add(submit);
         idBox.setVisible(false);
         colleageBox.setVisible(false);

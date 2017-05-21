@@ -27,7 +27,7 @@ public class LoginView extends JFrame{
 
         this.controller = SignInAndUpController.getInstance();
 
-        setTitle("login");
+        setTitle("登录界面");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(500,500);
 
@@ -37,11 +37,11 @@ public class LoginView extends JFrame{
         Box idBox = Box.createHorizontalBox();
         Box pwBox = Box.createHorizontalBox();
 
-        JLabel idLabel = new JLabel("id: ");
-        JLabel pwLabel = new JLabel("password: ");
+        JLabel idLabel = new JLabel("学号或工号： ");
+        JLabel pwLabel = new JLabel("密码： ");
         id = new JTextField(30);
         password = new JPasswordField(30);
-        button = new JButton("sign in");
+        button = new JButton("登录");
         mainBox.add(idBox);
         mainBox.add(pwBox);
         panel.add(mainBox);
