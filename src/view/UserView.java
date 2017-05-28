@@ -48,6 +48,7 @@ public class UserView{
     public JButton huanshujb = new JButton("幻术");
     public JButton inforchangejb = new JButton("消息");
     public JButton confirm = new JButton("确认修改");
+    public JButton renovate = new JButton(("刷新"));
 
     public JPanel panel1 = new JPanel();
     public JPanel panel2 = new JPanel();
@@ -156,6 +157,7 @@ public class UserView{
         lishijb.setForeground(new Color(192,57,43));
 
         panel2.add(chongzhijb);
+        panel2.add(renovate);
         JLabel mjl1 = new JLabel("姓名");
         JLabel mjl2 = new JLabel("学号");
         JLabel mjl3 = new JLabel("在借本数");
@@ -196,8 +198,8 @@ public class UserView{
         mjl33.setFont(new Font("幼圆",Font.BOLD, 20));
         mjl44.setBounds(120,170,80,30);
         mjl44.setFont(new Font("幼圆",Font.BOLD, 20));
-        mjl55.setBounds(120,220,80,30);
-        mjl55.setFont(new Font("幼圆",Font.BOLD, 20));
+        mjl55.setBounds(100,220,70,30);
+        mjl55.setFont(new Font("幼圆",Font.BOLD, 18));
 
         chongzhijb.setBounds(50,260,100,30);
         javax.swing.border.Border b7 =BorderFactory.createLineBorder(Color.PINK);
@@ -205,6 +207,13 @@ public class UserView{
         chongzhijb.setBorder(BorderFactory.createCompoundBorder(b7,b8));
         chongzhijb.setBackground(new Color(192,57,43));
         chongzhijb.setForeground(Color.WHITE);
+
+        renovate.setBounds(150,220,50,30);
+        javax.swing.border.Border b16 =BorderFactory.createLineBorder(Color.PINK);
+        javax.swing.border.Border b17 = BorderFactory.createEtchedBorder();
+        renovate.setBorder(BorderFactory.createCompoundBorder(b7,b8));
+        renovate.setBackground(new Color(192,57,43));
+        renovate.setForeground(Color.WHITE);
 
 
         panel3.add(jb1);
