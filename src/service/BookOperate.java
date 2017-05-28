@@ -43,6 +43,7 @@ public class BookOperate {
     private final int MaxNum = 2000;//每个文件保存图书的最大数量
     private final String[] bookpath = {"./data/book1.xml", "./data/book2.xml", "./data/book3.xml", "./data/book4.xml",
             "./data/book5.xml"};//图书可以保存的所有文件，每个文件最多保存2000本图书
+
     private volatile static BookOperate instance;
 
     public BookPathTable getBookpathtable(String isbn) {
