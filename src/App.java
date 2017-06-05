@@ -59,8 +59,7 @@ public class App {
 //            Student student = new Student();
 //            student.setUsername("student"+i);
 //            student.setPassword("123456");
-//            stud
-//        }ent.setColleage("计算机学院");
+//            student.setColleage("计算机学院");
 //            student.setId("2015211"+i);
 //            CustomerService.getInstance().saveCustomer(student);
 //        }

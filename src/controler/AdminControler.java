@@ -114,7 +114,7 @@ public class AdminControler {
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
-                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
+                adminPanel.userDelay.setText(""+customerService.getDelayedTimes(adminPanel.curCustomer));
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -123,7 +123,7 @@ public class AdminControler {
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
-                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
+                adminPanel.userDelay.setText(""+customerService.getDelayedTimes(adminPanel.curCustomer));
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
