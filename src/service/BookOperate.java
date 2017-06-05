@@ -386,8 +386,12 @@ public class BookOperate {
         return restbooknum;
     }
 
-    public boolean UpdateBookrank(String isbn) {
+    public boolean UpdateBookrank(String isbn,String name) {
         if (booklist.get(isbn).getRestnum() == 0) return false;
+
+        GlobalActionDetector gg = GlobalActionDetector.getInstance();
+        booklist.get(isbn).addBorrowMan(name,  GetDate.getDate(gg.getDays()));
+
         booklist.get(isbn).setBorrownum(booklist.get(isbn).getBorrownum() + 1);
         booklist.get(isbn).setRestnum(booklist.get(isbn).getRestnum() - 1);
         //更新借阅次数,剩余数量
@@ -425,6 +429,7 @@ public class BookOperate {
         bm.setReturntime(GetDate.getDate(gg.getDays()));
         book.addBorrowMemory(bm);
         booklist.get(isbn).setRestnum(booklist.get(isbn).getRestnum() + 1);//
+        booklist.get(isbn).deleteBorrowMan(borrowman);//
         UpdateBook(book);
         restbooknum++;
     }

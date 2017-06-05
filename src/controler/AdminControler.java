@@ -67,7 +67,7 @@ public class AdminControler {
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"种类不能为空！");
             return;
         }
-        if(bookInfo[4].equals("请输入数量") ||  bookInfo[4].length() == 0 || Pattern.matches("^[1-9][0-9]*$",bookInfo[4])){
+        if(bookInfo[4].equals("请输入数量") ||  bookInfo[4].length() == 0 || !Pattern.matches("^[1-9][0-9]*$",bookInfo[4])){
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"请输入合法数量！");
             return;
         }
