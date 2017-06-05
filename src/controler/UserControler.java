@@ -207,8 +207,8 @@ public class UserControler {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "借阅成功");
                     UserPanel.mjl33.setText(String.valueOf(customer.getBookedMap().size()));
                     UserPanel.panel2.validate();
-                } else if (customer.getBookedMap().size() > customer.getMaxNumForRent()) {
-                    errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "账户权限不足");
+                } else if (customer.getBookedMap().size() >= customer.getMaxNumForRent()) {
+                    errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "已达到最大借书数量");
                 } else if (customer.isFreezed()) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
                 } else {
@@ -221,6 +221,9 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //预定按钮
+                if(UserPanel.yudingjb.isEnabled() == false){
+                    return;
+                }
                 if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
                     yudingReturn(UserPanel.findBookFrame.curBookItem.getIsbn(), customer);
                     UserPanel.bookInfoFrame.dispose();

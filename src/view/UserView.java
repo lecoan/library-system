@@ -337,6 +337,11 @@ public class UserView {
 
         jieyuejb.setBounds(100, 320, 100, 20);
         yudingjb.setBounds(275, 320, 100, 20);
+        if(bookItemPath.getRestnum() > 0)
+            yudingjb.setEnabled(false);
+        else
+            yudingjb.setEnabled(true);
+
 
         jpn.add(bookNameLabel);
         jpn.add(bookPublisherLabel);
