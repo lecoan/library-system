@@ -160,6 +160,31 @@ public class UserControler {
             }
         });
 
+        UserPanel.renovate.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int count=0;
+
+                Map<String, Integer> map = customer.getBookedMap();
+                int[] zaijieJudge = new int[map.size()];
+                Iterator<String> iterator = map.keySet().iterator();
+                for(int i=0;i<map.size();i++){
+                    if (iterator.hasNext()){
+                        String key = iterator.next();
+                        zaijieJudge[i]=(GlobalActionDetector.getInstance().getDays() - map.get(key));
+                        if(zaijieJudge[i]>30){
+                            count += (zaijieJudge[i]-30);
+                        }
+                    }
+                }
+
+                float money = customer.getMoney();
+                customer.setMoney(money - count);
+                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
+                UserPanel.panel2.validate();
+            }
+        });
+
         UserPanel.jieyuejb.addMouseListener(new MouseAdapter() {
             //查找
             @Override
