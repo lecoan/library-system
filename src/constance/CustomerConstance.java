@@ -22,4 +22,7 @@ public class CustomerConstance {
 
     public static final float MAX_DEBT = -20;
 
+    public static final int MAX_RENT_BOOK_NUM = 30;
+
+
 }
