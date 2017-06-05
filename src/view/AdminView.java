@@ -54,6 +54,7 @@ public class AdminView {    //展示admin主面板
     public JLabel userStuNum = new JLabel("");
     public JLabel userCollege = new JLabel("");
     public JLabel userStatus = new JLabel("");
+    public JLabel userMoney = new JLabel("");
     public JTextField userLimit= new JTextField(1);
     public JButton changeLimitBtn = new JButton("修改权限");
     public JButton unfreezeBtn = new JButton("解冻");
@@ -216,15 +217,18 @@ public class AdminView {    //展示admin主面板
 
 
         JLabel bookKindLabel = new JLabel("种类 ：  " + bookItem.getKind());
-        bookKindLabel.setBounds(100,180,300,20);;
+        bookKindLabel.setBounds(100,180,300,20);
+
+        JLabel bookBoughtLabel = new JLabel("购入时间 ：  " + bookItem.getBoughttime());
+        bookBoughtLabel.setBounds(100,210,300,20);
 
         JLabel bookDesLabel = new JLabel("<html><body><p>" + "简介 ：  " + bookItem.getIntroduction()+ "</p></body></html>");
         System.out.print(bookItem.getIntroduction());
-        bookDesLabel.setBounds(100,220,300,80);
+        bookDesLabel.setBounds(100,240,300,80);
 
-        bookUpdateBtn.setBounds(50,320,100,30);
-        lookBorrowHistory.setBounds(200,320,100,30);
-        bookDeleBtn.setBounds(350,320,100,30);
+        bookUpdateBtn.setBounds(50,340,100,30);
+        lookBorrowHistory.setBounds(200,340,100,30);
+        bookDeleBtn.setBounds(350,340,100,30);
 
         JPanel container = new JPanel();
         container.setSize(600,400);
@@ -236,6 +240,7 @@ public class AdminView {    //展示admin主面板
         container.add(bookRestNumLabel);
         container.add(bookAuthorLabel);
         container.add(bookKindLabel);
+        container.add(bookBoughtLabel);
         container.add(bookDesLabel);
         container.add(bookUpdateBtn);
         container.add(lookBorrowHistory);
@@ -445,12 +450,14 @@ public class AdminView {    //展示admin主面板
         Box userCollegeBox = Box.createHorizontalBox();
         Box userStatusBox = Box.createHorizontalBox();
         Box userLimitBox = Box.createHorizontalBox();
+        Box userMoneyBox = Box.createHorizontalBox();
 
         JLabel userNameLabel = new JLabel("姓名：");
         JLabel userStuNumLabel = new JLabel("学号/工号：");
         JLabel userCollegeLabel = new JLabel("学院：");
         JLabel userStatusLabel = new JLabel("状态：");
-        JLabel userLimitLabel = new JLabel("权限：");
+        JLabel userLimitLabel = new JLabel("最大借书数：");
+        JLabel userMoneyLabel = new JLabel("余额：");
 
         userNameBox.add(userNameLabel);
         userNameBox.add(Box.createGlue());
@@ -472,11 +479,17 @@ public class AdminView {    //展示admin主面板
         userLimitBox.add(Box.createHorizontalStrut(150));
         userLimitBox.add(userLimit);
 
+        userMoneyBox.add(userMoneyLabel);
+        userMoneyBox.add(Box.createGlue());
+        userMoneyBox.add(userMoney);
+
         UserInfoBox.add(userNameBox);
         UserInfoBox.add(userStuNumBox);
         UserInfoBox.add(userCollegeBox);
         UserInfoBox.add(userStatusBox);
+        UserInfoBox.add(userMoneyBox);
         UserInfoBox.add(userLimitBox);
+
 
         Box UserBtnBox = Box.createHorizontalBox();
         UserBtnBox.add(changeLimitBtn);

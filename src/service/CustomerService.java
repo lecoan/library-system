@@ -188,7 +188,9 @@ public class CustomerService {
     public boolean caculateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            customer.setMoney(customer.getMoney() - (detector.getDays() - rentTime));
+            if(detector.getDays()-rentTime>30){
+                customer.setMoney((float) (customer.getMoney()-0.2));
+            }
         });
         if (customer.getMoney() < CustomerConstance.MAX_DEBT) {
             customer.setFreezed(true);
@@ -210,5 +212,14 @@ public class CustomerService {
      */
     private int hash(String id) {
         return new Integer(id) % 10;
+    }
+
+    public void updateMoney(Customer customer) {
+        customer.getBookedMap().forEach((s, integer) -> {
+            int rentTime = customer.getBookedMap().get(s);
+            if(detector.getDays()-rentTime>30){
+                customer.setMoney((float) (customer.getMoney()-(detector.getDays()-rentTime)*0.2));
+            }
+        });
     }
 }

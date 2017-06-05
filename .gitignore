@@ -20,4 +20,5 @@ bookSpider/node_modules/
 *.zip
 *.tar.gz
 *.rar
-
+log.xml
+log.txt

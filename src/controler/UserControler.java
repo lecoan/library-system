@@ -1,6 +1,7 @@
 package controler;
 
 import bean.*;
+import constance.CustomerConstance;
 import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * Created by ghoskno on 3/29/17.
@@ -160,6 +162,31 @@ public class UserControler {
             }
         });
 
+//        UserPanel.renovate.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int count=0;
+//
+//                Map<String, Integer> map = customer.getBookedMap();
+//                int[] zaijieJudge = new int[map.size()];
+//                Iterator<String> iterator = map.keySet().iterator();
+//                for(int i=0;i<map.size();i++){
+//                    if (iterator.hasNext()){
+//                        String key = iterator.next();
+//                        zaijieJudge[i]=(GlobalActionDetector.getInstance().getDays() - map.get(key));
+//                        if(zaijieJudge[i]>30){
+//                            count += (zaijieJudge[i]-30);
+//                        }
+//                    }
+//                }
+//
+//                float money = customer.getMoney();
+//                customer.setMoney(money - count);
+//                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
+//                UserPanel.panel2.validate();
+//            }
+//        });
+
         UserPanel.jieyuejb.addMouseListener(new MouseAdapter() {
             //查找
             @Override
@@ -240,7 +267,7 @@ public class UserControler {
                 else if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "当前图书可以借阅无需预定");
                 }
-                else if (customer.isFreezed() == true) {
+                else if (customer.isFreezed()) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
                 }
             }
@@ -252,6 +279,7 @@ public class UserControler {
                 //还书按钮
                 JScrollPane scrollPane = new JScrollPane(UserPanel.huanshulist);
                 huanshujiemian(UserPanel);
+
             }
         });
 
@@ -275,6 +303,17 @@ public class UserControler {
                     huanshuReturn(ISBN);
                     UserPanel.mjl33.setText(String.valueOf(customer.getBookedMap().size()));
                     UserPanel.panel2.validate();
+                    final boolean[] shouldShow = {false};
+                    map.forEach((s, integer) -> {
+                        if(GlobalActionDetector.getInstance().getDays()-integer>30){
+                            shouldShow[0] = true;
+                        }
+                    });
+                    if(shouldShow[0]){
+                        UserPanel.zaijietishi.setText("您有超出天数未还图书");
+                    } else {
+                        UserPanel.zaijietishi.setText("");
+                    }
                 }
             }
         });
@@ -504,6 +543,9 @@ public class UserControler {
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
         customer.setMoney(num + chongzhimoney);
+        if(customer.getMoney()> CustomerConstance.MAX_DEBT && customer.isFreezed()) {
+            customer.setFreezed(false);
+        }
 
     }
 
@@ -528,14 +570,15 @@ public class UserControler {
     public void huanshujiemian(UserView userPanel){
         //还书界面
         userPanel.huanshuframe.setBounds(700,500,300,440);
+        userPanel.huanshuframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(new BorderLayout());
         userPanel.huanshuframe.setContentPane(jpn);
         userPanel.huanshuframe.setVisible(true);
 
         Map<String, Integer> map = customer.getBookedMap();
-        zaijiestrings = new String[30][2];
         Iterator<String> iterator = map.keySet().iterator();
+        zaijiestrings = new String[map.size()][2];
         for(int i=0;i<map.size();i++){
             if (iterator.hasNext()){
                 String key = iterator.next();
@@ -565,11 +608,6 @@ public class UserControler {
         bookOperate.addBorrowMemory(customer.getUsername(),isbn,ggetDate.getDate(a));
     }
 
-    public static void main(String[] args){
-
-//        UserControler test = UserControler.getInstance();
-//        test.initUserView();
-    }
 
 
 }

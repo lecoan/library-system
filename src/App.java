@@ -1,20 +1,22 @@
+
 import bean.Book;
 import bean.Student;
 import bean.Teacher;
 import listener.GlobalActionDetector;
+import service.BookOperate;
+import service.CustomerService;
 import view.StartUpView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Properties;
+
 
 /**
  * Created by lecoan on 17-3-1.
  */
 
 public class App {
-
     public static void main(String args[]) {
        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        BookOperate oo = BookOperate.getInstance();
@@ -43,6 +45,7 @@ public class App {
 //                    a.setName(property[0]);
 //                    a.setIntroduction(property[3]);
 //                    a.setIsbn();
+//                    a.setBoughttime();
 //                    oo.addBook(a,(int)(Math.random()*100 + 1));
 //                    System.out.println("add book success!!");
 //                }
@@ -52,8 +55,6 @@ public class App {
 //        }
 //        catch(IOException e) {
 //        }
-////
-////        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        for(int i = 100;i<1000;++i){
 //            Student student = new Student();
 //            student.setUsername("student"+i);

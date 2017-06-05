@@ -83,7 +83,7 @@ public class Book implements Serializable {
         this.name = name;
     }
 
-    public void setBoughttime(String boughttime) {
+    public void setBoughttime() {
         GlobalActionDetector gg = GlobalActionDetector.getInstance();
         String bt = GetDate.getDate(gg.getDays());
         this.boughttime = bt;
