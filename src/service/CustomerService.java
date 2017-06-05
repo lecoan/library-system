@@ -168,7 +168,7 @@ public class CustomerService {
             rentedNum--;
         }
         //检测是否超时
-        if (detector.getDays() - rentTime > 30) {
+        if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
 
             customer.setDelayedTimes(customer.getDelayedTimes() + 1);
         }
@@ -188,7 +188,7 @@ public class CustomerService {
     public boolean caculateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            if(detector.getDays()-rentTime>30){
+            if(detector.getDays()-rentTime>CustomerConstance.MAX_RENT_TIME){
                 customer.setMoney((float) (customer.getMoney()-0.2));
             }
         });
@@ -217,7 +217,7 @@ public class CustomerService {
     public void updateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            if(detector.getDays()-rentTime>30){
+            if(detector.getDays()-rentTime>CustomerConstance.MAX_RENT_TIME){
                 customer.setMoney((float) (customer.getMoney()-(detector.getDays()-rentTime)*0.2));
             }
         });

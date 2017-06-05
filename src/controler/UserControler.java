@@ -23,7 +23,6 @@ import java.util.function.BiConsumer;
  */
 public class UserControler {
     UserView userView[];
-//    Customer customer;
     BookOperate bookOperate = BookOperate.getInstance();
     CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
@@ -42,9 +41,9 @@ public class UserControler {
 
     private volatile static UserControler instance;
 
-    public static UserControler getInstance(){
+    public static UserControler getInstance() {
         synchronized (UserControler.class) {
-            if(instance == null) {
+            if (instance == null) {
                 instance = new UserControler();
             }
             return instance;
@@ -52,11 +51,9 @@ public class UserControler {
     }
 
     private UserControler() {
-        //initUserView(customer);
     }
 
     public UserView initUserView(Customer customer){
-//        this.customer = customer;
         UserView UserPanel = new UserView(customer);
         commonControler.findBook(UserPanel.findBookFrame);
 
@@ -162,31 +159,6 @@ public class UserControler {
             }
         });
 
-//        UserPanel.renovate.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int count=0;
-//
-//                Map<String, Integer> map = customer.getBookedMap();
-//                int[] zaijieJudge = new int[map.size()];
-//                Iterator<String> iterator = map.keySet().iterator();
-//                for(int i=0;i<map.size();i++){
-//                    if (iterator.hasNext()){
-//                        String key = iterator.next();
-//                        zaijieJudge[i]=(GlobalActionDetector.getInstance().getDays() - map.get(key));
-//                        if(zaijieJudge[i]>30){
-//                            count += (zaijieJudge[i]-30);
-//                        }
-//                    }
-//                }
-//
-//                float money = customer.getMoney();
-//                customer.setMoney(money - count);
-//                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
-//                UserPanel.panel2.validate();
-//            }
-//        });
-
         UserPanel.jieyuejb.addMouseListener(new MouseAdapter() {
             //查找
             @Override
@@ -228,7 +200,7 @@ public class UserControler {
                 {
                     errAlert.findErrAlert((int)UserPanel.bookInfoFrame.getLocation().getX()+100,(int)UserPanel.bookInfoFrame.getLocation().getY()+100,"当前书本已经借阅，请于借书单中查看");
                 }
-                else if( bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0 && (customer.isFreezed() == false) && customer.getBookedMap().size() <= customer.getMaxNumForRent() )
+                else if( bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0 && (customer.isFreezed() == false) && customer.getBookedMap().size() < customer.getMaxNumForRent() )
                 {
                     jieyueRetrun(UserPanel.findBookFrame.curBookItem.getIsbn(),customer);
                     if(flagYujie == 1){
@@ -244,7 +216,7 @@ public class UserControler {
                 else if (customer.getBookedMap().size() > customer.getMaxNumForRent()){
                     errAlert.findErrAlert((int)UserPanel.bookInfoFrame.getLocation().getX()+100,(int)UserPanel.bookInfoFrame.getLocation().getY()+100,"账户权限不足");
                 }
-                else if(customer.isFreezed()==true){
+                else if(customer.isFreezed()){
                     errAlert.findErrAlert((int)UserPanel.bookInfoFrame.getLocation().getX()+100,(int)UserPanel.bookInfoFrame.getLocation().getY()+100,"你已被冻结");
                 }
                 else {
@@ -328,21 +300,22 @@ public class UserControler {
         UserPanel.confirm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-               // System.out.print(name+pass1+pass2);
 
                 name = newName.getText().trim();
                 pass1 = newPassward.getText().trim();
                 pass2 = passConfirm.getText().trim();
-
-                if(pass1.equals(pass2)){
+                if (!pass1.equals(pass2)) {
+                    errAlert.findErrAlert(500, 500, "两次输入密码不一样");
+                } else if (pass1.isEmpty() || !pass1.matches("^[A-Za-z0-9]{4,40}$")) {
+                    errAlert.findErrAlert(500, 500, "密码应为4到40位的字母和注释组成");
+                } else if (name.isEmpty() || !name.matches("^[A-Za-z0-9]{4,40}$")) {
+                    errAlert.findErrAlert(500, 500, "用户名应为4到40位的字母和注释组成");
+                } else {
                     customer.setPassword(pass1);
-                    customer.setId(name);
+                    customer.setUsername(name);
                     UserPanel.mjl11.setText(name);
                     UserPanel.panel2.validate();
                     UserPanel.inforchangeframe.dispose();
-                }
-                else{
-                    errAlert.findErrAlert((int)UserPanel.inforchangeframe.getLocation().getX()+200,(int)UserPanel.inforchangeframe.getLocation().getY()+200,"两次输入密码不一样");
                 }
             }
         });
@@ -400,6 +373,7 @@ public class UserControler {
         userPanel.panel4.add(new JScrollPane(table));
         table.setVisible(true);
         userPanel.panel4.validate();
+        userPanel.yujietishi.setText("");
     }
 
     public void lishitable(UserView userPanel){
@@ -418,29 +392,30 @@ public class UserControler {
         userPanel.panel4.validate();
     }
 
-    public void inforchange(Customer customer,UserView userPanel){
+    public void inforchange(Customer customer, UserView userPanel) {
         //个人信息修改界面
-        userPanel.inforchangeframe.setBounds(500,500,500,320);
+        userPanel.inforchangeframe = new JFrame();
+        userPanel.inforchangeframe.setBounds(500, 500, 500, 320);
         JPanel JP = new JPanel();
         JPanel jp1 = new JPanel();
         JPanel jp2 = new JPanel();
         userPanel.inforchangeframe.setVisible(true);
         userPanel.inforchangeframe.setLayout(null);
 
-        jp1.setBounds(0,0,500,50);
-        jp1.setBackground(new Color(192,57,43));
+        jp1.setBounds(0, 0, 500, 50);
+        jp1.setBackground(new Color(192, 57, 43));
         jp1.setLayout(null);
 
         JLabel title = new JLabel("个人信息修改");
-        title.setFont(new Font("幼圆",Font.BOLD, 20));
+        title.setFont(new Font("幼圆", Font.BOLD, 20));
         jp1.add(title);
-        title.setBounds(175,15,150,20);
+        title.setBounds(175, 15, 150, 20);
 
-        JP.setBounds(0,50,500,200);
+        JP.setBounds(0, 50, 500, 200);
         JP.setLayout(null);
 
-        jp2.setBounds(0,250,500,50);
-        jp2.setBackground(new Color(192,57,43));
+        jp2.setBounds(0, 250, 500, 50);
+        jp2.setBackground(new Color(192, 57, 43));
         jp2.setLayout(null);
 
         JLabel oldname = new JLabel("旧用户名:");
@@ -453,16 +428,16 @@ public class UserControler {
 //        JTextField newPassward = new JTextField();
 //        JTextField passConfirm = new JTextField();
 
-        oldname.setFont(new Font("幼圆",Font.BOLD, 15));
-        oleName.setFont(new Font("幼圆",Font.BOLD, 15));
-        newname.setFont(new Font("幼圆",Font.BOLD, 15));
-        newpassward.setFont(new Font("幼圆",Font.BOLD, 15));
-        passconfirm.setFont(new Font("幼圆",Font.BOLD, 15));
+        oldname.setFont(new Font("幼圆", Font.BOLD, 15));
+        oleName.setFont(new Font("幼圆", Font.BOLD, 15));
+        newname.setFont(new Font("幼圆", Font.BOLD, 15));
+        newpassward.setFont(new Font("幼圆", Font.BOLD, 15));
+        passconfirm.setFont(new Font("幼圆", Font.BOLD, 15));
 
-        javax.swing.border.Border b7 =BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b7 = BorderFactory.createLineBorder(Color.WHITE);
         javax.swing.border.Border b8 = BorderFactory.createEtchedBorder();
-        userPanel.confirm.setBorder(BorderFactory.createCompoundBorder(b7,b8));
-        userPanel.confirm.setBackground(new Color(192,57,43));
+        userPanel.confirm.setBorder(BorderFactory.createCompoundBorder(b7, b8));
+        userPanel.confirm.setBackground(new Color(192, 57, 43));
         userPanel.confirm.setForeground(Color.WHITE);
 
         JP.add(oleName);
@@ -475,17 +450,17 @@ public class UserControler {
         JP.add(passConfirm);
         JP.add(userPanel.confirm);
 
-        oldname.setBounds(50,20,100,20);
-        oleName.setBounds(150,20,100,20);
-        newname.setBounds(250,20,100,20);
-        newName.setBounds(350,20,100,20);
+        oldname.setBounds(50, 20, 100, 20);
+        oleName.setBounds(150, 20, 100, 20);
+        newname.setBounds(250, 20, 100, 20);
+        newName.setBounds(350, 20, 100, 20);
 
-        newpassward.setBounds(50,100,100,20);
-        newPassward.setBounds(130,100,100,20);
-        passconfirm.setBounds(250,100,100,20);
-        passConfirm.setBounds(350,100,100,20);
+        newpassward.setBounds(50, 100, 100, 20);
+        newPassward.setBounds(130, 100, 100, 20);
+        passconfirm.setBounds(250, 100, 100, 20);
+        passConfirm.setBounds(350, 100, 100, 20);
 
-        userPanel.confirm.setBounds(200,150,100,25);
+        userPanel.confirm.setBounds(200, 150, 100, 25);
 
 //        name = newName.getText().trim();
 //        pass1 = newPassward.getText().trim();
@@ -495,30 +470,32 @@ public class UserControler {
         userPanel.inforchangeframe.getContentPane().add(JP);
         userPanel.inforchangeframe.getContentPane().add(jp1);
         userPanel.inforchangeframe.getContentPane().add(jp2);
+        userPanel.inforchangeframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
-    public void chongzhi(UserView userPanel){
-        userPanel.chongzhiframe.setBounds(600,500,340,120);
+
+    public void chongzhi(UserView userPanel) {
+        userPanel.chongzhiframe.setBounds(600, 500, 340, 120);
         JPanel jpn = new JPanel(new FlowLayout());
-        jpn.setBackground(new Color(192,57,43));
+        jpn.setBackground(new Color(192, 57, 43));
         jpn.setLayout(null);
         userPanel.chongzhiframe.setContentPane(jpn);
         userPanel.chongzhiframe.setVisible(true);
 
         JLabel JL = new JLabel("选择充值金额");
-        JL.setBounds(125,10,100,20);
-        JL.setFont(new Font("幼圆",Font.BOLD, 13));
+        JL.setBounds(125, 10, 100, 20);
+        JL.setFont(new Font("幼圆", Font.BOLD, 13));
         JL.setForeground(Color.WHITE);
 
-        userPanel.chongzhi10.setBounds(30,35,70,30);
+        userPanel.chongzhi10.setBounds(30, 35, 70, 30);
         userPanel.chongzhi10.setBackground(Color.WHITE);
-        userPanel.chongzhi10.setForeground(new Color(192,57,43));
-        userPanel.chongzhi50.setBounds(130,35,70,30);
+        userPanel.chongzhi10.setForeground(new Color(192, 57, 43));
+        userPanel.chongzhi50.setBounds(130, 35, 70, 30);
         userPanel.chongzhi50.setBackground(Color.WHITE);
-        userPanel.chongzhi50.setForeground(new Color(192,57,43));
-        userPanel.chongzhi100.setBounds(230,35,70,30);
+        userPanel.chongzhi50.setForeground(new Color(192, 57, 43));
+        userPanel.chongzhi100.setBounds(230, 35, 70, 30);
         userPanel.chongzhi100.setBackground(Color.WHITE);
-        userPanel.chongzhi100.setForeground(new Color(192,57,43));
+        userPanel.chongzhi100.setForeground(new Color(192, 57, 43));
 
         jpn.add(userPanel.chongzhi10);
         jpn.add(userPanel.chongzhi50);
@@ -567,9 +544,9 @@ public class UserControler {
 
     }
 
-    public void huanshujiemian(UserView userPanel){
+    public void huanshujiemian(UserView userPanel) {
         //还书界面
-        userPanel.huanshuframe.setBounds(700,500,300,440);
+        userPanel.huanshuframe.setBounds(700, 500, 300, 440);
         userPanel.huanshuframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(new BorderLayout());
@@ -579,23 +556,23 @@ public class UserControler {
         Map<String, Integer> map = userPanel.customer.getBookedMap();
         Iterator<String> iterator = map.keySet().iterator();
         zaijiestrings = new String[map.size()][2];
-        for(int i=0;i<map.size();i++){
-            if (iterator.hasNext()){
+        for (int i = 0; i < map.size(); i++) {
+            if (iterator.hasNext()) {
                 String key = iterator.next();
-                zaijiestrings[i][0]=key.split("&&")[2];
-                zaijiestrings[i][1]=""+ (GlobalActionDetector.getInstance().getDays() - map.get(key));
+                zaijiestrings[i][0] = key.split("&&")[2];
+                zaijiestrings[i][1] = "" + (GlobalActionDetector.getInstance().getDays() - map.get(key));
             }
         }
 
-        userPanel.huanshulist.setPreferredScrollableViewportSize(new Dimension(300,200));
+        userPanel.huanshulist.setPreferredScrollableViewportSize(new Dimension(300, 200));
         JScrollPane scrollPane = new JScrollPane(userPanel.huanshulist);
         jpn.add(scrollPane);
 
         String[] bookTableHead = {"书目"};
-        DefaultTableModel tableModel =  (DefaultTableModel)userPanel.huanshulist.getModel();
-        tableModel.setDataVector(zaijiestrings,bookTableHead);
+        DefaultTableModel tableModel = (DefaultTableModel) userPanel.huanshulist.getModel();
+        tableModel.setDataVector(zaijiestrings, bookTableHead);
         userPanel.huanshulist.setRowHeight(30);
-        userPanel.huanshulist.setCellEditable(0,5);
+        userPanel.huanshulist.setCellEditable(0, 5);
         userPanel.huanshulist.setVisible(true);
 
         //userPanel.huanshuframe.dispose();
@@ -603,11 +580,8 @@ public class UserControler {
 
     public void huanshuReturn(String isbn,Customer customer){
         //还书后对整体数据改动
-        GetDate ggetDate = new GetDate();
-        int a=customerService.returnBook(customer,isbn);
-        bookOperate.addBorrowMemory(customer.getUsername(),isbn,ggetDate.getDate(a));
+        int a = customerService.returnBook(customer, isbn);
+        bookOperate.addBorrowMemory(customer.getUsername(), isbn, GetDate.getDate(a));
     }
-
-
 
 }
