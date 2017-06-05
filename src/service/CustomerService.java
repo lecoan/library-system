@@ -9,6 +9,7 @@ import util.LRUCache;
 import util.StorageHelper;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -237,5 +238,20 @@ public class CustomerService {
 
     public void login(Customer customer) {
         loginedCustomers.add(customer);
+    }
+
+    /**
+     *
+     * @param customer
+     * @return 用户当前的
+     */
+    public int getDelayedTimes(Customer customer){
+        final int[] count = {0};
+        customer.getBookedMap().forEach((s, integer) -> {
+            if(detector.getDays()-30>integer){
+                count[0]++;
+            }
+        });
+        return count[0]+customer.getDelayedTimes();
     }
 }

@@ -59,7 +59,8 @@ public class App {
 //            Student student = new Student();
 //            student.setUsername("student"+i);
 //            student.setPassword("123456");
-//            student.setColleage("计算机学院");
+//            stud
+//        }ent.setColleage("计算机学院");
 //            student.setId("2015211"+i);
 //            CustomerService.getInstance().saveCustomer(student);
 //        }
@@ -69,7 +70,7 @@ public class App {
 //            teacher.setPassword("123456");
 //            teacher.setId("2014211"+i);
 //            CustomerService.getInstance().saveCustomer(teacher);
-//        }
+        System.exit(0);
         new StartUpView();
     }
 }
