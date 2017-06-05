@@ -1,26 +1,13 @@
-import bean.Book;
-import bean.Student;
-import bean.Teacher;
+
 import listener.GlobalActionDetector;
 import view.StartUpView;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Created by lecoan on 17-3-1.
  */
 
 public class App {
-<<<<<<< HEAD
-    public static void main(String args[]){
-        GlobalActionDetector.getInstance().startGlobalActionDetector();
-=======
 
     public static void main(String args[]) {
        GlobalActionDetector.getInstance().startGlobalActionDetector();
@@ -76,7 +63,6 @@ public class App {
 //            teacher.setId("2014211"+i);
 //            CustomerService.getInstance().saveCustomer(teacher);
 //        }
->>>>>>> dev_zyx
         new StartUpView();
     }
 }

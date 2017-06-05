@@ -87,19 +87,11 @@ public class RegisterView extends JFrame {
      * 根据用户的身份更新文字
      */
     private void changeCompent() {
-<<<<<<< HEAD
         if(isTeacher){
             idLabel.setText("工号：");
             colleageBox.setVisible(false);
         } else {
             idLabel.setText("学号：");
-=======
-        if (isTeacher) {
-            idLabel.setText("工号");
-            colleageBox.setVisible(false);
-        } else {
-            idLabel.setText("学号");
->>>>>>> dev_zyx
             colleageBox.setVisible(true);
         }
     }
@@ -126,13 +118,8 @@ public class RegisterView extends JFrame {
 
     private void initView() {
 
-<<<<<<< HEAD
         setTitle("注册界面");
         setSize(500,500);
-=======
-        setTitle("register");
-        setSize(500, 500);
->>>>>>> dev_zyx
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 

@@ -25,6 +25,7 @@ public class StartUpView extends JFrame {
 
     private GlobalActionDetector detector;
 
+    private JTable table;
     public StartUpView() {
         //controller = SignInAndUpController.getInstance();
         detector = GlobalActionDetector.getInstance();
@@ -67,16 +68,18 @@ public class StartUpView extends JFrame {
             }
         });
 
-        JTable table = new JTable(0, 0);
-        java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
-        String[] tableHeader = {"排名", "书名", "借阅次数"};
-        Object[][] tableBody = new Object[list.size()][3];
-        for (int i = 0; i < list.size(); i++) {
-            Object[] rowData = {"" + i, "" + list.get(i).getIsbn(), "" + list.get(i).getBorrownum()};
-            tableBody[i] = rowData;
-        }
-        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-        tableModel.setDataVector(tableBody, tableHeader);
+        table = new JTable(0, 0);
+        detector.addEvent(days -> {
+           java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
+           String[] tableHeader = {"排名", "书名", "借阅次数"};
+           Object[][] tableBody = new Object[list.size()][3];
+           for (int i = 0; i < list.size(); i++) {
+               Object[] rowData = {"" + i, "" + list.get(i).getIsbn(), "" + list.get(i).getBorrownum()};
+               tableBody[i] = rowData;
+           }
+           DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+           tableModel.setDataVector(tableBody, tableHeader);
+        });
         table.setEnabled(false);
         table.setVisible(true);
         panel.add(new JScrollPane(table));

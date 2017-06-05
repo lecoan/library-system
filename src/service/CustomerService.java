@@ -115,15 +115,9 @@ public class CustomerService {
         if (customerMap == null) {
             customerMap = new HashMap<>();
         }
-<<<<<<< HEAD
-        customerMap.put(customer.getId(),customer);
-        cache.put(customer.getId(),customer);
-        StorageHelper.WriteObjectToFile(customerMap,USER_DATA_PATH+"_"+hash(customer.getId()));
-=======
         customerMap.put(customer.getId(), customer);
         cache.put(customer.getId(), customer);
         StorageHelper.WriteObjectToFile(customerMap, USER_DATA_PATH + "_" + hash(customer.getId()));
->>>>>>> dev_zyx
     }
 
     /**
