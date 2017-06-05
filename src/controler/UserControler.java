@@ -100,6 +100,8 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //在借列表
+                UserPanel.tableFlag = UserView.zaijieflag;
+//                System.out.print("111");
                 zaijieTable(UserPanel);
             }
         });
@@ -108,6 +110,7 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //预借列表
+                UserPanel.tableFlag = UserView.yujieflag;
                 yujietable(UserPanel);
             }
         });
@@ -116,6 +119,7 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //历史列表
+                UserPanel.tableFlag = UserView.lishiflag;
                 lishitable(UserPanel);
             }
         });

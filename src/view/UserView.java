@@ -3,6 +3,7 @@ package view;
 import bean.Book;
 import bean.BookPathTable;
 import bean.*;
+import controler.UserControler;
 import service.BookOperate;
 import service.CustomerService;
 
@@ -22,7 +23,11 @@ import listener.GlobalActionDetector;
  */
 
 public class UserView {
+    static final public int zaijieflag = 0;
+    static final public int yujieflag = 1;
+    static final public int lishiflag = 2;
     public Customer customer;
+    public int tableFlag = 0;
     BookOperate bookOperate = BookOperate.getInstance();
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
@@ -255,6 +260,12 @@ public class UserView {
             CustomerService.getInstance().caculateMoney(customer);
             mjl55.setText(String.format("%.1f",customer.getMoney()));
             getNofication(customer);
+            if (tableFlag == zaijieflag)
+                UserControler.getInstance().zaijieTable(this);
+            else if(tableFlag == yujieflag)
+                UserControler.getInstance().yujietable(this);
+            else
+                UserControler.getInstance().lishitable(this);
         });
     }
 
