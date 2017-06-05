@@ -74,7 +74,7 @@ public class UserView {
 
         JPanel panel6 = new JPanel() {
             protected void paintComponent(Graphics g) {
-                ImageIcon icon = new ImageIcon("res\\2.jpg");
+                ImageIcon icon = new ImageIcon("res/6.png");
                 Image imgg = icon.getImage();
                 g.drawImage(imgg, 0, 0, 200, 80, icon.getImageObserver());
             }
@@ -358,7 +358,7 @@ public class UserView {
 
         public void paint(Graphics g) {
             super.paint(g);
-            ImageIcon icon = new ImageIcon("res\\1234.gif");
+            ImageIcon icon = new ImageIcon("res/1234.gif");
             g.drawImage(icon.getImage(), 0, 10, 200, 185, this);
         }
 

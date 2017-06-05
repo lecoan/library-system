@@ -496,7 +496,7 @@ public class UserControler {
         userPanel.chongzhi50.setBounds(130, 35, 70, 30);
         userPanel.chongzhi50.setBackground(Color.WHITE);
         userPanel.chongzhi50.setForeground(new Color(192, 57, 43));
-        userPanel.chongzhi100.setBounds(230, 35, 70, 30);
+        userPanel.chongzhi100.setBounds(230, 35, 90, 30);
         userPanel.chongzhi100.setBackground(Color.WHITE);
         userPanel.chongzhi100.setForeground(new Color(192, 57, 43));
 
