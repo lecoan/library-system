@@ -269,6 +269,7 @@ public class AdminControler {
                 int limit = new Integer(adminPanel.userLimit.getText());
                 if(limit>0&&limit< CustomerConstance.MAX_RENT_BOOK_NUM){
                     adminPanel.curCustomer.setMaxNumForRent(limit);
+                    customerService.updateCustomer(adminPanel.curCustomer);
                     Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "本");
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
                 }
