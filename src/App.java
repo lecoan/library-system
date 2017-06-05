@@ -70,6 +70,9 @@ public class App {
 //            teacher.setId("2014211"+i);
 //            CustomerService.getInstance().saveCustomer(teacher);
 //        }
+
+//        System.exit(0);
+
         new StartUpView();
     }
 }

@@ -4,6 +4,7 @@ import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
 import bean.Customer;
+import javafx.util.Pair;
 import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
@@ -265,13 +266,19 @@ public class AdminView {    //展示admin主面板
         bookBorrowFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         String[] tableHeader = {"借出时间","归还时间","借阅人"};
-        List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
-        Object[][] tableBody = new Object[borrowList.size()][3];
+        List<BorrowMemory> borrowedList = bookItem.getBorrowmemory();
+        List<Pair<String,String>> borrowingList = BookOperate.getInstance().
+                getBookpathtable(bookItem.getIsbn()).getBorrowList();
+        Object[][] tableBody = new Object[borrowedList.size() + borrowingList.size()][3];
 //        Object[][] tableBody = new Object[borrowList.size()][3];
 //        for(int i=0;i<borrowList.size();i++){
-        for(int i=0;i<borrowList.size();i++){
-            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
+        for(int i=0;i<borrowedList.size();i++){
+            Object[] rowData = {borrowedList.get(i).getBorrowtime(),borrowedList.get(i).getReturntime(),borrowedList.get(i).getBorrowman()};
             tableBody[i] = rowData;
+        }
+        for(int i=0;i<borrowingList.size();i++){
+            Object[] rowData = {borrowingList.get(i).getValue(),"尚未归还",borrowingList.get(i).getKey()};
+            tableBody[i+borrowedList.size()] = rowData;
         }
         DefaultTableModel tableModel =  (DefaultTableModel)borrowTable.getModel();
         tableModel.setDataVector(tableBody,tableHeader);
