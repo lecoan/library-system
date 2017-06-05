@@ -368,12 +368,21 @@ public class UserControler {
 
     public void lishitable(UserView userPanel) {
         A = userPanel.customer.getHistoryList();
-        lishistrings = new String[A.size()][1];
+//        lishistrings = new String[A.size()][1];
+
+        String[][] borrowHistoryList = new String[A.size()][3];
         for (int i = 0; i < A.size(); i++) {
-            lishistrings[i][0] = A.get(i).split("&&")[2];
+            borrowHistoryList[i][0] = A.get(i).split("&&")[2];
+            borrowHistoryList[i][1] = GetDate.getDate(new Integer(A.get(i).split("##")[1]));
+            borrowHistoryList[i][2] = GetDate.getDate(new Integer(A.get(i).split("##")[2]));
         }
-        String[] columnNames = {"书目"};
-        JTable table = new JTable(lishistrings, columnNames);
+
+
+//        for (int i = 0; i < A.size(); i++) {
+//            lishistrings[i][0] = A.get(i).split("&&")[2];
+//        }
+        String[] columnNames = {"书目","借书时间","还书时间"};
+        JTable table = new JTable(borrowHistoryList, columnNames);
         table.setBackground(Color.lightGray);
         table.setEnabled(false);
         table.setRowHeight(27);
