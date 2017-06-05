@@ -41,6 +41,8 @@ public class CustomerService {
      */
     private Cache<String, Customer> cache;
 
+    private Set<Customer> loginedCustomers;
+
     public int getStudentNum() {
         return studentNum;
     }
@@ -69,6 +71,8 @@ public class CustomerService {
             helper.saveConfig("rentedNum", rentedNum);
             System.out.println("saved");
         });
+
+        loginedCustomers = new HashSet<>();
     }
 
     /**
@@ -144,7 +148,7 @@ public class CustomerService {
     /**
      * @param customer customer
      * @param isbn     isbn
-     * @return CustomerConstance.RENT_TO_MUCH  CustomerConstance.RENT_SUCCESSFULL
+     * @return 无意义
      */
     public int rentBookByISBN(Customer customer, String isbn) {
         //如果该书在用户心愿单里
@@ -188,8 +192,8 @@ public class CustomerService {
     public boolean caculateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            if(detector.getDays()-rentTime>CustomerConstance.MAX_RENT_TIME){
-                customer.setMoney((float) (customer.getMoney()-0.2));
+            if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
+                customer.setMoney((float) (customer.getMoney() - 0.2));
             }
         });
         if (customer.getMoney() < CustomerConstance.MAX_DEBT) {
@@ -217,9 +221,21 @@ public class CustomerService {
     public void updateMoney(Customer customer) {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
-            if(detector.getDays()-rentTime>CustomerConstance.MAX_RENT_TIME){
-                customer.setMoney((float) (customer.getMoney()-(detector.getDays()-rentTime)*0.2));
+            if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
+                customer.setMoney((float) (customer.getMoney() - (detector.getDays() - rentTime) * 0.2));
             }
         });
+    }
+
+    public void logout(Customer customer) {
+        loginedCustomers.remove(customer);
+    }
+
+    public boolean isLogin(Customer customer) {
+        return loginedCustomers.contains(customer);
+    }
+
+    public void login(Customer customer) {
+        loginedCustomers.add(customer);
     }
 }
