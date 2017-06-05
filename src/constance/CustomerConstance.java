@@ -16,11 +16,11 @@ public class CustomerConstance {
 
     public static final int RENT_SUCCESSFULL = 0;
 
+    public static final int MAX_RENT_TIME = 30;
+
     public static final int RENT_TO_MUCH = 2;
 
     public static final float MAX_DEBT = -20;
-
-    public static final int MAX_RENT_TIME = 30;
 
     public static final int MAX_RENT_BOOK_NUM = 30;
 

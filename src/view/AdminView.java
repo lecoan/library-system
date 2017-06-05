@@ -55,6 +55,7 @@ public class AdminView {    //展示admin主面板
     public JLabel userCollege = new JLabel("");
     public JLabel userStatus = new JLabel("");
     public JLabel userMoney = new JLabel("");
+    public JLabel userDelay = new JLabel("");
     public JTextField userLimit= new JTextField(1);
     public JButton changeLimitBtn = new JButton("修改权限");
     public JButton unfreezeBtn = new JButton("解冻");
@@ -251,9 +252,11 @@ public class AdminView {    //展示admin主面板
 
         if(bookItemPath.getRestnum() != bookItemPath.getTotalnum()){
             bookDeleBtn.setEnabled(false);
+            bookUpdateBtn.setEnabled(false);
         }
         else{
             bookDeleBtn.setEnabled(true);
+            bookUpdateBtn.setEnabled(true);
         }
     }
     public void showBookBorrowFrame(Book bookItem){
@@ -305,7 +308,6 @@ public class AdminView {    //展示admin主面板
         userBookListFrame.setVisible(false);
     }
     public void showUserBookListFrame(){
-        //TODO copy txt userView
         Map<String, Integer> map = curCustomer.getBookedMap();
         String[][] borrowingList = new String[map.size()][2];
         Iterator<String> borrowingMapIterator = map.keySet().iterator();
@@ -451,12 +453,14 @@ public class AdminView {    //展示admin主面板
         Box userStatusBox = Box.createHorizontalBox();
         Box userLimitBox = Box.createHorizontalBox();
         Box userMoneyBox = Box.createHorizontalBox();
+        Box userDelayBox = Box.createHorizontalBox();
 
         JLabel userNameLabel = new JLabel("姓名：");
         JLabel userStuNumLabel = new JLabel("学号/工号：");
         JLabel userCollegeLabel = new JLabel("学院：");
         JLabel userStatusLabel = new JLabel("状态：");
         JLabel userLimitLabel = new JLabel("最大借书数：");
+        JLabel userDelayLabel = new JLabel("逾期归还次数：");
         JLabel userMoneyLabel = new JLabel("余额：");
 
         userNameBox.add(userNameLabel);
@@ -483,11 +487,16 @@ public class AdminView {    //展示admin主面板
         userMoneyBox.add(Box.createGlue());
         userMoneyBox.add(userMoney);
 
+        userDelayBox.add(userDelayLabel);
+        userDelayBox.add(Box.createGlue());
+        userDelayBox.add(userDelay);
+
         UserInfoBox.add(userNameBox);
         UserInfoBox.add(userStuNumBox);
         UserInfoBox.add(userCollegeBox);
         UserInfoBox.add(userStatusBox);
         UserInfoBox.add(userMoneyBox);
+        UserInfoBox.add(userDelayBox);
         UserInfoBox.add(userLimitBox);
 
 

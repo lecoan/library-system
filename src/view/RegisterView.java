@@ -87,11 +87,11 @@ public class RegisterView extends JFrame {
      * 根据用户的身份更新文字
      */
     private void changeCompent() {
-        if(isTeacher){
-            idLabel.setText("工号：");
+        if (isTeacher) {
+            idLabel.setText("用户工号：");
             colleageBox.setVisible(false);
         } else {
-            idLabel.setText("学号：");
+            idLabel.setText("用户学号：");
             colleageBox.setVisible(true);
         }
     }
@@ -119,7 +119,7 @@ public class RegisterView extends JFrame {
     private void initView() {
 
         setTitle("注册界面");
-        setSize(500,500);
+        setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 
@@ -138,12 +138,10 @@ public class RegisterView extends JFrame {
         idLabel = new JLabel();
 
         username = new JTextField(30);
-        nameBox.add(new JLabel("用户名："));
-        nameBox.add(Box.createHorizontalStrut(20));
+        nameBox.add(new JLabel("用户姓名："));
         nameBox.add(username);
         password = new JPasswordField(30);
-        passwordBox.add(new JLabel("密码："));
-        nameBox.add(Box.createHorizontalStrut(20));
+        passwordBox.add(new JLabel("用户密码："));
         passwordBox.add(password);
         userID = new JTextField(30);
         idBox.add(idLabel);
@@ -153,7 +151,7 @@ public class RegisterView extends JFrame {
         ButtonGroup group = new ButtonGroup();
         group.add(teacher);
         group.add(student);
-        typeBox.add(new JLabel("用户类型"));
+        typeBox.add(new JLabel("用户类型："));
         typeBox.add(teacher);
         typeBox.add(student);
         clleages = new JComboBox<>();
