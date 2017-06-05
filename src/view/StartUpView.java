@@ -69,21 +69,28 @@ public class StartUpView extends JFrame {
         });
 
         table = new JTable(0, 0);
+
+        updateTable();
+
         detector.addEvent(days -> {
-           java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
-           String[] tableHeader = {"排名", "书名", "借阅次数"};
-           Object[][] tableBody = new Object[list.size()][3];
-           for (int i = 0; i < list.size(); i++) {
-               Object[] rowData = {"" + i, "" + list.get(i).getIsbn(), "" + list.get(i).getBorrownum()};
-               tableBody[i] = rowData;
-           }
-           DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-           tableModel.setDataVector(tableBody, tableHeader);
+            updateTable();
         });
         table.setEnabled(false);
         table.setVisible(true);
         panel.add(new JScrollPane(table));
         setVisible(true);
 
+    }
+
+    private void updateTable() {
+        java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
+        String[] tableHeader = {"排名", "书名", "借阅次数"};
+        Object[][] tableBody = new Object[list.size()][3];
+        for (int i = 0; i < list.size(); i++) {
+            Object[] rowData = {"" + (i+1), "" + list.get(i).getIsbn().split("&&")[2], "" + list.get(i).getBorrownum()};
+            tableBody[i] = rowData;
+        }
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        tableModel.setDataVector(tableBody, tableHeader);
     }
 }

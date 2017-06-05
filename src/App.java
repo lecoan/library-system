@@ -1,6 +1,15 @@
 
+import bean.Book;
+import bean.Student;
+import bean.Teacher;
 import listener.GlobalActionDetector;
+import service.BookOperate;
+import service.CustomerService;
 import view.StartUpView;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 /**
@@ -46,8 +55,6 @@ public class App {
 //        }
 //        catch(IOException e) {
 //        }
-////
-////        GlobalActionDetector.getInstance().startGlobalActionDetector();
 //        for(int i = 100;i<1000;++i){
 //            Student student = new Student();
 //            student.setUsername("student"+i);

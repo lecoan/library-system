@@ -240,7 +240,7 @@ public class UserControler {
                 else if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "当前图书可以借阅无需预定");
                 }
-                else if (customer.isFreezed() == true) {
+                else if (customer.isFreezed()) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
                 }
             }
@@ -534,8 +534,8 @@ public class UserControler {
         userPanel.huanshuframe.setVisible(true);
 
         Map<String, Integer> map = customer.getBookedMap();
-        zaijiestrings = new String[30][2];
         Iterator<String> iterator = map.keySet().iterator();
+        zaijiestrings = new String[map.size()][2];
         for(int i=0;i<map.size();i++){
             if (iterator.hasNext()){
                 String key = iterator.next();
