@@ -3,6 +3,8 @@ package view;
 import bean.Book;
 import bean.BookPathTable;
 import bean.*;
+import constance.CustomerConstance;
+import controler.CommonControler;
 import service.BookOperate;
 import service.CustomerService;
 
@@ -12,10 +14,9 @@ import java.awt.event.*;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
 import java.awt.Graphics;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import bean.*;
 import listener.GlobalActionDetector;
@@ -26,7 +27,7 @@ import listener.GlobalActionDetector;
  */
 
 public class UserView {
-    Customer customer;
+    public Customer customer;
     BookOperate bookOperate = BookOperate.getInstance();
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
@@ -65,6 +66,21 @@ public class UserView {
     public JFrame chongzhiframe = new JFrame("充值");
     public JFrame huanshuframe = new JFrame("还书");
     public JFrame inforchangeframe = new JFrame("修改个人消息");
+    BookOperate bookOperate = BookOperate.getInstance();
+    CustomerService customerService = CustomerService.getInstance();
+    ErrAlert errAlert = ErrAlert.getInstance();
+    CommonControler commonControler = CommonControler.getInstance();
+
+    Object[][] zaijiestrings;
+    Object[][] yujiestrings;
+    Object[][] lishistrings;
+    java.util.List<String> A;
+    private String mm;
+    public String name, pass1, pass2;
+
+    public JTextField newName = new JTextField();
+    public JTextField newPassward = new JTextField();
+    public JTextField passConfirm = new JTextField();
 
 //    public JTextField newname = new JTextField();
 //    public JTextField newPassword = new JTextField();
@@ -359,6 +375,262 @@ public class UserView {
         jpn.add(bookDesLabel);
         jpn.add(jieyuejb);
         jpn.add(yudingjb);
+
+        addListener();
+    }
+
+    private void addListener() {
+         userframe.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                //查书按钮
+                bookOperate.SaveData();
+                 destroyUserView();
+            }
+        });
+
+         jb1.addMouseListener(new MouseAdapter() {
+            //查找
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 findBookFrame.showFindBookField();
+            }
+        });
+
+         findBookFrame.bookListTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    showBookItem(bookOperate.getBookbyIsbn( findBookFrame.curBookList.get( findBookFrame.bookListTable.getSelectedRow()).getIsbn()), this);
+                }
+            }
+        });
+
+         findBookFrame.findBookByIsbn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Book bookItem = bookOperate.getBookbyIsbn( findBookFrame.searchBook.getText());
+                if (bookItem != null) {
+                    //找到图书
+                     findBookFrame.curBookList = null;
+                    showBookItem(bookItem, this);
+                } else
+                    errAlert.findErrAlert((int) ( findBookFrame.Frame.getLocation().getX() + 200), (int) ( findBookFrame.Frame.getLocation().getY() + 100), "找不到：【ISBN ： " +  findBookFrame.searchBook.getText() + "】");
+            }
+        });
+
+         zaijiejb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //在借列表
+                zaijieTable(this);
+            }
+        });
+
+         yujiejb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //预借列表
+                yujietable(this);
+            }
+        });
+
+         lishijb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //历史列表
+                lishitable(this);
+            }
+        });
+
+         chongzhijb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //充值按钮
+                chongzhi(this);
+            }
+        });
+
+         chongzhi10.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chongzhi10Return(customer, this);
+                 chongzhiframe.dispose();
+                 mjl55.setText(String.valueOf(customer.getMoney()));
+                 panel2.validate();
+            }
+        });
+
+         chongzhi50.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chongzhi50Return(customer, this);
+                 chongzhiframe.dispose();
+                 mjl55.setText(String.valueOf(customer.getMoney()));
+                 panel2.validate();
+            }
+        });
+
+         chongzhi100.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chongzhi100Return(customer, this);
+                 chongzhiframe.dispose();
+                 mjl55.setText(String.valueOf(customer.getMoney()));
+                 panel2.validate();
+            }
+        });
+         jieyuejb.addMouseListener(new MouseAdapter() {
+            //查找
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //借阅按钮
+                int flagZaijie = 0;
+                int flagYujie = 0;
+
+                Map<String, Integer> map = customer.getBookedMap();
+                Object[][] zaijieJudge = new String[map.size()][1];
+                Iterator<String> iterator = map.keySet().iterator();
+                for (int i = 0; i < map.size(); i++) {
+                    if (iterator.hasNext()) {
+                        String key = iterator.next();
+                        zaijieJudge[i][0] = key;
+                        if ( findBookFrame.curBookItem.getIsbn() == zaijieJudge[i][0]) {
+                            flagZaijie = 1;
+                        }
+                    }
+                }
+
+                Set<String> yujieset = customer.getWantedSet();
+                Object[][] yujieJudge = new String[yujieset.size()][2];
+                Iterator<String> it = yujieset.iterator();
+
+                for (int i = 0; i < yujieset.size(); i++) {
+                    if (it.hasNext()) {
+                        String str = it.next();
+                        yujieJudge[i][0] = str;
+                        if ( findBookFrame.curBookItem.getIsbn() == yujieJudge[i][0]) {
+                            flagYujie = 1;
+                        }
+                    }
+                }
+
+
+                if (flagZaijie == 1) {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "当前书本已经借阅，请于借书单中查看");
+                } else if (bookOperate.getBookpathtable( findBookFrame.curBookItem.getIsbn()).getRestnum() > 0 && (!customer.isFreezed()) && customer.getBookedMap().size() < customer.getMaxNumForRent()) {
+                    jieyueRetrun( findBookFrame.curBookItem.getIsbn());
+                    if (flagYujie == 1) {
+
+                    }
+                     bookInfoFrame.dispose();
+                     findBookFrame.curBookItem = null;
+                    commonControler.clearFindBookFrame( findBookFrame);
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "借阅成功");
+                     mjl33.setText(String.valueOf(customer.getBookedMap().size()));
+                     panel2.validate();
+                } else if (customer.getBookedMap().size() > customer.getMaxNumForRent()) {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "账户权限不足");
+                } else if (customer.isFreezed() == true) {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
+                } else {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "剩余数量不足，请预定");
+                }
+            }
+        });
+
+         yudingjb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //预定按钮
+                if (bookOperate.getBookpathtable( findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
+                    yudingReturn( findBookFrame.curBookItem.getIsbn());
+                     bookInfoFrame.dispose();
+                     findBookFrame.curBookItem = null;
+                    commonControler.clearFindBookFrame( findBookFrame);
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "预定成功");
+                } else if (bookOperate.getBookpathtable( findBookFrame.curBookItem.getIsbn()).getRestnum() > 0) {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "当前图书可以借阅无需预定");
+                } else if (customer.isFreezed()) {
+                    errAlert.findErrAlert((int)  bookInfoFrame.getLocation().getX() + 100, (int)  bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
+                }
+            }
+        });
+
+         huanshujb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //还书按钮
+                JScrollPane scrollPane = new JScrollPane( huanshulist);
+                huanshujiemian(this);
+
+            }
+        });
+
+         huanshulist.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int a =  huanshulist.getSelectedRow();
+                    Map<String, Integer> map = customer.getBookedMap();
+                    String[] zaijiestringsX = new String[map.size()];
+                    Iterator<String> iterator = map.keySet().iterator();
+                    for (int i = 0; i < map.size(); i++) {
+                        if (iterator.hasNext()) {
+                            String key = iterator.next();
+                            zaijiestringsX[i] = key;
+                        }
+                    }
+                    errAlert.findErrAlert(500, 500, "还书成功");
+                     huanshuframe.dispose();
+                    String ISBN = zaijiestringsX[a];
+                    huanshuReturn(ISBN);
+                     mjl33.setText(String.valueOf(customer.getBookedMap().size()));
+                     panel2.validate();
+                    final boolean[] shouldShow = {false};
+                    map.forEach((s, integer) -> {
+                        if (GlobalActionDetector.getInstance().getDays() - integer > 30) {
+                            shouldShow[0] = true;
+                        }
+                    });
+                    if (shouldShow[0]) {
+                         zaijietishi.setText("您有超出天数未还图书");
+                    } else {
+                         zaijietishi.setText("");
+                    }
+                }
+            }
+        });
+
+         inforchangejb.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                inforchange(customer, this);
+            }
+        });
+
+         confirm.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                name = newName.getText().trim();
+                pass1 = newPassward.getText().trim();
+                pass2 = passConfirm.getText().trim();
+                if (!pass1.equals(pass2)) {
+                    errAlert.findErrAlert(500, 500, "两次输入密码不一样");
+                } else if (pass1.isEmpty() || !pass1.matches("^[A-Za-z0-9]{4,40}$")) {
+                    errAlert.findErrAlert(500, 500, "密码应为4到40位的字母和注释组成");
+                } else if (name.isEmpty() || !name.matches("^[A-Za-z0-9]{4,40}$")) {
+                    errAlert.findErrAlert(500, 500, "用户名应为4到40位的字母和注释组成");
+                } else {
+                    customer.setPassword(pass1);
+                    customer.setUsername(name);
+                     mjl11.setText(name);
+                     panel2.validate();
+                     inforchangeframe.dispose();
+                }
+            }
+        });
     }
 
     class ImagePanel extends JPanel {
@@ -380,5 +652,260 @@ public class UserView {
         chongzhiframe.dispose();
         huanshuframe.dispose();
         inforchangeframe.dispose();
+    }
+    public void jieyueRetrun(String isbn) {
+        //借阅后对整体数据改动
+        bookOperate.UpdateBookrank(isbn);
+        customerService.rentBookByISBN(customer, isbn);
+    }
+
+    public void yudingReturn(String isbn) {
+        //预定后对整体数据改动
+        customer.getWantedSet().add(isbn);
+    }
+
+    public void chongzhi10Return(Customer customer, UserView userPanel) {
+        //充值后对整体数据改动
+        mm = "10.00";
+        float chongzhimoney = Float.parseFloat(mm);
+        float num = customer.getMoney();
+        customer.setMoney(num + chongzhimoney);
+        if (customer.getMoney() > CustomerConstance.MAX_DEBT && customer.isFreezed()) {
+            customer.setFreezed(false);
+        }
+
+    }
+
+    public void chongzhi50Return(Customer customer, UserView userPanel) {
+        //充值后对整体数据改动
+        mm = "50.00";
+        float chongzhimoney = Float.parseFloat(mm);
+        float num = customer.getMoney();
+        customer.setMoney(num + chongzhimoney);
+
+    }
+
+    public void chongzhi100Return(Customer customer, UserView userPanel) {
+        //充值后对整体数据改动
+        mm = "100.00";
+        float chongzhimoney = Float.parseFloat(mm);
+        float num = customer.getMoney();
+        customer.setMoney(num + chongzhimoney);
+
+    }
+
+    public void huanshujiemian(UserView userPanel) {
+        //还书界面
+        userPanel.huanshuframe.setBounds(700, 500, 300, 440);
+        userPanel.huanshuframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        JPanel jpn = new JPanel(new FlowLayout());
+        jpn.setLayout(new BorderLayout());
+        userPanel.huanshuframe.setContentPane(jpn);
+        userPanel.huanshuframe.setVisible(true);
+
+        Map<String, Integer> map = customer.getBookedMap();
+        Iterator<String> iterator = map.keySet().iterator();
+        zaijiestrings = new String[map.size()][2];
+        for (int i = 0; i < map.size(); i++) {
+            if (iterator.hasNext()) {
+                String key = iterator.next();
+                zaijiestrings[i][0] = key.split("&&")[2];
+                zaijiestrings[i][1] = "" + (GlobalActionDetector.getInstance().getDays() - map.get(key));
+            }
+        }
+
+        userPanel.huanshulist.setPreferredScrollableViewportSize(new Dimension(300, 200));
+        JScrollPane scrollPane = new JScrollPane(userPanel.huanshulist);
+        jpn.add(scrollPane);
+
+        String[] bookTableHead = {"书目"};
+        DefaultTableModel tableModel = (DefaultTableModel) userPanel.huanshulist.getModel();
+        tableModel.setDataVector(zaijiestrings, bookTableHead);
+        userPanel.huanshulist.setRowHeight(30);
+        userPanel.huanshulist.setCellEditable(0, 5);
+        userPanel.huanshulist.setVisible(true);
+
+        //userPanel.huanshuframe.dispose();
+    }
+
+    public void huanshuReturn(String isbn) {
+        //还书后对整体数据改动
+        int a = customerService.returnBook(customer, isbn);
+        bookOperate.addBorrowMemory(customer.getUsername(), isbn, GetDate.getDate(a));
+    }
+    public void chongzhi(UserView userPanel) {
+        userPanel.chongzhiframe.setBounds(600, 500, 340, 120);
+        JPanel jpn = new JPanel(new FlowLayout());
+        jpn.setBackground(new Color(192, 57, 43));
+        jpn.setLayout(null);
+        userPanel.chongzhiframe.setContentPane(jpn);
+        userPanel.chongzhiframe.setVisible(true);
+
+        JLabel JL = new JLabel("选择充值金额");
+        JL.setBounds(125, 10, 100, 20);
+        JL.setFont(new Font("幼圆", Font.BOLD, 13));
+        JL.setForeground(Color.WHITE);
+
+        userPanel.chongzhi10.setBounds(30, 35, 70, 30);
+        userPanel.chongzhi10.setBackground(Color.WHITE);
+        userPanel.chongzhi10.setForeground(new Color(192, 57, 43));
+        userPanel.chongzhi50.setBounds(130, 35, 70, 30);
+        userPanel.chongzhi50.setBackground(Color.WHITE);
+        userPanel.chongzhi50.setForeground(new Color(192, 57, 43));
+        userPanel.chongzhi100.setBounds(230, 35, 70, 30);
+        userPanel.chongzhi100.setBackground(Color.WHITE);
+        userPanel.chongzhi100.setForeground(new Color(192, 57, 43));
+
+        jpn.add(userPanel.chongzhi10);
+        jpn.add(userPanel.chongzhi50);
+        jpn.add(userPanel.chongzhi100);
+        jpn.add(JL);
+    }
+    public void inforchange(Customer customer, UserView userPanel) {
+        //个人信息修改界面
+        userPanel.inforchangeframe = new JFrame();
+        userPanel.inforchangeframe.setBounds(500, 500, 500, 320);
+        JPanel JP = new JPanel();
+        JPanel jp1 = new JPanel();
+        JPanel jp2 = new JPanel();
+        userPanel.inforchangeframe.setVisible(true);
+        userPanel.inforchangeframe.setLayout(null);
+
+        jp1.setBounds(0, 0, 500, 50);
+        jp1.setBackground(new Color(192, 57, 43));
+        jp1.setLayout(null);
+
+        JLabel title = new JLabel("个人信息修改");
+        title.setFont(new Font("幼圆", Font.BOLD, 20));
+        jp1.add(title);
+        title.setBounds(175, 15, 150, 20);
+
+        JP.setBounds(0, 50, 500, 200);
+        JP.setLayout(null);
+
+        jp2.setBounds(0, 250, 500, 50);
+        jp2.setBackground(new Color(192, 57, 43));
+        jp2.setLayout(null);
+
+        JLabel oldname = new JLabel("旧用户名:");
+        JLabel oleName = new JLabel(customer.getUsername());
+        JLabel newname = new JLabel("新用户名:");
+        //JTextField newName = new JTextField();
+
+        JLabel newpassward = new JLabel("新密码:");
+        JLabel passconfirm = new JLabel("新密码确认:");
+//        JTextField newPassward = new JTextField();
+//        JTextField passConfirm = new JTextField();
+
+        oldname.setFont(new Font("幼圆", Font.BOLD, 15));
+        oleName.setFont(new Font("幼圆", Font.BOLD, 15));
+        newname.setFont(new Font("幼圆", Font.BOLD, 15));
+        newpassward.setFont(new Font("幼圆", Font.BOLD, 15));
+        passconfirm.setFont(new Font("幼圆", Font.BOLD, 15));
+
+        javax.swing.border.Border b7 = BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b8 = BorderFactory.createEtchedBorder();
+        userPanel.confirm.setBorder(BorderFactory.createCompoundBorder(b7, b8));
+        userPanel.confirm.setBackground(new Color(192, 57, 43));
+        userPanel.confirm.setForeground(Color.WHITE);
+
+        JP.add(oleName);
+        JP.add(oldname);
+        JP.add(newName);
+        JP.add(newname);
+        JP.add(newPassward);
+        JP.add(newpassward);
+        JP.add(passconfirm);
+        JP.add(passConfirm);
+        JP.add(userPanel.confirm);
+
+        oldname.setBounds(50, 20, 100, 20);
+        oleName.setBounds(150, 20, 100, 20);
+        newname.setBounds(250, 20, 100, 20);
+        newName.setBounds(350, 20, 100, 20);
+
+        newpassward.setBounds(50, 100, 100, 20);
+        newPassward.setBounds(130, 100, 100, 20);
+        passconfirm.setBounds(250, 100, 100, 20);
+        passConfirm.setBounds(350, 100, 100, 20);
+
+        userPanel.confirm.setBounds(200, 150, 100, 25);
+
+//        name = newName.getText().trim();
+//        pass1 = newPassward.getText().trim();
+//        pass2 = passConfirm.getText().trim();
+
+
+        userPanel.inforchangeframe.getContentPane().add(JP);
+        userPanel.inforchangeframe.getContentPane().add(jp1);
+        userPanel.inforchangeframe.getContentPane().add(jp2);
+        userPanel.inforchangeframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
+    private void showBookItem(Book bookItem, UserView UserPanel) {
+        //    显示搜索到的单本书
+        UserPanel.findBookFrame.curBookItem = bookItem;
+        UserPanel.showBookInfoFrame(bookItem, bookOperate.getBookpathtable(bookItem.getIsbn()));
+        System.out.print(bookItem.getIsbn());
+    }
+
+    public void zaijieTable(UserView userPanel) {
+        Map<String, Integer> map = customer.getBookedMap();
+        zaijiestrings = new String[map.size()][2];
+        Iterator<String> iterator = map.keySet().iterator();
+        for (int i = 0; i < map.size(); i++) {
+            if (iterator.hasNext()) {
+                String key = iterator.next();
+                zaijiestrings[i][0] = key.split("&&")[2];
+                zaijiestrings[i][1] = "" + (GlobalActionDetector.getInstance().getDays() - map.get(key));
+            }
+        }
+        //在借列表
+        String[] columnNames = {"书目", "借阅天数"};
+        JTable table = new JTable(zaijiestrings, columnNames);
+        table.setBackground(Color.lightGray);
+        table.setEnabled(false);
+        table.setRowHeight(27);
+        userPanel.panel4.add(new JScrollPane(table));
+        table.setVisible(true);
+        userPanel.panel4.validate();
+    }
+
+    public void yujietable(UserView userPanel) {
+        Set<String> yujieset = customer.getWantedSet();
+        yujiestrings = new String[yujieset.size()][2];
+        Iterator<String> it = yujieset.iterator();
+
+        for (int i = 0; i < yujieset.size(); i++) {
+            if (it.hasNext()) {
+                String str = it.next();
+                yujiestrings[i][0] = str.split("&&")[2];
+                yujiestrings[i][1] = String.valueOf(bookOperate.getBookpathtable(str).getRestnum());
+            }
+        }
+        //预借书单
+        String[] columnNames = {"书目", "当前剩余数量"};
+        JTable table = new JTable(yujiestrings, columnNames);
+        table.setBackground(Color.lightGray);
+        table.setEnabled(false);
+        table.setRowHeight(27);
+        userPanel.panel4.add(new JScrollPane(table));
+        table.setVisible(true);
+        userPanel.panel4.validate();
+    }
+
+    public void lishitable(UserView userPanel) {
+        A = customer.getHistoryList();
+        lishistrings = new String[A.size()][1];
+        for (int i = 0; i < A.size(); i++) {
+            lishistrings[i][0] = A.get(i).split("&&")[2];
+        }
+        String[] columnNames = {"书目"};
+        JTable table = new JTable(lishistrings, columnNames);
+        table.setBackground(Color.lightGray);
+        table.setEnabled(false);
+        table.setRowHeight(27);
+        userPanel.panel4.add(new JScrollPane(table));
+        table.setVisible(true);
+        userPanel.panel4.validate();
     }
 }
