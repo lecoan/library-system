@@ -67,7 +67,7 @@ public class AdminControler {
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"种类不能为空！");
             return;
         }
-        if(bookInfo[4].equals("请输入数量") ||  bookInfo[4].length() == 0 || Pattern.matches("^[1-9][0-9]*$",bookInfo[4])){
+        if(bookInfo[4].equals("请输入数量") ||  bookInfo[4].length() == 0 || !Pattern.matches("^[1-9][0-9]*$",bookInfo[4])){
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"请输入合法数量！");
             return;
         }
@@ -114,6 +114,7 @@ public class AdminControler {
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -122,6 +123,7 @@ public class AdminControler {
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
