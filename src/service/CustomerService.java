@@ -223,7 +223,7 @@ public class CustomerService {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
             if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
-                customer.setMoney((float) (customer.getMoney() - (detector.getDays() - rentTime) * 0.2));
+                customer.setMoney((float) (customer.getMoney() - (detector.getDays() - rentTime - 30) * 0.2));
             }
         });
     }
@@ -241,17 +241,16 @@ public class CustomerService {
     }
 
     /**
-     *
      * @param customer
      * @return 用户当前的
      */
-    public int getDelayedTimes(Customer customer){
+    public int getDelayedTimes(Customer customer) {
         final int[] count = {0};
         customer.getBookedMap().forEach((s, integer) -> {
-            if(detector.getDays()-30>integer){
+            if (detector.getDays() - 30 > integer) {
                 count[0]++;
             }
         });
-        return count[0]+customer.getDelayedTimes();
+        return count[0] + customer.getDelayedTimes();
     }
 }
