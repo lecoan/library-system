@@ -165,7 +165,7 @@ public class UserView {
         JLabel mjl22 = new JLabel(customer.getId());
         mjl33.setText(String.valueOf(customer.getBookedMap().size()));
         JLabel mjl44 = new JLabel(String.valueOf(customer.getMaxNumForRent()));
-        mjl55.setText(String.valueOf(customer.getMoney()));
+        mjl55.setText(String.format("%.2f", customer.getMoney()));
 
         panel2.add(mjl1);
         panel2.add(mjl2);

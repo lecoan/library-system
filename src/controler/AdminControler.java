@@ -113,7 +113,8 @@ public class AdminControler {
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
-                adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                customerService.updateMoney(adminPanel.curCustomer);
+                adminPanel.userMoney.setText(String.format("%.2f", adminPanel.curCustomer.getMoney()));
                 adminPanel.userDelay.setText(""+customerService.getDelayedTimes(adminPanel.curCustomer));
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
@@ -122,7 +123,8 @@ public class AdminControler {
                 adminPanel.curCustomer = (Teacher)adminPanel.curCustomer;
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
-                adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                customerService.updateMoney(adminPanel.curCustomer);
+                adminPanel.userMoney.setText(String.format("%.2f", adminPanel.curCustomer.getMoney()));
                 adminPanel.userDelay.setText(""+customerService.getDelayedTimes(adminPanel.curCustomer));
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
@@ -253,6 +255,7 @@ public class AdminControler {
             public void mouseClicked(MouseEvent e) {
                 if(adminPanel.unfreezeBtn.isEnabled()){
                     adminPanel.curCustomer.setFreezed(false);
+                    customerService.updateCustomer(adminPanel.curCustomer);
                     Log.getInstance().CreateLog("admin",1,"解冻用户 " + adminPanel.curCustomer.getUsername());
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功解冻用户：" +adminPanel.curCustomer.getUsername());
                 }

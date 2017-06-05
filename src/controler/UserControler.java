@@ -133,7 +133,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi10Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });
@@ -143,7 +143,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi50Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });
@@ -153,7 +153,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi100Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.valueOf(customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });
@@ -303,6 +303,7 @@ public class UserControler {
                 } else {
                     customer.setPassword(pass1);
                     customer.setUsername(name);
+                    customerService.updateCustomer(customer);
                     UserPanel.mjl11.setText(name);
                     UserPanel.panel2.validate();
                     UserPanel.inforchangeframe.dispose();
@@ -513,6 +514,7 @@ public class UserControler {
         if (customer.getMoney() > CustomerConstance.MAX_DEBT && customer.isFreezed()) {
             customer.setFreezed(false);
         }
+        customerService.updateCustomer(customer);
 
     }
 
@@ -522,6 +524,10 @@ public class UserControler {
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
         customer.setMoney(num + chongzhimoney);
+        if (customer.getMoney() > CustomerConstance.MAX_DEBT && customer.isFreezed()) {
+            customer.setFreezed(false);
+        }
+        customerService.updateCustomer(customer);
 
     }
 
@@ -531,6 +537,10 @@ public class UserControler {
         float chongzhimoney = Float.parseFloat(mm);
         float num = customer.getMoney();
         customer.setMoney(num + chongzhimoney);
+        if (customer.getMoney() > CustomerConstance.MAX_DEBT && customer.isFreezed()) {
+            customer.setFreezed(false);
+        }
+        customerService.updateCustomer(customer);
 
     }
 
