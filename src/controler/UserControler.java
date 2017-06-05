@@ -495,8 +495,8 @@ public class UserControler {
 
     public void jieyueRetrun(String isbn, Customer customer) {
         //借阅后对整体数据改动
-        bookOperate.UpdateBookrank(isbn);
-        customerService.rentBookByISBN(customer, isbn);
+        bookOperate.UpdateBookrank(isbn, customer.getUsername());
+        customerService.rentBookByISBN(customer,isbn);
     }
 
     public void yudingReturn(String isbn, Customer customer) {

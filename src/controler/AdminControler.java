@@ -85,8 +85,8 @@ public class AdminControler {
         否则为添加新图书
          */
         if(adminPanel.findBookFrame.curBookItem != null) {
-            int borrowNum = BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getTotalnum() - BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getRestnum();
-            bookInfo[4] = (new Integer(bookInfo[4])<borrowNum)?(""+borrowNum):bookInfo[4];
+//            int borrowNum = BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getTotalnum() - BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getRestnum();
+//            bookInfo[4] = (new Integer(bookInfo[4])<borrowNum)?(""+borrowNum):bookInfo[4];
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
             Log.getInstance().CreateLog("admin",6,"修改图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
@@ -114,6 +114,7 @@ public class AdminControler {
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -122,6 +123,7 @@ public class AdminControler {
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
                 adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
+                adminPanel.userDelay.setText(""+adminPanel.curCustomer.getDelayedTimes());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -186,6 +188,8 @@ public class AdminControler {
         adminPanel.bookUpdateBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(!adminPanel.bookDeleBtn.isEnabled())
+                    return;
                 adminPanel.showModifyBookField(adminPanel.findBookFrame.curBookItem,bookOperate.getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()));
             }
         });
@@ -265,6 +269,7 @@ public class AdminControler {
                 int limit = new Integer(adminPanel.userLimit.getText());
                 if(limit>0&&limit< CustomerConstance.MAX_RENT_BOOK_NUM){
                     adminPanel.curCustomer.setMaxNumForRent(limit);
+                    customerService.updateCustomer(adminPanel.curCustomer);
                     Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "本");
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
                 }

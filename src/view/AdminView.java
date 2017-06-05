@@ -4,6 +4,7 @@ import bean.Book;
 import bean.BookPathTable;
 import bean.BorrowMemory;
 import bean.Customer;
+import javafx.util.Pair;
 import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
@@ -55,6 +56,7 @@ public class AdminView {    //展示admin主面板
     public JLabel userCollege = new JLabel("");
     public JLabel userStatus = new JLabel("");
     public JLabel userMoney = new JLabel("");
+    public JLabel userDelay = new JLabel("");
     public JTextField userLimit= new JTextField(1);
     public JButton changeLimitBtn = new JButton("修改权限");
     public JButton unfreezeBtn = new JButton("解冻");
@@ -251,9 +253,11 @@ public class AdminView {    //展示admin主面板
 
         if(bookItemPath.getRestnum() != bookItemPath.getTotalnum()){
             bookDeleBtn.setEnabled(false);
+            bookUpdateBtn.setEnabled(false);
         }
         else{
             bookDeleBtn.setEnabled(true);
+            bookUpdateBtn.setEnabled(true);
         }
     }
     public void showBookBorrowFrame(Book bookItem){
@@ -262,13 +266,19 @@ public class AdminView {    //展示admin主面板
         bookBorrowFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         String[] tableHeader = {"借出时间","归还时间","借阅人"};
-        List<BorrowMemory> borrowList = bookItem.getBorrowmemory();
-        Object[][] tableBody = new Object[borrowList.size()][3];
+        List<BorrowMemory> borrowedList = bookItem.getBorrowmemory();
+        List<Pair<String,String>> borrowingList = BookOperate.getInstance().
+                getBookpathtable(bookItem.getIsbn()).getBorrowList();
+        Object[][] tableBody = new Object[borrowedList.size() + borrowingList.size()][3];
 //        Object[][] tableBody = new Object[borrowList.size()][3];
 //        for(int i=0;i<borrowList.size();i++){
-        for(int i=0;i<borrowList.size();i++){
-            Object[] rowData = {borrowList.get(i).getBorrowtime(),borrowList.get(i).getReturntime(),borrowList.get(i).getBorrowman()};
+        for(int i=0;i<borrowedList.size();i++){
+            Object[] rowData = {borrowedList.get(i).getBorrowtime(),borrowedList.get(i).getReturntime(),borrowedList.get(i).getBorrowman()};
             tableBody[i] = rowData;
+        }
+        for(int i=0;i<borrowingList.size();i++){
+            Object[] rowData = {borrowingList.get(i).getValue(),"尚未归还",borrowingList.get(i).getKey()};
+            tableBody[i+borrowedList.size()] = rowData;
         }
         DefaultTableModel tableModel =  (DefaultTableModel)borrowTable.getModel();
         tableModel.setDataVector(tableBody,tableHeader);
@@ -450,12 +460,14 @@ public class AdminView {    //展示admin主面板
         Box userStatusBox = Box.createHorizontalBox();
         Box userLimitBox = Box.createHorizontalBox();
         Box userMoneyBox = Box.createHorizontalBox();
+        Box userDelayBox = Box.createHorizontalBox();
 
         JLabel userNameLabel = new JLabel("姓名：");
         JLabel userStuNumLabel = new JLabel("学号/工号：");
         JLabel userCollegeLabel = new JLabel("学院：");
         JLabel userStatusLabel = new JLabel("状态：");
         JLabel userLimitLabel = new JLabel("最大借书数：");
+        JLabel userDelayLabel = new JLabel("逾期归还次数：");
         JLabel userMoneyLabel = new JLabel("余额：");
 
         userNameBox.add(userNameLabel);
@@ -482,11 +494,16 @@ public class AdminView {    //展示admin主面板
         userMoneyBox.add(Box.createGlue());
         userMoneyBox.add(userMoney);
 
+        userDelayBox.add(userDelayLabel);
+        userDelayBox.add(Box.createGlue());
+        userDelayBox.add(userDelay);
+
         UserInfoBox.add(userNameBox);
         UserInfoBox.add(userStuNumBox);
         UserInfoBox.add(userCollegeBox);
         UserInfoBox.add(userStatusBox);
         UserInfoBox.add(userMoneyBox);
+        UserInfoBox.add(userDelayBox);
         UserInfoBox.add(userLimitBox);
 
 

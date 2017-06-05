@@ -70,7 +70,8 @@ public class App {
 //            teacher.setPassword("123456");
 //            teacher.setId("2014211"+i);
 //            CustomerService.getInstance().saveCustomer(teacher);
-        System.exit(0);
+//        }
+//        System.exit(0);
         new StartUpView();
     }
 }
