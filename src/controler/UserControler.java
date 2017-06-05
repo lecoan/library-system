@@ -133,7 +133,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi10Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.1f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });
@@ -143,7 +143,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi50Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.1f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });
@@ -153,7 +153,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 chongzhi100Return(customer, UserPanel);
                 UserPanel.chongzhiframe.dispose();
-                UserPanel.mjl55.setText(String.format("%.2f", customer.getMoney()));
+                UserPanel.mjl55.setText(String.format("%.1f", customer.getMoney()));
                 UserPanel.panel2.validate();
             }
         });

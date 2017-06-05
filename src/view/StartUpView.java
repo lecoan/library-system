@@ -40,7 +40,7 @@ public class StartUpView extends JFrame {
      */
     private void initView() {
         JLabel label = new JLabel("当前时间: "+GetDate.getDate(detector.getDays()));
-        detector.addEvent(days -> label.setText("当前时间: "+GetDate.getDate(detector.getDays())));
+        detector.addEvent("startUpView",days -> label.setText("当前时间: "+GetDate.getDate(detector.getDays())));
 
         setTitle("主界面");
         setSize(500, 500);
@@ -72,7 +72,7 @@ public class StartUpView extends JFrame {
 
         updateTable();
 
-        detector.addEvent(days -> {
+        detector.addEvent("startUpRank",days -> {
             updateTable();
         });
         table.setEnabled(false);

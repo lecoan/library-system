@@ -73,6 +73,7 @@ public class CustomerService {
             helper.saveConfig("teacherNum", teacherNum);
             helper.saveConfig("studentNum", studentNum);
             helper.saveConfig("rentedNum", rentedNum);
+            StorageHelper.WriteObjectToFile(lastAccessTimeMap,USER_DATA_PATH+"_lastAccessTime");
             System.out.println("saved");
         });
 
