@@ -19,6 +19,7 @@ import java.io.IOException;
 public class App {
     public static void main(String args[]) {
        GlobalActionDetector.getInstance().startGlobalActionDetector();
+       new StartUpView();
 //        BookOperate oo = BookOperate.getInstance();
 //        try {
 //            FileReader fr = new FileReader("bookSpider/popular.txt");
@@ -71,6 +72,6 @@ public class App {
 //            CustomerService.getInstance().saveCustomer(teacher);
 //        }
 //        System.exit(0);
-        new StartUpView();
+
     }
 }

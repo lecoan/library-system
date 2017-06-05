@@ -586,6 +586,7 @@ public class AdminView {    //展示admin主面板
         bookBorrowFrame.dispose();
         modifyBookFrame.dispose();
         bookBorrowFrame.dispose();
+        GlobalActionDetector.getInstance().removeEvent("refreshAdminView");
     }
 
 }

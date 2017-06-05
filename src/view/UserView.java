@@ -251,7 +251,7 @@ public class UserView {
         userframe.getContentPane().add(panel6);
         userframe.setVisible(true);
 
-        GlobalActionDetector.getInstance().addEvent(days -> {
+        GlobalActionDetector.getInstance().addEvent(customer.getId(),days -> {
             CustomerService.getInstance().caculateMoney(customer);
             mjl55.setText(customer.getMoney() + "");
             getNofication(customer);
@@ -369,5 +369,6 @@ public class UserView {
         huanshuframe.dispose();
         inforchangeframe.dispose();
         CustomerService.getInstance().logout(customer);
+        GlobalActionDetector.getInstance().removeEvent(customer.getId());
     }
 }

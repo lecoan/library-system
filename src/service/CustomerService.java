@@ -36,7 +36,7 @@ public class CustomerService {
 
     private GlobalActionDetector detector;
     private StorageHelper helper;
-
+    private Map<String, Integer> lastAccessTimeMap;
     /**
      * 用户缓存，减少磁盘读写次数
      */
@@ -65,6 +65,9 @@ public class CustomerService {
         detector = GlobalActionDetector.getInstance();
         cache = new LRUCache<>(CACHE_SIZE, DEFAULT_CACHE_SAVE_TIME);
 
+        Map<String, Integer> tt = (Map<String, Integer>)
+                StorageHelper.ReadObjectFromFile(USER_DATA_PATH+"_lastAccessTime");
+        lastAccessTimeMap = tt != null? tt : new HashMap<>();
         //程序退出时保存相应的数据
         helper.addQuitEvent(() -> {
             helper.saveConfig("teacherNum", teacherNum);
@@ -195,6 +198,7 @@ public class CustomerService {
             int rentTime = customer.getBookedMap().get(s);
             if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
                 customer.setMoney((float) (customer.getMoney() - 0.2));
+                lastAccessTimeMap.put(customer.getId(),detector.getDays());
             }
         });
         if (customer.getMoney() < CustomerConstance.MAX_DEBT) {
@@ -223,9 +227,15 @@ public class CustomerService {
         customer.getBookedMap().forEach((s, integer) -> {
             int rentTime = customer.getBookedMap().get(s);
             if (detector.getDays() - rentTime > CustomerConstance.MAX_RENT_TIME) {
-                customer.setMoney((float) (customer.getMoney() - (detector.getDays() - rentTime - 30) * 0.2));
+                Integer temp = lastAccessTimeMap.get(customer.getId());
+                int last = temp == null ? detector.getDays():temp;
+                customer.setMoney((float) (customer.getMoney() - (detector.getDays() - last) * 0.2));
+                lastAccessTimeMap.put(customer.getId(),detector.getDays());
             }
         });
+        if(customer.getMoney()<CustomerConstance.MAX_DEBT){
+            customer.setFreezed(true);
+        }
     }
 
     public void logout(Customer customer) {

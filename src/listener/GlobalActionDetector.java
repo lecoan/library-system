@@ -3,11 +3,8 @@ package listener;
 import util.StorageHelper;
 
 import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.io.*;
 import java.util.*;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /******************************************************************
  创建人: 杨翔
@@ -31,19 +28,22 @@ public class GlobalActionDetector {
     /**
      * 当日期改变时需要处理的事件队列
      */
-    private List<Event> eventList;
+    private Map<String,Event> eventMap;
 
     private GlobalActionDetector() {
-        eventList = new ArrayList<>();
+        eventMap = new HashMap<>();
     }
 
     /**
      * @param event 当系统时间改变时希望发生的动作
      */
-    public void addEvent(Event event) {
-        eventList.add(event);
+    public void addEvent(String alias, Event event) {
+        eventMap.put(alias,event);
     }
 
+    public void removeEvent(String alias){
+        eventMap.remove(alias);
+    }
     /**
      * 单例模式
      *
@@ -138,9 +138,7 @@ public class GlobalActionDetector {
                     days++;
 
                     //处理时间改变的事件
-                    eventList.forEach(event -> {
-                        event.handle(days);
-                    });
+                    eventMap.forEach((s, event) -> event.handle(days));
 
                     StorageHelper.getInstance().saveConfig("days", days);
                     System.out.println("days:" + days);

@@ -294,15 +294,9 @@ public class AdminControler {
                 adminPanel.initLogPanel();
             }
         });
-        GlobalActionDetector.getInstance().addEvent(new GlobalActionDetector.Event() {
-            @Override
-            public void handle(int days) {
-                adminPanel.refreshAdminView();
-            }
-        });
+        GlobalActionDetector.getInstance().addEvent("refreshAdminView", days -> adminPanel.refreshAdminView());
     }
     public static void main(String[] args){
         AdminControler test = new AdminControler();
     }
-
 }
