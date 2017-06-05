@@ -37,8 +37,8 @@ public class LoginView extends JFrame {
         Box idBox = Box.createHorizontalBox();
         Box pwBox = Box.createHorizontalBox();
 
-        JLabel idLabel = new JLabel("学号或工号： ");
-        JLabel pwLabel = new JLabel("密码： ");
+        JLabel idLabel = new JLabel("学号工号： ");
+        JLabel pwLabel = new JLabel("用户密码： ");
         id = new JTextField(30);
         password = new JPasswordField(30);
         button = new JButton("登录");
@@ -60,6 +60,7 @@ public class LoginView extends JFrame {
 
     /**
      * 处理登陆逻辑
+     *
      * @see controler.SignInAndUpController#handleLogin(String, String, JFrame)
      */
     private void setLoginListener() {
