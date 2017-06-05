@@ -207,8 +207,8 @@ public class UserControler {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "借阅成功");
                     UserPanel.mjl33.setText(String.valueOf(customer.getBookedMap().size()));
                     UserPanel.panel2.validate();
-                } else if (customer.getBookedMap().size() > customer.getMaxNumForRent()) {
-                    errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "账户权限不足");
+                } else if (customer.getBookedMap().size() >= customer.getMaxNumForRent()) {
+                    errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "已达到最大借书数量");
                 } else if (customer.isFreezed()) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "你已被冻结");
                 } else {
@@ -221,6 +221,9 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //预定按钮
+                if(UserPanel.yudingjb.isEnabled() == false){
+                    return;
+                }
                 if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
                     yudingReturn(UserPanel.findBookFrame.curBookItem.getIsbn(), customer);
                     UserPanel.bookInfoFrame.dispose();
@@ -369,12 +372,21 @@ public class UserControler {
 
     public void lishitable(UserView userPanel) {
         A = userPanel.customer.getHistoryList();
-        lishistrings = new String[A.size()][1];
+//        lishistrings = new String[A.size()][1];
+
+        String[][] borrowHistoryList = new String[A.size()][3];
         for (int i = 0; i < A.size(); i++) {
-            lishistrings[i][0] = A.get(i).split("&&")[2];
+            borrowHistoryList[i][0] = A.get(i).split("&&")[2];
+            borrowHistoryList[i][1] = GetDate.getDate(new Integer(A.get(i).split("##")[1]));
+            borrowHistoryList[i][2] = GetDate.getDate(new Integer(A.get(i).split("##")[2]));
         }
-        String[] columnNames = {"书目"};
-        JTable table = new JTable(lishistrings, columnNames);
+
+
+//        for (int i = 0; i < A.size(); i++) {
+//            lishistrings[i][0] = A.get(i).split("&&")[2];
+//        }
+        String[] columnNames = {"书目","借书时间","还书时间"};
+        JTable table = new JTable(borrowHistoryList, columnNames);
         table.setBackground(Color.lightGray);
         table.setEnabled(false);
         table.setRowHeight(27);
@@ -484,7 +496,7 @@ public class UserControler {
         userPanel.chongzhi50.setBounds(130, 35, 70, 30);
         userPanel.chongzhi50.setBackground(Color.WHITE);
         userPanel.chongzhi50.setForeground(new Color(192, 57, 43));
-        userPanel.chongzhi100.setBounds(230, 35, 70, 30);
+        userPanel.chongzhi100.setBounds(230, 35, 90, 30);
         userPanel.chongzhi100.setBackground(Color.WHITE);
         userPanel.chongzhi100.setForeground(new Color(192, 57, 43));
 

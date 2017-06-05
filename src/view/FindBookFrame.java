@@ -18,6 +18,7 @@ public class FindBookFrame {
     public JFrame Frame = new JFrame("查找图书");   //查找图书面板frame
     //查找图书面板组件
     public JLabel ConditionsLabel = new JLabel();
+    public JLabel CountLabel = new JLabel();
     public JButton findBookByIsbn = new JButton("按书号搜索");
     public JButton findBookByAuthor= new JButton("按作者搜索");
     public JButton findBookByPublisher = new JButton("按出版社搜索");
@@ -70,6 +71,7 @@ public class FindBookFrame {
 
         Box ConditionsLabelBox = Box.createHorizontalBox();
         ConditionsLabelBox.add(ConditionsLabel);
+        ConditionsLabelBox.add(CountLabel);
         ConditionsLabelBox.add(Box.createGlue());
 
         findBookBox.add(Box.createVerticalStrut(20));

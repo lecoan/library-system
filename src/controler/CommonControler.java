@@ -63,7 +63,7 @@ public class CommonControler {  //通用控制器
                 findBookFrame.curBookList.retainAll(extraBookList);
                 findBookFrame.showBookList(findBookFrame.curBookList,findBookFrame.Frame);
                 if(!Pattern.matches(".*[" + findBookFrame.searchBook.getText() + "]+.*",findBookFrame.ConditionsLabel.getText()))
-                    addConditionLabel(findBookFrame.searchBook.getText(), findBookFrame);
+                    addConditionLabel(findBookFrame.searchBook.getText(), findBookFrame,findBookFrame.curBookList.size());
             }
             else
                 errAlert.findErrAlert((int)(findBookFrame.Frame.getLocation().getX()+200),(int)(findBookFrame.Frame.getLocation().getY()+100),"没有找到符合条件图书！");
@@ -71,15 +71,17 @@ public class CommonControler {  //通用控制器
         else{       //当前列表为空，显示新查询列表
             findBookFrame.showBookList(extraBookList,findBookFrame.Frame);
             findBookFrame.curBookList = extraBookList;
-            addConditionLabel(findBookFrame.searchBook.getText(),findBookFrame);
+            addConditionLabel(findBookFrame.searchBook.getText(),findBookFrame,findBookFrame.curBookList.size());
         }
     }
-    private void addConditionLabel(String con,FindBookFrame findBookFrame){     //修改查找条件显示
+    private void addConditionLabel(String con,FindBookFrame findBookFrame,int size){     //修改查找条件显示
         findBookFrame.ConditionsLabel.setText(findBookFrame.ConditionsLabel.getText() +"  \""+ con + "\"  ");
+        findBookFrame.CountLabel.setText("    根据搜索条件共找到" + size + "本书");
         findBookFrame.ConditionsLabel.invalidate();
     }
     private void clearConditionLabel(FindBookFrame findBookFrame){     //清空当前所有查找条件
         findBookFrame.ConditionsLabel.setText("");
+        findBookFrame.CountLabel.setText("");
     }
     public void findBook(FindBookFrame findBookFrame){
         //查找图书面板各项按钮点击事件监听
