@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
  */
 public class UserControler {
     UserView userView[];
-    Customer customer;
+//    Customer customer;
     BookOperate bookOperate = BookOperate.getInstance();
     CustomerService customerService = CustomerService.getInstance();
     ErrAlert errAlert = ErrAlert.getInstance();
@@ -56,7 +56,7 @@ public class UserControler {
     }
 
     public UserView initUserView(Customer customer){
-        this.customer = customer;
+//        this.customer = customer;
         UserView UserPanel = new UserView(customer);
         commonControler.findBook(UserPanel.findBookFrame);
 
@@ -230,7 +230,7 @@ public class UserControler {
                 }
                 else if( bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0 && (customer.isFreezed() == false) && customer.getBookedMap().size() <= customer.getMaxNumForRent() )
                 {
-                    jieyueRetrun(UserPanel.findBookFrame.curBookItem.getIsbn());
+                    jieyueRetrun(UserPanel.findBookFrame.curBookItem.getIsbn(),customer);
                     if(flagYujie == 1){
 
                     }
@@ -258,7 +258,7 @@ public class UserControler {
             public void mouseClicked(MouseEvent e) {
                 //预定按钮
                 if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
-                    yudingReturn(UserPanel.findBookFrame.curBookItem.getIsbn());
+                    yudingReturn(UserPanel.findBookFrame.curBookItem.getIsbn(),customer);
                     UserPanel.bookInfoFrame.dispose();
                     UserPanel.findBookFrame.curBookItem = null;
                     commonControler.clearFindBookFrame(UserPanel.findBookFrame);
@@ -300,7 +300,7 @@ public class UserControler {
                     errAlert.findErrAlert(500,500,"还书成功");
                     UserPanel.huanshuframe.dispose();
                     String ISBN = zaijiestringsX[a];
-                    huanshuReturn(ISBN);
+                    huanshuReturn(ISBN,customer);
                     UserPanel.mjl33.setText(String.valueOf(customer.getBookedMap().size()));
                     UserPanel.panel2.validate();
                     final boolean[] shouldShow = {false};
@@ -358,7 +358,7 @@ public class UserControler {
     }
 
     public void zaijieTable(UserView userPanel){
-        Map<String, Integer> map = customer.getBookedMap();
+        Map<String, Integer> map = userPanel.customer.getBookedMap();
         zaijiestrings = new String[map.size()][2];
         Iterator<String> iterator = map.keySet().iterator();
         for(int i=0;i<map.size();i++){
@@ -380,7 +380,7 @@ public class UserControler {
     }
 
     public void yujietable(UserView userPanel){
-        Set<String> yujieset = customer.getWantedSet();
+        Set<String> yujieset = userPanel.customer.getWantedSet();
         yujiestrings = new String[yujieset.size()][2];
         Iterator<String> it = yujieset.iterator();
 
@@ -403,7 +403,7 @@ public class UserControler {
     }
 
     public void lishitable(UserView userPanel){
-        A = customer.getHistoryList();
+        A = userPanel.customer.getHistoryList();
         lishistrings = new String[A.size()][1];
         for (int i = 0; i < A.size(); i++) {
             lishistrings[i][0] = A.get(i).split("&&")[2];
@@ -526,13 +526,13 @@ public class UserControler {
         jpn.add(JL);
     }
 
-    public void jieyueRetrun(String isbn){
+    public void jieyueRetrun(String isbn,Customer customer){
         //借阅后对整体数据改动
         bookOperate.UpdateBookrank(isbn);
         customerService.rentBookByISBN(customer,isbn);
     }
 
-    public void yudingReturn(String isbn){
+    public void yudingReturn(String isbn,Customer customer){
         //预定后对整体数据改动
         customer.getWantedSet().add(isbn);
     }
@@ -576,7 +576,7 @@ public class UserControler {
         userPanel.huanshuframe.setContentPane(jpn);
         userPanel.huanshuframe.setVisible(true);
 
-        Map<String, Integer> map = customer.getBookedMap();
+        Map<String, Integer> map = userPanel.customer.getBookedMap();
         Iterator<String> iterator = map.keySet().iterator();
         zaijiestrings = new String[map.size()][2];
         for(int i=0;i<map.size();i++){
@@ -601,7 +601,7 @@ public class UserControler {
         //userPanel.huanshuframe.dispose();
     }
 
-    public void huanshuReturn(String isbn){
+    public void huanshuReturn(String isbn,Customer customer){
         //还书后对整体数据改动
         GetDate ggetDate = new GetDate();
         int a=customerService.returnBook(customer,isbn);

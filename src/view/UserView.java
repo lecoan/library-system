@@ -24,7 +24,7 @@ import listener.GlobalActionDetector;
  */
 
 public class UserView{
-    Customer customer;
+    public Customer customer;
     BookOperate bookOperate = BookOperate.getInstance();
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
