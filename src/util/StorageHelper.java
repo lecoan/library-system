@@ -15,7 +15,6 @@ import java.util.TreeMap;
  描　述: 对磁盘的存取进行封装，方便使用
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-// TODO
 public class StorageHelper {
     private Map<String, Integer> config;
     private List<Event> eventList;

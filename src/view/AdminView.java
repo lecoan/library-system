@@ -308,7 +308,6 @@ public class AdminView {    //展示admin主面板
         userBookListFrame.setVisible(false);
     }
     public void showUserBookListFrame(){
-        //TODO copy txt userView
         Map<String, Integer> map = curCustomer.getBookedMap();
         String[][] borrowingList = new String[map.size()][2];
         Iterator<String> borrowingMapIterator = map.keySet().iterator();

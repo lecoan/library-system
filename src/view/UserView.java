@@ -3,22 +3,17 @@ package view;
 import bean.Book;
 import bean.BookPathTable;
 import bean.*;
-import constance.CustomerConstance;
-import controler.CommonControler;
 import service.BookOperate;
 import service.CustomerService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import javax.swing.table.DefaultTableModel;
 import java.awt.Graphics;
 import java.util.*;
 
-import bean.*;
 import listener.GlobalActionDetector;
 
 
@@ -211,14 +206,6 @@ public class UserView {
         chongzhijb.setBackground(new Color(192, 57, 43));
         chongzhijb.setForeground(Color.WHITE);
 
-//        renovate.setBounds(150,220,50,30);
-//        javax.swing.border.Border b16 =BorderFactory.createLineBorder(Color.PINK);
-//        javax.swing.border.Border b17 = BorderFactory.createEtchedBorder();
-//        renovate.setBorder(BorderFactory.createCompoundBorder(b7,b8));
-//        renovate.setBackground(new Color(192,57,43));
-//        renovate.setForeground(Color.WHITE);
-
-
         panel3.add(jb1);
         jb1.setBounds(0, 0, 200, 220);
         jb1.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -361,6 +348,7 @@ public class UserView {
         jpn.add(jieyuejb);
         jpn.add(yudingjb);
     }
+
     class ImagePanel extends JPanel {
 
         public void paint(Graphics g) {
@@ -380,9 +368,6 @@ public class UserView {
         chongzhiframe.dispose();
         huanshuframe.dispose();
         inforchangeframe.dispose();
+        CustomerService.getInstance().logout(customer);
     }
-
-
-
-
 }
