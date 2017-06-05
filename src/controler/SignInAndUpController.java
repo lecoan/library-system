@@ -1,6 +1,7 @@
 package controler;
 
 import bean.Customer;
+import listener.GlobalActionDetector;
 import service.CustomerService;
 import view.AdminView;
 import view.ErrAlert;
@@ -57,6 +58,7 @@ public class SignInAndUpController {
 
         Customer customer = service.getCustomerById(id);
         if(customer != null && customer.getPassword().equals(password)) {
+            service.updateMoney(customer);
             frame.dispose();
             UserControler userControler = UserControler.getInstance();
             userControler.initUserView(customer);

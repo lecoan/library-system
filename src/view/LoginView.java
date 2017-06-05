@@ -16,7 +16,7 @@ import java.awt.event.MouseEvent;
  描　述: 登陆界面
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public class LoginView extends JFrame{
+public class LoginView extends JFrame {
     private final JButton button;
     private final JTextField id;
     private final JPasswordField password;
@@ -27,21 +27,21 @@ public class LoginView extends JFrame{
 
         this.controller = SignInAndUpController.getInstance();
 
-        setTitle("login");
+        setTitle("登录界面");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setSize(500,500);
+        setSize(500, 500);
 
         JPanel panel = new JPanel();
-        panel.setSize(500,500);
+        panel.setSize(500, 500);
         Box mainBox = Box.createVerticalBox();
         Box idBox = Box.createHorizontalBox();
         Box pwBox = Box.createHorizontalBox();
 
-        JLabel idLabel = new JLabel("id: ");
-        JLabel pwLabel = new JLabel("password: ");
+        JLabel idLabel = new JLabel("学号或工号： ");
+        JLabel pwLabel = new JLabel("密码： ");
         id = new JTextField(30);
         password = new JPasswordField(30);
-        button = new JButton("sign in");
+        button = new JButton("登录");
         mainBox.add(idBox);
         mainBox.add(pwBox);
         panel.add(mainBox);
@@ -68,12 +68,10 @@ public class LoginView extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 String userid = id.getText();
                 String pw = new String(password.getPassword());
-                if(!"".equals(userid) && !"".equals(pw)){
-                    controller.handleLogin(userid,pw, LoginView.this);
-                }
-
-                else {
-                    ErrAlert.getInstance().findErrAlert(50,50,"请确保信息填写完整");
+                if (!"".equals(userid) && !"".equals(pw)) {
+                    controller.handleLogin(userid, pw, LoginView.this);
+                } else {
+                    ErrAlert.getInstance().findErrAlert(50, 50, "请确保信息填写完整");
                 }
             }
         });

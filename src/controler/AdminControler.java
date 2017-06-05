@@ -3,6 +3,7 @@ package controler;
 import bean.Book;
 import bean.Student;
 import bean.Teacher;
+import constance.CustomerConstance;
 import listener.GlobalActionDetector;
 import service.BookOperate;
 import service.CustomerService;
@@ -12,6 +13,7 @@ import view.AdminView;
 import view.ErrAlert;
 
 import java.awt.event.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by ghoskno on 3/29/17.
@@ -49,7 +51,27 @@ public class AdminControler {
         //监听确认添加/修改图书按钮事件
         //校验信息后调用BookOperate方法添加书
         String[] bookInfo = adminPanel.submitBook();
-        //if()判断合法性
+        if(bookInfo[0].equals("请输入书名") ||  bookInfo[0].length() == 0){
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"图书书名不能为空！");
+            return;
+        }
+        if(bookInfo[1].equals("请输入出版社名") ||  bookInfo[1].length() == 0){
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"出版社名不能为空！");
+            return;
+        }
+        if(bookInfo[2].equals("请输入作者") ||  bookInfo[2].length() == 0){
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"作者不能为空！");
+            return;
+        }
+        if(bookInfo[3].equals("请输入种类") ||  bookInfo[3].length() == 0){
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"种类不能为空！");
+            return;
+        }
+        if(bookInfo[4].equals("请输入数量") ||  bookInfo[4].length() == 0 || Pattern.matches("^[1-9][0-9]*$",bookInfo[4])){
+            errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"请输入合法数量！");
+            return;
+        }
+
         //生成新的Book对象
         Book newBook = new Book();
         newBook.setName(bookInfo[0]);
@@ -57,11 +79,14 @@ public class AdminControler {
         newBook.setWritername(bookInfo[2]);
         newBook.setIntroduction(bookInfo[5]);
         newBook.setKind(bookInfo[3]);
+        newBook.setBoughttime();
         newBook.setIsbn();
         /*当前查看图书对象不为空，则为更新操作，删除原有图书对象
         否则为添加新图书
          */
         if(adminPanel.findBookFrame.curBookItem != null) {
+            int borrowNum = BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getTotalnum() - BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getRestnum();
+            bookInfo[4] = (new Integer(bookInfo[4])<borrowNum)?(""+borrowNum):bookInfo[4];
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
             Log.getInstance().CreateLog("admin",6,"修改图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
@@ -88,6 +113,7 @@ public class AdminControler {
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userCollege.setText(((Student) adminPanel.curCustomer).getColleage());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -95,6 +121,7 @@ public class AdminControler {
                 adminPanel.curCustomer = (Teacher)adminPanel.curCustomer;
                 adminPanel.userStuNum.setText(adminPanel.curCustomer.getId());
                 adminPanel.userName.setText(adminPanel.curCustomer.getUsername());
+                adminPanel.userMoney.setText(""+adminPanel.curCustomer.getMoney());
                 adminPanel.userLimit.setText(""+adminPanel.curCustomer.getMaxNumForRent());
                 adminPanel.userStatus.setText(adminPanel.curCustomer.isFreezed()?"冻结":"正常");
             }
@@ -211,7 +238,7 @@ public class AdminControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(adminPanel.lookBookListBtn.isEnabled()){
-                    //TODO 查看用户借书情况
+                    //查看用户借书情况
                     adminPanel.showUserBookListFrame();
                 }
             }
@@ -231,14 +258,18 @@ public class AdminControler {
         adminPanel.changeLimitBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(!Pattern.matches("^[1-9][0-9]*$",adminPanel.userLimit.getText())){
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"输入借书权限值非法");
+                    return;
+                }
                 int limit = new Integer(adminPanel.userLimit.getText());
-                if(limit>0&&limit<30){
+                if(limit>0&&limit< CustomerConstance.MAX_RENT_BOOK_NUM){
                     adminPanel.curCustomer.setMaxNumForRent(limit);
-                    Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "天");
+                    Log.getInstance().CreateLog("admin",7,"修改用户 " + adminPanel.curCustomer.getUsername() + " 权限为 " + adminPanel.userLimit.getText() + "本");
                     errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"成功修改用户：" +adminPanel.curCustomer.getUsername() + "权限");
                 }
                 else
-                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"输入借书权限值非法");
+                    errAlert.findErrAlert((int)adminPanel.adminFrame.getLocation().getX()+50,(int)adminPanel.adminFrame.getLocation().getY() + 100,"输入借书权限值非法,仅可为0~" + CustomerConstance.MAX_RENT_BOOK_NUM + "本！");
             }
         });
         //点击退出按钮

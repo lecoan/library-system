@@ -25,6 +25,7 @@ public class StartUpView extends JFrame {
 
     private GlobalActionDetector detector;
 
+    private JTable table;
     public StartUpView() {
         //controller = SignInAndUpController.getInstance();
         detector = GlobalActionDetector.getInstance();
@@ -38,18 +39,15 @@ public class StartUpView extends JFrame {
      * 初始化界面
      */
     private void initView() {
-        JLabel label = new JLabel("time: " + GetDate.getDate(detector.getDays()));
+        JLabel label = new JLabel("当前时间: "+GetDate.getDate(detector.getDays()));
+        detector.addEvent(days -> label.setText("当前时间: "+GetDate.getDate(detector.getDays())));
 
-        //随日期变化更新时间
-        detector.addEvent(days -> label.setText("time: " + GetDate.getDate(detector.getDays())));
-
-        //设置界面布局
-        setTitle("main");
+        setTitle("主界面");
         setSize(500, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel panel = new JPanel(new FlowLayout());
-        JButton login = new JButton("login");
-        JButton register = new JButton("register");
+        JButton login = new JButton("登录");
+        JButton register = new JButton("注册");
         panel.add(login);
         panel.add(register);
         panel.add(label);
@@ -70,20 +68,29 @@ public class StartUpView extends JFrame {
             }
         });
 
-        JTable table = new JTable(0, 0);
-        java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
-        String[] tableHeader = {"排名", "书名", "借阅次数"};
-        Object[][] tableBody = new Object[list.size()][3];
-        for (int i = 0; i < list.size(); i++) {
-            Object[] rowData = {"" + i, "" + list.get(i).getIsbn(), "" + list.get(i).getBorrownum()};
-            tableBody[i] = rowData;
-        }
-        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-        tableModel.setDataVector(tableBody, tableHeader);
+        table = new JTable(0, 0);
+
+        updateTable();
+
+        detector.addEvent(days -> {
+            updateTable();
+        });
         table.setEnabled(false);
         table.setVisible(true);
         panel.add(new JScrollPane(table));
         setVisible(true);
 
+    }
+
+    private void updateTable() {
+        java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
+        String[] tableHeader = {"排名", "书名", "借阅次数"};
+        Object[][] tableBody = new Object[list.size()][3];
+        for (int i = 0; i < list.size(); i++) {
+            Object[] rowData = {"" + (i+1), "" + list.get(i).getIsbn().split("&&")[2], "" + list.get(i).getBorrownum()};
+            tableBody[i] = rowData;
+        }
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        tableModel.setDataVector(tableBody, tableHeader);
     }
 }

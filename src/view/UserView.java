@@ -24,7 +24,7 @@ import listener.GlobalActionDetector;
  */
 
 public class UserView{
-    Customer customer;
+    public Customer customer;
     BookOperate bookOperate = BookOperate.getInstance();
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
@@ -48,7 +48,7 @@ public class UserView{
     public JButton huanshujb = new JButton("幻术");
     public JButton inforchangejb = new JButton("消息");
     public JButton confirm = new JButton("确认修改");
-    public JButton renovate = new JButton(("刷新"));
+//    public JButton renovate = new JButton(("刷新"));
 
     public JPanel panel1 = new JPanel();
     public JPanel panel2 = new JPanel();
@@ -157,7 +157,7 @@ public class UserView{
         lishijb.setForeground(new Color(192,57,43));
 
         panel2.add(chongzhijb);
-        panel2.add(renovate);
+        //panel2.add(renovate);
         JLabel mjl1 = new JLabel("姓名");
         JLabel mjl2 = new JLabel("学号");
         JLabel mjl3 = new JLabel("在借本数");
@@ -208,12 +208,12 @@ public class UserView{
         chongzhijb.setBackground(new Color(192,57,43));
         chongzhijb.setForeground(Color.WHITE);
 
-        renovate.setBounds(150,220,50,30);
-        javax.swing.border.Border b16 =BorderFactory.createLineBorder(Color.PINK);
-        javax.swing.border.Border b17 = BorderFactory.createEtchedBorder();
-        renovate.setBorder(BorderFactory.createCompoundBorder(b7,b8));
-        renovate.setBackground(new Color(192,57,43));
-        renovate.setForeground(Color.WHITE);
+//        renovate.setBounds(150,220,50,30);
+//        javax.swing.border.Border b16 =BorderFactory.createLineBorder(Color.PINK);
+//        javax.swing.border.Border b17 = BorderFactory.createEtchedBorder();
+//        renovate.setBorder(BorderFactory.createCompoundBorder(b7,b8));
+//        renovate.setBackground(new Color(192,57,43));
+//        renovate.setForeground(Color.WHITE);
 
 
         panel3.add(jb1);
@@ -269,14 +269,14 @@ public class UserView{
             }
         }
 
-        JLabel zaijietishi = new JLabel("您有超出天数未还图书");
+        zaijietishi = new JLabel("您有超出天数未还图书");
         if(flagzaijie == 1){
             panel5.add(zaijietishi);
             zaijietishi.setBounds(220,15,200,30);
             zaijietishi.setForeground(Color.WHITE);
             zaijietishi.setFont(new Font("幼圆",Font.BOLD, 15));
         }
-        JLabel yujietishi = new JLabel("您有预定图书可以借阅");
+        yujietishi = new JLabel("您有预定图书可以借阅");
         if(flagyujie == 1){
             panel5.add(yujietishi);
             yujietishi.setBounds(420,15,200,30);
@@ -295,8 +295,17 @@ public class UserView{
         userframe.getContentPane().add(panel5);
         userframe.getContentPane().add(panel6);
         userframe.setVisible(true);
-    }
 
+        GlobalActionDetector.getInstance().addEvent(new GlobalActionDetector.Event() {
+            @Override
+            public void handle(int days) {
+                CustomerService.getInstance().caculateMoney(customer);
+                mjl55.setText(customer.getMoney()+"");
+            }
+        });
+    }
+    public JLabel yujietishi;
+    public JLabel zaijietishi;
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
         //图书信息
         bookInfoFrame.setBounds(500,500,500,500);
