@@ -252,9 +252,11 @@ public class AdminView {    //展示admin主面板
 
         if(bookItemPath.getRestnum() != bookItemPath.getTotalnum()){
             bookDeleBtn.setEnabled(false);
+            bookUpdateBtn.setEnabled(false);
         }
         else{
             bookDeleBtn.setEnabled(true);
+            bookUpdateBtn.setEnabled(true);
         }
     }
     public void showBookBorrowFrame(Book bookItem){

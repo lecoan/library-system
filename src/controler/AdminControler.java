@@ -85,8 +85,8 @@ public class AdminControler {
         否则为添加新图书
          */
         if(adminPanel.findBookFrame.curBookItem != null) {
-            int borrowNum = BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getTotalnum() - BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getRestnum();
-            bookInfo[4] = (new Integer(bookInfo[4])<borrowNum)?(""+borrowNum):bookInfo[4];
+//            int borrowNum = BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getTotalnum() - BookOperate.getInstance().getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()).getRestnum();
+//            bookInfo[4] = (new Integer(bookInfo[4])<borrowNum)?(""+borrowNum):bookInfo[4];
             bookOperate.deleteBook(adminPanel.findBookFrame.curBookItem.getIsbn());
             Log.getInstance().CreateLog("admin",6,"修改图书 " + newBook.getIsbn());
             errAlert.findErrAlert((int)(adminPanel.modifyBookFrame.getLocation().getX() + 100),(int)(adminPanel.modifyBookFrame.getLocation().getY() + 100),"成功修改图书：" + newBook.getName());
@@ -188,6 +188,8 @@ public class AdminControler {
         adminPanel.bookUpdateBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(!adminPanel.bookDeleBtn.isEnabled())
+                    return;
                 adminPanel.showModifyBookField(adminPanel.findBookFrame.curBookItem,bookOperate.getBookpathtable(adminPanel.findBookFrame.curBookItem.getIsbn()));
             }
         });
