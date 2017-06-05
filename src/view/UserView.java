@@ -2,6 +2,9 @@ package view;
 
 import bean.Book;
 import bean.BookPathTable;
+import bean.*;
+import service.BookOperate;
+import service.CustomerService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -10,9 +13,10 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Graphics;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import bean.*;
-import service.CustomerService;
+import listener.GlobalActionDetector;
 
 
 /**
@@ -21,6 +25,7 @@ import service.CustomerService;
 
 public class UserView{
     Customer customer;
+    BookOperate bookOperate = BookOperate.getInstance();
     public JFrame bookInfoFrame = new JFrame("图书信息");
     public FindBookFrame findBookFrame = new FindBookFrame();
     public BookJTable huanshulist = new BookJTable(0,0);
@@ -35,10 +40,14 @@ public class UserView{
     public JButton yujiejb = new JButton("预借图书");
     public JButton lishijb = new JButton("借阅历史");
     public JButton chongzhijb = new JButton("充值 ~。~");
-    public JButton chongzhiwanchengJB = new JButton("确认");
+    public JButton chongzhi10 = new JButton("10元");
+    public JButton chongzhi50 = new JButton("50元");
+    public JButton chongzhi100 = new JButton("100元");
     public JButton jieyuejb = new JButton("借阅");
     public JButton yudingjb = new JButton("预定");
     public JButton huanshujb = new JButton("幻术");
+    public JButton inforchangejb = new JButton("消息");
+    public JButton confirm = new JButton("确认修改");
 
     public JPanel panel1 = new JPanel();
     public JPanel panel2 = new JPanel();
@@ -46,11 +55,17 @@ public class UserView{
     public JPanel panel4 = new JPanel();
     public JPanel panel5 = new JPanel();
 
+    public JLabel mjl11 = new JLabel();
     public JLabel mjl33 = new JLabel();
     public JLabel mjl55 = new JLabel();
 
     public JFrame chongzhiframe = new JFrame("充值");
     public JFrame huanshuframe = new JFrame("还书");
+    public JFrame inforchangeframe = new JFrame("修改个人消息");
+
+//    public JTextField newname = new JTextField();
+//    public JTextField newPassword = new JTextField();
+//    public JTextField passwordConfirm = new JTextField();
 
     public UserView(Customer customer){
         this.customer = customer;
@@ -60,7 +75,7 @@ public class UserView{
 
         JPanel panel6 = new JPanel(){
             protected void paintComponent(Graphics g){
-                ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\2.jpg");
+                ImageIcon icon = new ImageIcon("res\\2.jpg");
                 Image imgg = icon.getImage();
                 g.drawImage(imgg,0,0,200,80,icon.getImageObserver());
             }
@@ -103,7 +118,7 @@ public class UserView{
         panel1.add(jl1);
         panel1.add(jl2);
         panel1.add(jl3);
-        jl1.setBounds(35,50,200,50);
+        jl1.setBounds(40,50,200,50);
         jl1.setText("个人信息");
         jl1.setForeground(Color.WHITE);
         jl1.setFont(new Font("幼圆",Font.BOLD, 23));
@@ -146,11 +161,11 @@ public class UserView{
         JLabel mjl3 = new JLabel("在借本数");
         JLabel mjl4 = new JLabel("权限本数");
         JLabel mjl5 = new JLabel("账户余额");
-        JLabel mjl11 = new JLabel(customer.getUsername());
+        mjl11 = new JLabel(customer.getUsername());
         JLabel mjl22 = new JLabel(customer.getId());
         mjl33.setText(String.valueOf(customer.getBookedMap().size()));
         JLabel mjl44 = new JLabel(String.valueOf(customer.getMaxNumForRent()));
-        mjl55.setText(String.valueOf(customer.getBookedMap().size()));
+        mjl55.setText(String.valueOf(customer.getMoney()));
 
         panel2.add(mjl1);
         panel2.add(mjl2);
@@ -199,13 +214,68 @@ public class UserView{
 
 
         panel5.add(huanshujb);
-        huanshujb.setBounds(350,10,100,40);
+        huanshujb.setBounds(650,15,100,30);
         javax.swing.border.Border b14 =BorderFactory.createLineBorder(Color.WHITE);
         javax.swing.border.Border b15 = BorderFactory.createEtchedBorder();
         huanshujb.setBorder(BorderFactory.createCompoundBorder(b14,b15));
         huanshujb.setBackground(Color.WHITE);
         huanshujb.setForeground(new Color(192,57,43));
         huanshujb.setText("还书");
+
+        panel5.add(inforchangejb);
+        inforchangejb.setBounds(50,15,100,30);
+        javax.swing.border.Border b20 =BorderFactory.createLineBorder(Color.WHITE);
+        javax.swing.border.Border b21 = BorderFactory.createEtchedBorder();
+        inforchangejb.setBorder(BorderFactory.createCompoundBorder(b20,b21));
+        inforchangejb.setBackground(Color.WHITE);
+        inforchangejb.setForeground(new Color(192,57,43));
+        inforchangejb.setText("修改个人信息");
+
+        int flagzaijie = 0;
+        int flagyujie = 0;
+
+        Map<String, Integer> map = customer.getBookedMap();
+        int[] zaijieJudge = new int[map.size()];
+        Iterator<String> iterator = map.keySet().iterator();
+        for(int i=0;i<map.size();i++){
+            if (iterator.hasNext()){
+                String key = iterator.next();
+                zaijieJudge[i]=(GlobalActionDetector.getInstance().getDays() - map.get(key));
+                if(zaijieJudge[i]>30){
+                    flagzaijie = 1;
+                }
+            }
+        }
+
+        Set<String> yujieset = customer.getWantedSet();
+        Iterator<String> it = yujieset.iterator();
+        int[] yujieJudge = new int[yujieset.size()];
+        for (int i = 0; i < yujieset.size(); i++) {
+            if (it.hasNext()) {
+                String str = it.next();
+                yujieJudge[i] = bookOperate.getBookpathtable(str).getRestnum();
+                if(yujieJudge[i]>0){
+                    flagyujie = 1;
+                }
+            }
+        }
+
+        JLabel zaijietishi = new JLabel("您有超出天数未还图书");
+        if(flagzaijie == 1){
+            panel5.add(zaijietishi);
+            zaijietishi.setBounds(220,15,200,30);
+            zaijietishi.setForeground(Color.WHITE);
+            zaijietishi.setFont(new Font("幼圆",Font.BOLD, 15));
+        }
+        JLabel yujietishi = new JLabel("您有预定图书可以借阅");
+        if(flagyujie == 1){
+            panel5.add(yujietishi);
+            yujietishi.setBounds(420,15,200,30);
+            yujietishi.setForeground(Color.WHITE);
+            yujietishi.setFont(new Font("幼圆",Font.BOLD, 15));
+        }
+
+
 
 
 
@@ -219,6 +289,7 @@ public class UserView{
     }
 
     public void showBookInfoFrame(Book bookItem, BookPathTable bookItemPath){
+        //图书信息
         bookInfoFrame.setBounds(500,500,500,500);
         JPanel jpn = new JPanel(new FlowLayout());
         jpn.setLayout(null);
@@ -267,7 +338,7 @@ public class UserView{
 
         public void paint(Graphics g) {
             super.paint(g);
-            ImageIcon icon = new ImageIcon("C:\\Users\\14632\\Desktop\\1234.gif");
+            ImageIcon icon = new ImageIcon("res\\1234.gif");
             g.drawImage(icon.getImage(), 0, 10, 200, 185, this);
         }
 
@@ -281,6 +352,6 @@ public class UserView{
         bookInfoFrame.dispose();
         chongzhiframe.dispose();
         huanshuframe.dispose();
+        inforchangeframe.dispose();
     }
-
 }

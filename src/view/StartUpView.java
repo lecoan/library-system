@@ -21,9 +21,8 @@ import java.util.*;
  描　述: 启动界面
  版　本: v1.00 Copyright(c).
  ******************************************************************/
-public class StartUpView extends JFrame{
+public class StartUpView extends JFrame {
 
-    //private SignInAndUpController controller;
     private GlobalActionDetector detector;
 
     public StartUpView() {
@@ -31,11 +30,13 @@ public class StartUpView extends JFrame{
         detector = GlobalActionDetector.getInstance();
 
 
-
         initView();
 
     }
 
+    /**
+     * 初始化界面
+     */
     private void initView() {
         JLabel label = new JLabel("当前时间: "+GetDate.getDate(detector.getDays()));
         detector.addEvent(days -> label.setText("当前时间: "+GetDate.getDate(detector.getDays())));
@@ -51,6 +52,7 @@ public class StartUpView extends JFrame{
         panel.add(label);
         setContentPane(panel);
 
+        //添加处理逻辑
         login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -65,16 +67,16 @@ public class StartUpView extends JFrame{
             }
         });
 
-        JTable table = new JTable(0,0);
+        JTable table = new JTable(0, 0);
         java.util.List<BookPathTable> list = BookOperate.getInstance().getRanklist();
-        String[] tableHeader = {"排名","书名","借阅次数"};
+        String[] tableHeader = {"排名", "书名", "借阅次数"};
         Object[][] tableBody = new Object[list.size()][3];
-        for(int i=0;i<list.size();i++){
-            Object[] rowData = {""+i,""+list.get(i).getIsbn(),""+list.get(i).getBorrownum()};
+        for (int i = 0; i < list.size(); i++) {
+            Object[] rowData = {"" + i, "" + list.get(i).getIsbn(), "" + list.get(i).getBorrownum()};
             tableBody[i] = rowData;
         }
-        DefaultTableModel tableModel =  (DefaultTableModel)table.getModel();
-        tableModel.setDataVector(tableBody,tableHeader);
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        tableModel.setDataVector(tableBody, tableHeader);
         table.setEnabled(false);
         table.setVisible(true);
         panel.add(new JScrollPane(table));

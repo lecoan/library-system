@@ -58,7 +58,10 @@ public class LoginView extends JFrame {
 
     }
 
-
+    /**
+     * 处理登陆逻辑
+     * @see controler.SignInAndUpController#handleLogin(String, String, JFrame)
+     */
     private void setLoginListener() {
         button.addMouseListener(new MouseAdapter() {
             @Override
