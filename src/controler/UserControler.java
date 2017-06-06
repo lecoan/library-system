@@ -209,6 +209,8 @@ public class UserControler {
                     UserPanel.findBookFrame.curBookItem = null;
                     commonControler.clearFindBookFrame(UserPanel.findBookFrame);
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "借阅成功");
+                    if (UserPanel.tableFlag == UserView.zaijieflag)
+                        UserControler.getInstance().zaijieTable(UserPanel);
                     UserPanel.mjl33.setText(String.valueOf(customer.getBookedMap().size()));
                     UserPanel.panel2.validate();
                 } else if (customer.getBookedMap().size() >= customer.getMaxNumForRent()) {
@@ -225,7 +227,7 @@ public class UserControler {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //预定按钮
-                if(UserPanel.yudingjb.isEnabled() == false){
+                if (UserPanel.yudingjb.isEnabled() == false) {
                     return;
                 }
                 if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() == 0 && (customer.isFreezed() == false)) {
@@ -234,6 +236,8 @@ public class UserControler {
                     UserPanel.findBookFrame.curBookItem = null;
                     commonControler.clearFindBookFrame(UserPanel.findBookFrame);
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "预定成功");
+                    if (UserPanel.tableFlag == UserView.yujieflag)
+                        UserControler.getInstance().yujietable(UserPanel);
                 } else if (bookOperate.getBookpathtable(UserPanel.findBookFrame.curBookItem.getIsbn()).getRestnum() > 0) {
                     errAlert.findErrAlert((int) UserPanel.bookInfoFrame.getLocation().getX() + 100, (int) UserPanel.bookInfoFrame.getLocation().getY() + 100, "当前图书可以借阅无需预定");
                 } else if (customer.isFreezed()) {
@@ -283,6 +287,11 @@ public class UserControler {
                     } else {
                         UserPanel.zaijietishi.setText("");
                     }
+                    if (UserPanel.tableFlag == UserView.lishiflag)
+                        UserControler.getInstance().lishitable(UserPanel);
+
+                    if (UserPanel.tableFlag == UserView.zaijieflag)
+                        UserControler.getInstance().zaijieTable(UserPanel);
                 }
             }
         });
@@ -301,20 +310,35 @@ public class UserControler {
                 name = newName.getText().trim();
                 pass1 = newPassward.getText().trim();
                 pass2 = passConfirm.getText().trim();
-                if (!pass1.equals(pass2)) {
-                    errAlert.findErrAlert(500, 500, "两次输入密码不一样");
-                } else if (pass1.isEmpty() || !pass1.matches("^[A-Za-z0-9]{4,40}$")) {
-                    errAlert.findErrAlert(500, 500, "密码应为4到40位的字母和注释组成");
-                } else if (name.isEmpty() || !name.matches("^[A-Za-z0-9]{4,40}$")) {
-                    errAlert.findErrAlert(500, 500, "用户名应为4到40位的字母和注释组成");
-                } else {
-                    customer.setPassword(pass1);
-                    customer.setUsername(name);
-                    customerService.updateCustomer(customer);
-                    UserPanel.mjl11.setText(name);
-                    UserPanel.panel2.validate();
+                if (name.isEmpty() && pass1.isEmpty() && pass2.isEmpty()) {
                     UserPanel.inforchangeframe.dispose();
+                    return;
                 }
+                if (!name.isEmpty() && !name.matches("^[A-Za-z0-9]{4,40}$")) {
+                    System.out.print(name);
+                    errAlert.findErrAlert(500, 500, "用户名应为4到40位的字母和数字组成");
+                    return;
+                }
+                if (!pass2.equals(pass1)) {
+                    errAlert.findErrAlert(500, 500, "两次输入密码不一样");
+                    return;
+                }
+                if (!pass1.isEmpty() && !pass1.matches("^[A-Za-z0-9]{4,40}$")) {
+                    errAlert.findErrAlert(500, 500, "密码应为4到40位的字母和数字组成");
+                    return;
+                }
+
+                if (!name.isEmpty()) {
+                    customer.setUsername(name);
+                    UserPanel.mjl11.setText(name);
+                }
+                if (!pass1.isEmpty()) {
+                    customer.setPassword(pass1);
+                }
+                customerService.updateCustomer(customer);
+
+                UserPanel.panel2.validate();
+                UserPanel.inforchangeframe.dispose();
             }
         });
 
@@ -389,7 +413,7 @@ public class UserControler {
 //        for (int i = 0; i < A.size(); i++) {
 //            lishistrings[i][0] = A.get(i).split("&&")[2];
 //        }
-        String[] columnNames = {"书目","借书时间","还书时间"};
+        String[] columnNames = {"书目", "借书时间", "还书时间"};
         JTable table = new JTable(borrowHistoryList, columnNames);
         table.setBackground(Color.lightGray);
         table.setEnabled(false);
@@ -467,6 +491,11 @@ public class UserControler {
         passconfirm.setBounds(250, 100, 100, 20);
         passConfirm.setBounds(350, 100, 100, 20);
 
+        newName.setText("");
+        newPassward.setText("");
+        passConfirm.setText("");
+
+
         userPanel.confirm.setBounds(200, 150, 100, 25);
 
 //        name = newName.getText().trim();
@@ -513,7 +542,7 @@ public class UserControler {
     public void jieyueRetrun(String isbn, Customer customer) {
         //借阅后对整体数据改动
         bookOperate.UpdateBookrank(isbn, customer.getUsername());
-        customerService.rentBookByISBN(customer,isbn);
+        customerService.rentBookByISBN(customer, isbn);
     }
 
     public void yudingReturn(String isbn, Customer customer) {
